@@ -22,19 +22,26 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
     async function loadUser() {
-      const session = await getSession();
+      setLoading(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!mounted) return;
       if (session?.user) {
         setUser(session.user);
         const userProfile = await getUserProfile(session.user.id);
         setProfile(userProfile);
+      } else {
+        setUser(null);
+        setProfile(null);
       }
       setLoading(false);
     }
 
     loadUser();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setLoading(true);
       const currentUser = session?.user ?? null;
       setUser(currentUser);
@@ -48,6 +55,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     });
 
     return () => {
+      mounted = false;
       authListener.subscription.unsubscribe();
     };
   }, []);
