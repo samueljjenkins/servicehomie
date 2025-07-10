@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from "react";
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getTechnicianById } from '@/lib/supabase-utils';
@@ -10,7 +11,7 @@ const fallbackTechnician = {
   price: 120,
 };
 
-export default function BookingPage() {
+function BookingPageInner() {
   const searchParams = useSearchParams();
   const technicianId = searchParams.get('technician');
   const service = searchParams.get('service') || fallbackTechnician.service;
@@ -152,5 +153,13 @@ export default function BookingPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function BookingPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BookingPageInner />
+    </Suspense>
   );
 } 
