@@ -13,7 +13,8 @@ export async function getTechnicians(service?: string) {
     query = query.contains('services', [service]);
   }
 
-  const { data, error } = await query.order('rating', { ascending: false });
+  // Remove ordering by 'rating' since the column does not exist
+  const { data, error } = await query;
   
   if (error) {
     console.error('Error fetching technicians:', error);
