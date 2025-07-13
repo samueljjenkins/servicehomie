@@ -4,8 +4,6 @@ export interface Technician {
   email: string;
   phone: string;
   services: string[];
-  rating: number;
-  reviews: number;
   price: number;
   location: string;
   experience: string;
