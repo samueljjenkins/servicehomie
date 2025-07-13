@@ -104,10 +104,10 @@ export default function BookingClient() {
                   <div className="text-gray-700 mt-2">
                     <div>Location: {technician.location}</div>
                     <div>Experience: {technician.experience}</div>
-                    <div className="flex items-center">
+                    {/* <div className="flex items-center">
                       <span className="text-yellow-500 mr-1">★</span>
                       <span>{technician.rating} ({technician.reviews} reviews)</span>
-                    </div>
+                    </div> */}
                   </div>
                 )}
               </div>
