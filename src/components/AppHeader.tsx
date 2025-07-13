@@ -13,6 +13,10 @@ export default function AppHeader() {
     setIsClient(true);
   }, []);
 
+  useEffect(() => {
+    console.log({ user, loading, isClient });
+  }, [user, loading, isClient]);
+
   const handleSignOut = async () => {
     setIsMenuOpen(false);
     await signOut();
