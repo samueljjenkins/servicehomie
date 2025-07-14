@@ -55,7 +55,10 @@ export default function AdminApplicationsPage() {
 
   const handleApprove = async (id: string) => {
     setProcessingId(id);
-    const { error } = await supabase.rpc('approve_technician', { application_id: id });
+    const { error } = await supabase
+      .from('technician_applications')
+      .update({ status: 'approved' })
+      .eq('id', id);
     if (error) {
       alert(`Error approving technician: ${error.message}`);
     } else {
@@ -69,7 +72,10 @@ export default function AdminApplicationsPage() {
       return;
     }
     setProcessingId(id);
-    const { error } = await supabase.rpc('deny_technician', { application_id: id });
+    const { error } = await supabase
+      .from('technician_applications')
+      .update({ status: 'denied' })
+      .eq('id', id);
     if (error) {
       alert(`Error denying technician: ${error.message}`);
     } else {
