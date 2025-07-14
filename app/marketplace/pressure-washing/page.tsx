@@ -5,11 +5,6 @@ import { useEffect, useState } from 'react';
 import { Technician } from '@/types/database';
 import { getTechnicians } from '@/lib/supabase-utils';
 
-function renderStars(rating: number) {
-  const roundedRating = Math.round(rating);
-  return '★'.repeat(roundedRating) + '☆'.repeat(5 - roundedRating);
-}
-
 export default function PressureWashingMarketplace() {
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,13 +57,8 @@ export default function PressureWashingMarketplace() {
                   {/* Placeholder for avatar */}
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-1">{tech.name}</h3>
-                <div className="flex items-center mb-2">
-                  <span className="text-yellow-500 mr-1">{renderStars(tech.rating)}</span>
-                  <span className="text-gray-600 text-sm">({tech.rating.toFixed(1)})</span>
-                </div>
                 <div className="text-blue-700 font-bold text-lg mb-1">${tech.price}</div>
                 <div className="text-gray-500 text-sm mb-2">{tech.location}</div>
-                <div className="text-gray-400 text-xs mb-4">{tech.reviews} reviews</div>
                 <div className="flex gap-2">
                   <Link href={`/booking?technician=${tech.id}&service=Pressure%20Washing&price=${tech.price}`} className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition">Book Now</Link>
                   <Link href={`/technician-profile?id=${tech.id}`} className="bg-gray-100 text-blue-700 px-4 py-2 rounded-md font-medium hover:bg-blue-100 transition">View Profile</Link>
