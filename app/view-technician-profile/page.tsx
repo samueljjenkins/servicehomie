@@ -1,10 +1,7 @@
 import { Suspense } from "react";
-import ViewTechnicianProfileClient from "./ViewTechnicianProfileClient";
 
 export default function ViewTechnicianProfilePage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ViewTechnicianProfileClient />
-    </Suspense>
+    <div className="py-20 text-center text-gray-500 text-lg">Technician profile is not available.</div>
   );
 } 
