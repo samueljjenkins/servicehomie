@@ -9,7 +9,7 @@ export default function Home() {
         <div className="absolute inset-0 w-full h-full z-0">
           <img
             src="/background.png"
-            alt="Neighborhood background"
+            alt="Business background"
             className="w-full h-full object-cover object-center"
             draggable="false"
           />
@@ -18,18 +18,18 @@ export default function Home() {
           <div className="text-center">
             <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
               <span className="block">
-                book a local technician <span className="text-blue-600">today</span>
+                create your free website <span className="text-blue-600">in 60 seconds</span>
               </span>
             </h1>
             <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-              pick a service, choose technician, book a time, done.
+              For local technicians & service businesses: Instantly launch a professional profile, accept bookings, and get paid—all with your own shareable link.
             </p>
             <div className="mt-5 flex justify-center gap-4 md:mt-8">
-              <Link href="/marketplace" className="rounded-md shadow w-auto flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10">
-                Find a Service
+              <Link href="/technician-signup" className="rounded-md shadow w-auto flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10">
+                Get Started Free
               </Link>
-              <Link href="/technician-signup" className="rounded-md shadow w-auto flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium text-blue-600 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10">
-                Become a Technician
+              <Link href="/about" className="rounded-md shadow w-auto flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium text-blue-600 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10">
+                How It Works
               </Link>
             </div>
           </div>
@@ -37,43 +37,40 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="services" className="py-20 bg-gray-50">
+      <section id="features" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-              Our Services
+              Why Service Homie?
             </h2>
             <p className="mt-4 text-lg text-gray-500">
-              We specialize in exterior home cleaning services.
+              Everything you need to look professional and get booked—no coding, no waiting, no approvals.
             </p>
           </div>
 
           <div className="mt-20 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                title: 'Window Cleaning',
-                description: 'Professional window cleaning for a streak-free shine.',
-                icon: '🪟',
-                href: '/marketplace/window-cleaning',
+                title: 'Instant Landing Page',
+                description: 'Create a beautiful, mobile-friendly profile for your business in under a minute.',
+                icon: '⚡️',
               },
               {
-                title: 'Gutter Cleaning',
-                description: 'Keep your gutters clear and your home protected.',
-                icon: '🧹',
-                href: '/marketplace/gutter-cleaning',
+                title: 'Easy Bookings',
+                description: 'Let customers book you online 24/7. No more phone tag or DMs.',
+                icon: '📅',
               },
               {
-                title: 'Pressure Washing',
-                description: 'Restore the look of your driveway, siding, and more.',
-                icon: '💦',
-                href: '/marketplace/pressure-washing',
+                title: 'Get Paid Online',
+                description: 'Secure payments with automatic 15% fee. Funds go straight to your account.',
+                icon: '💳',
               }
-            ].map((service) => (
-              <Link key={service.title} href={service.href} className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 block cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600">
-                <div className="text-4xl mb-4">{service.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-900">{service.title}</h3>
-                <p className="mt-2 text-gray-500">{service.description}</p>
-              </Link>
+            ].map((feature) => (
+              <div key={feature.title} className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 block cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <div className="text-4xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold text-gray-900">{feature.title}</h3>
+                <p className="mt-2 text-gray-500">{feature.description}</p>
+              </div>
             ))}
           </div>
         </div>
@@ -87,7 +84,7 @@ export default function Home() {
               How It Works
             </h2>
             <p className="mt-4 text-lg text-gray-500">
-              Getting started is easy. Just follow these simple steps.
+              Get your business online in 3 simple steps.
             </p>
           </div>
 
@@ -96,18 +93,18 @@ export default function Home() {
               {[
                 {
                   step: '1',
-                  title: 'Book a Service',
-                  description: 'Choose from our wide range of services and book your appointment.',
+                  title: 'Sign Up & Customize',
+                  description: 'Create your account, add your services, pricing, photos, and business info.',
                 },
                 {
                   step: '2',
-                  title: 'Get Matched',
-                  description: "We'll connect you with the perfect professional for your needs.",
+                  title: 'Share Your Link',
+                  description: 'Get a unique URL for your landing page. Add it to your social media, website, or business card.',
                 },
                 {
                   step: '3',
-                  title: 'Enjoy the Results',
-                  description: 'Sit back and relax while our professionals handle the job.',
+                  title: 'Get Booked & Paid',
+                  description: 'Customers book and pay online. You get notified instantly and keep 85% of every booking.',
                 },
               ].map((step) => (
                 <div key={step.step} className="relative">
@@ -129,13 +126,13 @@ export default function Home() {
       <section className="bg-blue-600">
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
           <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-            <span className="block">Ready to get started?</span>
-            <span className="block text-blue-200">Find your perfect service professional today.</span>
+            <span className="block">Ready to look professional?</span>
+            <span className="block text-blue-200">Create your landing page and start booking clients today.</span>
           </h2>
           <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
             <div className="inline-flex rounded-md shadow">
-              <Link href="/homeowner-signup" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50">
-                Get started
+              <Link href="/technician-signup" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50">
+                Get Started Free
               </Link>
             </div>
           </div>
