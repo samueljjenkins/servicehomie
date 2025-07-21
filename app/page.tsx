@@ -148,14 +148,6 @@ export default function Home() {
               <p className="text-gray-400">Your trusted home service marketplace.</p>
             </div>
             <div>
-              <h3 className="text-white text-lg font-semibold mb-4">Services</h3>
-              <ul className="space-y-2">
-                <li><Link href="/marketplace/window-cleaning" className="text-gray-400 hover:text-white">Window Cleaning</Link></li>
-                <li><Link href="/marketplace/gutter-cleaning" className="text-gray-400 hover:text-white">Gutter Cleaning</Link></li>
-                <li><Link href="/marketplace/pressure-washing" className="text-gray-400 hover:text-white">Pressure Washing</Link></li>
-              </ul>
-            </div>
-            <div>
               <h3 className="text-white text-lg font-semibold mb-4">Company</h3>
               <ul className="space-y-2">
                 <li><Link href="/about" className="text-gray-400 hover:text-white">About</Link></li>
