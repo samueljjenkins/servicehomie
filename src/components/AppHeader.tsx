@@ -79,7 +79,6 @@ export default function AppHeader() {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link href="/marketplace" className="text-gray-600 hover:text-blue-600">Marketplace</Link>
           <Link href="/about" className="text-gray-600 hover:text-blue-600">About</Link>
           <Link href="/contact" className="text-gray-600 hover:text-blue-600">Contact</Link>
           {authLinks(false)}
@@ -99,7 +98,6 @@ export default function AppHeader() {
       {isMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg py-4">
           <div className="container mx-auto px-6 flex flex-col space-y-2">
-            <Link href="/marketplace" className="block py-2 px-4 text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Marketplace</Link>
             <Link href="/about" className="block py-2 px-4 text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>About</Link>
             <Link href="/contact" className="block py-2 px-4 text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Contact</Link>
             <hr/>
