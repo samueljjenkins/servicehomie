@@ -86,11 +86,13 @@ export default function TechnicianPage() {
       <section className="w-full max-w-xl mx-auto flex flex-col items-center py-10 px-4">
         <div className="relative mb-4">
           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-400 via-blue-200 to-blue-100 blur-sm opacity-60 scale-110" />
-          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Alex Carter" className="w-28 h-28 rounded-full object-cover border-4 border-white shadow-2xl relative z-10" />
+          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border-4 border-white shadow-2xl relative z-10 flex items-center justify-center">
+            <span className="text-3xl text-white font-bold">👤</span>
+          </div>
         </div>
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-1 tracking-tight">Alex Carter</h1>
-        <div className="text-blue-600 font-medium mb-2">Dallas, TX</div>
-        <p className="text-center text-gray-700 mb-4 max-w-md">Professional window & gutter cleaning. Reliable, friendly, and always on time.</p>
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-1 tracking-tight">Your Name</h1>
+        <div className="text-blue-600 font-medium mb-2">Your City, State</div>
+        <p className="text-center text-gray-700 mb-4 max-w-md">Tell customers about your business and experience</p>
         <button className="bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white font-bold px-8 py-3 rounded-full shadow-xl transition mb-2 text-lg">Book a Service</button>
       </section>
 
@@ -219,7 +221,7 @@ export default function TechnicianPage() {
       {/* Contact & Socials */}
       <section className="w-full max-w-xl mx-auto py-6 px-4 flex flex-col items-center">
         <div className="text-gray-700 font-semibold mb-2">Contact</div>
-        <a href="mailto:alex@carterclean.com" className="text-blue-600 hover:underline mb-4">alex@carterclean.com</a>
+        <a href="mailto:your@email.com" className="text-blue-600 hover:underline mb-4">your@email.com</a>
         <div className="flex gap-4">
           {socials.map((social, i) => (
             <a key={i} href={social.href} target="_blank" rel="noopener noreferrer" className="bg-white/80 backdrop-blur rounded-full p-3 shadow hover:bg-blue-100 transition border border-blue-100" aria-label={social.name}>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { useAuth, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs';
+import { useAuth, SignInButton, UserButton } from '@clerk/nextjs';
 
 export default function AppHeader() {
   const { isSignedIn, isLoaded } = useAuth();
@@ -44,11 +44,13 @@ export default function AppHeader() {
             Login
           </button>
         </SignInButton>
-        <SignUpButton mode="modal">
-          <button className={isMobile ? "block bg-blue-600 text-white mt-2 py-2 px-4 rounded-md font-medium hover:bg-blue-700 transition" : "bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition"}>
-            Sign Up
-          </button>
-        </SignUpButton>
+        <Link 
+          href="/technician-signup" 
+          className={isMobile ? "block bg-blue-600 text-white mt-2 py-2 px-4 rounded-md font-medium hover:bg-blue-700 transition" : "bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition"}
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Sign Up
+        </Link>
       </>
     );
   };
