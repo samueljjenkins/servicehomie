@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useAuth } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
 interface Stat {
   label: string;
@@ -8,46 +9,45 @@ interface Stat {
 }
 
 export default function AdminPage() {
+  const { isSignedIn, isLoaded } = useAuth();
+  const router = useRouter();
   const [stats, setStats] = useState<Stat[]>([]);
   const [loading, setLoading] = useState(true);
-  const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        // Fetch all stats in parallel
-        const [
-          { count: totalUsers },
-          { count: totalTechnicians },
-          { count: totalJobs },
-          { data: revenueData, error: revenueError }
-        ] = await Promise.all([
-          supabase.from('users').select('*', { count: 'exact', head: true }),
-          supabase.from('users').select('*', { count: 'exact', head: true }).eq('user_type', 'technician'),
-          supabase.from('bookings').select('*', { count: 'exact', head: true }),
-          supabase.from('bookings').select('price').eq('status', 'completed')
-        ]);
+    if (isLoaded && !isSignedIn) {
+      router.push('/login');
+    }
+  }, [isLoaded, isSignedIn, router]);
 
-        if (revenueError) throw revenueError;
+  useEffect(() => {
+    if (isSignedIn) {
+      // Mock admin stats for now
+      const mockStats = [
+        { label: 'Total Users', value: 156 },
+        { label: 'Technicians', value: 42 },
+        { label: 'Total Jobs', value: 89 },
+        { label: 'Revenue', value: '$12,450' },
+      ];
+      setStats(mockStats);
+      setLoading(false);
+    }
+  }, [isSignedIn]);
 
-        const totalRevenue = revenueData.reduce((sum, booking) => sum + (booking.price || 0), 0);
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
-        setStats([
-          { label: 'Total Users', value: totalUsers ?? 0 },
-          { label: 'Technicians', value: totalTechnicians ?? 0 },
-          { label: 'Total Jobs', value: totalJobs ?? 0 },
-          { label: 'Revenue', value: `$${totalRevenue.toLocaleString()}` },
-        ]);
-
-      } catch (error) {
-        console.error("Error fetching admin stats:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, [supabase]);
+  if (!isSignedIn) {
+    return null; // Will redirect to login
+  }
 
   return (
     <section className="py-20 bg-gray-50 min-h-[80vh]">

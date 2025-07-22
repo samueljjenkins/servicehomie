@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { UserProvider } from "@/context/UserContext";
 import ClientLayout from "./ClientLayout";
 import { ClerkProvider } from '@clerk/nextjs';
 
@@ -21,9 +20,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-          <UserProvider>
-            <ClientLayout>{children}</ClientLayout>
-          </UserProvider>
+          <ClientLayout>{children}</ClientLayout>
         </body>
       </html>
     </ClerkProvider>
