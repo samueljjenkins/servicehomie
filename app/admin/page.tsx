@@ -22,15 +22,16 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (isSignedIn) {
-      // Mock admin stats for now
-      const mockStats = [
-        { label: 'Total Users', value: 156 },
-        { label: 'Technicians', value: 42 },
-        { label: 'Total Jobs', value: 89 },
-        { label: 'Revenue', value: '$12,450' },
-      ];
-      setStats(mockStats);
-      setLoading(false);
+      // Simulate loading time for real data
+      setTimeout(() => {
+        setStats([
+          { label: 'Total Users', value: 0 },
+          { label: 'Technicians', value: 0 },
+          { label: 'Total Jobs', value: 0 },
+          { label: 'Revenue', value: '$0' },
+        ]);
+        setLoading(false);
+      }, 1000);
     }
   }, [isSignedIn]);
 
@@ -55,27 +56,27 @@ export default function AdminPage() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-extrabold text-blue-600">Admin Dashboard</h1>
           <div className="flex gap-4">
-            <a
-              href="/technician-onboarding"
+            <button
+              onClick={() => alert("Feature coming soon")}
               className="bg-purple-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-600 transition-colors flex items-center gap-2"
             >
               <span>👤+</span>
               Onboard Technician
-            </a>
-            <a
-              href="/admin/applications"
+            </button>
+            <button
+              onClick={() => alert("Feature coming soon")}
               className="bg-green-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-600 transition-colors flex items-center gap-2"
             >
               <span>📋</span>
               Review Applications
-            </a>
-            <a
-              href="/admin-tools"
+            </button>
+            <button
+              onClick={() => alert("Feature coming soon")}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
             >
               <span>⚙️</span>
               Admin Tools
-            </a>
+            </button>
           </div>
         </div>
         

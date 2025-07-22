@@ -3,39 +3,18 @@ import { useState } from "react";
 
 const services = [
   {
-    name: "Window Cleaning",
-    description: "Streak-free window cleaning for homes and businesses.",
-    price: "$120",
-    icon: "🪟",
-  },
-  {
-    name: "Gutter Cleaning",
-    description: "Remove debris and ensure proper water flow.",
-    price: "$80",
-    icon: "🧹",
-  },
-  {
-    name: "Pressure Washing",
-    description: "Restore your surfaces to like-new condition.",
-    price: "$150",
-    icon: "💦",
+    name: "Add your first service",
+    description: "Describe what you offer to customers",
+    price: "$0",
+    icon: "🛠️",
   },
 ];
+
 const reviews = [
   {
-    name: "Sarah J.",
+    name: "Customer reviews will appear here",
     rating: 5,
-    text: "Alex did an amazing job! My windows have never looked better. Highly recommend!",
-  },
-  {
-    name: "Mike C.",
-    rating: 5,
-    text: "Prompt, professional, and thorough. Will book again!",
-  },
-  {
-    name: "Lisa T.",
-    rating: 4,
-    text: "Great service and friendly technician. Scheduling was easy.",
+    text: "Great feedback from your customers will show up here once you start getting bookings.",
   },
 ];
 
@@ -98,7 +77,7 @@ export default function TechnicianPage() {
       setBookingSuccess(false);
       setSelectedDay(null);
       setSelectedTime(null);
-    }, 2000);
+    }, 3000);
   }
 
   return (

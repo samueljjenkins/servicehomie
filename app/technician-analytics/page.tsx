@@ -2,17 +2,25 @@
 
 import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function TechnicianAnalytics() {
   const { isSignedIn, isLoaded } = useAuth();
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
       router.push('/login');
     }
   }, [isLoaded, isSignedIn, router]);
+
+  useEffect(() => {
+    if (isSignedIn) {
+      // Simulate loading time for real data
+      setTimeout(() => setLoading(false), 1000);
+    }
+  }, [isSignedIn]);
 
   if (!isLoaded) {
     return (
@@ -29,17 +37,6 @@ export default function TechnicianAnalytics() {
     return null; // Will redirect to login
   }
 
-  // Mock analytics data
-  const stats = {
-    earnings: 2450.75,
-    jobsCompleted: 38,
-    upcomingJobs: 3,
-    avgJobValue: 64.5,
-    last30Days: 720.0,
-    mostPopularService: "Window Cleaning",
-    lastJobDate: "2024-07-10",
-  };
-
   return (
     <section className="py-20 min-h-[80vh] bg-gray-50">
       {/* Back Button */}
@@ -53,28 +50,74 @@ export default function TechnicianAnalytics() {
         <h1 className="text-3xl font-extrabold text-blue-600 mb-8 text-center">Your Analytics</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <div className="bg-white rounded-lg shadow p-6 text-center">
-            <div className="text-2xl font-bold text-green-600 mb-2">${stats.earnings.toLocaleString(undefined, {minimumFractionDigits:2})}</div>
-            <div className="text-gray-700">Total Earnings</div>
+            {loading ? (
+              <>
+                <div className="h-8 bg-gray-200 rounded-md mb-2 w-24 animate-pulse mx-auto"></div>
+                <div className="h-6 bg-gray-200 rounded-md w-32 animate-pulse mx-auto"></div>
+              </>
+            ) : (
+              <>
+                <div className="text-2xl font-bold text-green-600 mb-2">$0.00</div>
+                <div className="text-gray-700">Total Earnings</div>
+              </>
+            )}
           </div>
           <div className="bg-white rounded-lg shadow p-6 text-center">
-            <div className="text-2xl font-bold text-blue-600 mb-2">{stats.jobsCompleted}</div>
-            <div className="text-gray-700">Jobs Completed</div>
+            {loading ? (
+              <>
+                <div className="h-8 bg-gray-200 rounded-md mb-2 w-16 animate-pulse mx-auto"></div>
+                <div className="h-6 bg-gray-200 rounded-md w-32 animate-pulse mx-auto"></div>
+              </>
+            ) : (
+              <>
+                <div className="text-2xl font-bold text-blue-600 mb-2">0</div>
+                <div className="text-gray-700">Jobs Completed</div>
+              </>
+            )}
           </div>
           <div className="bg-white rounded-lg shadow p-6 text-center">
-            <div className="text-2xl font-bold text-purple-600 mb-2">{stats.upcomingJobs}</div>
-            <div className="text-gray-700">Upcoming Jobs</div>
+            {loading ? (
+              <>
+                <div className="h-8 bg-gray-200 rounded-md mb-2 w-16 animate-pulse mx-auto"></div>
+                <div className="h-6 bg-gray-200 rounded-md w-32 animate-pulse mx-auto"></div>
+              </>
+            ) : (
+              <>
+                <div className="text-2xl font-bold text-purple-600 mb-2">0</div>
+                <div className="text-gray-700">Upcoming Jobs</div>
+              </>
+            )}
           </div>
           <div className="bg-white rounded-lg shadow p-6 text-center">
-            <div className="text-2xl font-bold text-yellow-600 mb-2">${stats.avgJobValue.toLocaleString(undefined, {minimumFractionDigits:2})}</div>
-            <div className="text-gray-700">Avg. Job Value</div>
+            {loading ? (
+              <>
+                <div className="h-8 bg-gray-200 rounded-md mb-2 w-20 animate-pulse mx-auto"></div>
+                <div className="h-6 bg-gray-200 rounded-md w-32 animate-pulse mx-auto"></div>
+              </>
+            ) : (
+              <>
+                <div className="text-2xl font-bold text-yellow-600 mb-2">$0.00</div>
+                <div className="text-gray-700">Avg. Job Value</div>
+              </>
+            )}
           </div>
         </div>
         <div className="bg-white rounded-lg shadow p-8">
           <h2 className="text-xl font-bold text-gray-900 mb-4">More Insights</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="text-gray-700"><span className="font-semibold">Earnings (Last 30 Days):</span> ${stats.last30Days.toLocaleString(undefined, {minimumFractionDigits:2})}</div>
-            <div className="text-gray-700"><span className="font-semibold">Most Popular Service:</span> {stats.mostPopularService}</div>
-            <div className="text-gray-700"><span className="font-semibold">Last Job Date:</span> {stats.lastJobDate}</div>
+            {loading ? (
+              <>
+                <div className="h-6 bg-gray-200 rounded-md w-48 animate-pulse"></div>
+                <div className="h-6 bg-gray-200 rounded-md w-40 animate-pulse"></div>
+                <div className="h-6 bg-gray-200 rounded-md w-32 animate-pulse"></div>
+              </>
+            ) : (
+              <>
+                <div className="text-gray-700"><span className="font-semibold">Earnings (Last 30 Days):</span> $0.00</div>
+                <div className="text-gray-700"><span className="font-semibold">Most Popular Service:</span> No bookings yet</div>
+                <div className="text-gray-700"><span className="font-semibold">Last Job Date:</span> No jobs yet</div>
+              </>
+            )}
           </div>
         </div>
       </div>

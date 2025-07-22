@@ -5,40 +5,18 @@ import { useAuth } from '@clerk/nextjs';
 
 const defaultServices = [
   {
-    name: "Window Cleaning",
-    description: "Streak-free window cleaning for homes and businesses.",
-    price: "$120",
-    icon: "🪟",
-  },
-  {
-    name: "Gutter Cleaning",
-    description: "Remove debris and ensure proper water flow.",
-    price: "$80",
-    icon: "🧹",
-  },
-  {
-    name: "Pressure Washing",
-    description: "Restore your surfaces to like-new condition.",
-    price: "$150",
-    icon: "💦",
+    name: "Add your first service",
+    description: "Describe what you offer",
+    price: "$0",
+    icon: "🛠️",
   },
 ];
 
 const defaultReviews = [
   {
-    name: "Sarah J.",
+    name: "Add a review",
     rating: 5,
-    text: "Alex did an amazing job! My windows have never looked better. Highly recommend!",
-  },
-  {
-    name: "Mike C.",
-    rating: 5,
-    text: "Prompt, professional, and thorough. Will book again!",
-  },
-  {
-    name: "Lisa T.",
-    rating: 4,
-    text: "Great service and friendly technician. Scheduling was easy.",
+    text: "Customer feedback will appear here",
   },
 ];
 
@@ -52,12 +30,12 @@ export default function TechnicianPageEdit() {
   const router = useRouter();
   const { isSignedIn, isLoaded } = useAuth();
   const [avatar, setAvatar] = useState("https://randomuser.me/api/portraits/men/32.jpg");
-  const [name, setName] = useState("Alex Carter");
-  const [location, setLocation] = useState("Dallas, TX");
-  const [bio, setBio] = useState("Professional window & gutter cleaning. Reliable, friendly, and always on time.");
+  const [name, setName] = useState("Your Name");
+  const [location, setLocation] = useState("Your City, State");
+  const [bio, setBio] = useState("Tell customers about your business and experience");
   const [services, setServices] = useState(defaultServices);
   const [reviews, setReviews] = useState(defaultReviews);
-  const [email, setEmail] = useState("alex@carterclean.com");
+  const [email, setEmail] = useState("your@email.com");
   const [editingServiceIdx, setEditingServiceIdx] = useState<number | null>(null);
   const [editingReviewIdx, setEditingReviewIdx] = useState<number | null>(null);
   const [showSaved, setShowSaved] = useState(false);
