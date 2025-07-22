@@ -1,71 +1,54 @@
 "use client";
 
 import Link from 'next/link';
-import { useUser } from '@/context/UserContext';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useAuth, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs';
 
 export default function AppHeader() {
-  const { user, profile, signOut, loading } = useUser();
+  const { isSignedIn, isLoaded } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    console.log({ user, loading, isClient });
-  }, [user, loading, isClient]);
-
-  const handleSignOut = async () => {
-    setIsMenuOpen(false);
-    await signOut();
-    window.location.href = '/'; 
-  };
-  
   const authLinks = (isMobile: boolean) => {
-    if (!isClient) {
+    if (!isLoaded) {
       // Render a placeholder on the server and during initial client render
       return <div className="h-8 w-32 bg-gray-200 rounded-md animate-pulse"></div>;
     }
-    if (loading) {
-      return <div className="h-8 w-32 bg-gray-200 rounded-md animate-pulse"></div>;
-    }
-    if (user) {
+    
+    if (isSignedIn) {
       return (
         <>
           <Link 
-            href={profile?.user_type === 'technician' ? '/technician-dashboard' : '/homeowner-dashboard'}
+            href="/technician-dashboard"
             className={isMobile ? "block py-2 px-4 text-gray-600 hover:text-blue-600" : "text-gray-600 hover:text-blue-600"}
             onClick={() => setIsMenuOpen(false)}
           >
             Dashboard
           </Link>
-          <button
-            onClick={handleSignOut}
-            className={isMobile ? "w-full text-left bg-red-500 text-white mt-2 py-2 px-4 rounded-md font-medium hover:bg-red-600 transition" : "bg-red-500 text-white px-4 py-2 rounded-md font-medium hover:bg-red-600 transition"}
-          >
-            Sign Out
-          </button>
+          <div className={isMobile ? "mt-2" : ""}>
+            <UserButton 
+              appearance={{
+                elements: {
+                  userButtonBox: isMobile ? "w-full text-left bg-red-500 text-white py-2 px-4 rounded-md font-medium hover:bg-red-600 transition" : "bg-red-500 text-white px-4 py-2 rounded-md font-medium hover:bg-red-600 transition"
+                }
+              }}
+            />
+          </div>
         </>
       );
     }
+    
     return (
       <>
-        <Link 
-          href="/login" 
-          className={isMobile ? "block py-2 px-4 text-gray-600 hover:text-blue-600" : "text-gray-600 hover:text-blue-600"}
-          onClick={() => setIsMenuOpen(false)}
-        >
-          Login
-        </Link>
-        <Link 
-          href="/signup" 
-          className={isMobile ? "block bg-blue-600 text-white mt-2 py-2 px-4 rounded-md font-medium hover:bg-blue-700 transition" : "bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition"}
-          onClick={() => setIsMenuOpen(false)}
-        >
-          Sign Up
-        </Link>
+        <SignInButton mode="modal">
+          <button className={isMobile ? "block py-2 px-4 text-gray-600 hover:text-blue-600" : "text-gray-600 hover:text-blue-600"}>
+            Login
+          </button>
+        </SignInButton>
+        <SignUpButton mode="modal">
+          <button className={isMobile ? "block bg-blue-600 text-white mt-2 py-2 px-4 rounded-md font-medium hover:bg-blue-700 transition" : "bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition"}>
+            Sign Up
+          </button>
+        </SignUpButton>
       </>
     );
   };
@@ -73,7 +56,7 @@ export default function AppHeader() {
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold text-blue-600" onClick={() => setIsMenuOpen(false)}>
+        <Link href="/" className="text-2xl font-bold text-blue-600" onClick={() => setIsMenuOpen(false)} style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
           Service Homie
         </Link>
 

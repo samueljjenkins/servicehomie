@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "@/context/UserContext";
-import AppHeader from "@/components/AppHeader";
+import ClientLayout from "./ClientLayout";
+import { ClerkProvider } from '@clerk/nextjs';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,14 +18,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <UserProvider>
-          <AppHeader />
-          <main>{children}</main>
-          {/* Footer can be added here */}
-        </UserProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <UserProvider>
+            <ClientLayout>{children}</ClientLayout>
+          </UserProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

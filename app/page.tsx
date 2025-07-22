@@ -16,19 +16,19 @@ export default function Home() {
         </div>
         <div className="relative max-w-7xl mx-auto z-10">
           <div className="text-center">
-            <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+            <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
               <span className="block">
                 create your free website <span className="text-blue-600">in 60 seconds</span>
               </span>
             </h1>
-            <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+            <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
               For local technicians & service businesses: Instantly launch a professional profile, accept bookings, and get paid—all with your own shareable link.
             </p>
             <div className="mt-5 flex justify-center gap-4 md:mt-8">
-              <Link href="/technician-signup" className="rounded-md shadow w-auto flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10">
+              <Link href="/technician-signup" className="rounded-md shadow w-auto flex items-center justify-center px-8 py-3 border border-transparent text-base font-bold text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                 Get Started Free
               </Link>
-              <Link href="/about" className="rounded-md shadow w-auto flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium text-blue-600 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10">
+              <Link href="/about" className="rounded-md shadow w-auto flex items-center justify-center px-8 py-3 border border-transparent text-base font-bold text-blue-600 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                 How It Works
               </Link>
             </div>
@@ -40,10 +40,10 @@ export default function Home() {
       <section id="features" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
               Why Service Homie?
             </h2>
-            <p className="mt-4 text-lg text-gray-500">
+            <p className="mt-4 text-lg text-gray-500" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
               Everything you need to look professional and get booked—no coding, no waiting, no approvals.
             </p>
           </div>
@@ -68,8 +68,8 @@ export default function Home() {
             ].map((feature) => (
               <div key={feature.title} className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 block cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600">
                 <div className="text-4xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-900">{feature.title}</h3>
-                <p className="mt-2 text-gray-500">{feature.description}</p>
+                <h3 className="text-xl font-semibold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>{feature.title}</h3>
+                <p className="mt-2 text-gray-500" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>{feature.description}</p>
               </div>
             ))}
           </div>
@@ -80,10 +80,10 @@ export default function Home() {
       <section id="how-it-works" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
               How It Works
             </h2>
-            <p className="mt-4 text-lg text-gray-500">
+            <p className="mt-4 text-lg text-gray-500" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
               Get your business online in 3 simple steps.
             </p>
           </div>
@@ -112,8 +112,8 @@ export default function Home() {
                     <div className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-600 text-white text-xl font-bold">
                       {step.step}
                     </div>
-                    <h3 className="mt-6 text-xl font-semibold text-gray-900">{step.title}</h3>
-                    <p className="mt-2 text-gray-500 text-center">{step.description}</p>
+                    <h3 className="mt-6 text-xl font-semibold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>{step.title}</h3>
+                    <p className="mt-2 text-gray-500 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>{step.description}</p>
                   </div>
                 </div>
               ))}
@@ -125,13 +125,13 @@ export default function Home() {
       {/* CTA Section */}
       <section className="bg-blue-600">
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
-          <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+          <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
             <span className="block">Ready to look professional?</span>
             <span className="block text-blue-200">Create your landing page and start booking clients today.</span>
           </h2>
           <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
             <div className="inline-flex rounded-md shadow">
-              <Link href="/technician-signup" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50">
+              <Link href="/technician-signup" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-bold rounded-md text-blue-600 bg-white hover:bg-blue-50" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                 Get Started Free
               </Link>
             </div>
@@ -144,27 +144,27 @@ export default function Home() {
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-white text-lg font-semibold mb-4">Service Homie</h3>
-              <p className="text-gray-400">Your trusted home service marketplace.</p>
+              <h3 className="text-white text-lg font-semibold mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>Service Homie</h3>
+              <p className="text-gray-400" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>Your trusted home service marketplace.</p>
             </div>
             <div>
-              <h3 className="text-white text-lg font-semibold mb-4">Company</h3>
+              <h3 className="text-white text-lg font-semibold mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>Company</h3>
               <ul className="space-y-2">
-                <li><Link href="/about" className="text-gray-400 hover:text-white">About</Link></li>
-                <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
+                <li><Link href="/about" className="text-gray-400 hover:text-white" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>About</Link></li>
+                <li><Link href="/contact" className="text-gray-400 hover:text-white" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>Contact</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="text-white text-lg font-semibold mb-4">Legal</h3>
+              <h3 className="text-white text-lg font-semibold mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>Legal</h3>
               <ul className="space-y-2">
-                <li><Link href="/privacy" className="text-gray-400 hover:text-white">Privacy</Link></li>
-                <li><Link href="/terms" className="text-gray-400 hover:text-white">Terms</Link></li>
-                <li><Link href="/cookies" className="text-gray-400 hover:text-white">Cookie Policy</Link></li>
+                <li><Link href="/privacy" className="text-gray-400 hover:text-white" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>Privacy</Link></li>
+                <li><Link href="/terms" className="text-gray-400 hover:text-white" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>Terms</Link></li>
+                <li><Link href="/cookies" className="text-gray-400 hover:text-white" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>Cookie Policy</Link></li>
               </ul>
             </div>
           </div>
           <div className="mt-8 border-t border-gray-700 pt-8">
-            <p className="text-gray-400 text-center">&copy; 2025 Service Homie. All rights reserved.</p>
+            <p className="text-gray-400 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>&copy; 2025 Service Homie. All rights reserved.</p>
           </div>
         </div>
       </footer>
