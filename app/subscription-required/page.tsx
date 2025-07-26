@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, useUser } from '@clerk/nextjs';
 import { useState, useEffect } from 'react';
 import { getUserProfile, getTechnicianProfile } from '@/lib/supabase-utils';
 import { createSubscriptionCheckoutSession } from '@/lib/stripe';
@@ -8,15 +8,22 @@ import Link from 'next/link';
 
 export default function SubscriptionRequired() {
   const { isSignedIn, userId } = useAuth();
+  const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [technicianProfileId, setTechnicianProfileId] = useState('');
   const [name, setName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
 
   useEffect(() => {
     async function loadTechnicianData() {
       if (!isSignedIn || !userId) return;
       
       try {
+        // Get user email from Clerk
+        if (user?.emailAddresses?.[0]?.emailAddress) {
+          setUserEmail(user.emailAddresses[0].emailAddress);
+        }
+
         const userProfile = await getUserProfile(userId);
         if (userProfile) {
           const techProfile = await getTechnicianProfile(userProfile.id);
@@ -31,15 +38,18 @@ export default function SubscriptionRequired() {
     }
 
     loadTechnicianData();
-  }, [isSignedIn, userId]);
+  }, [isSignedIn, userId, user]);
 
   const handleSubscribe = async () => {
-    if (!technicianProfileId) return;
+    if (!technicianProfileId || !userEmail) {
+      alert('Please wait while we load your account information...');
+      return;
+    }
     
     setLoading(true);
     try {
       const session = await createSubscriptionCheckoutSession(
-        'customer@example.com', // You'll need to get the actual email
+        userEmail,
         technicianProfileId
       );
       
@@ -146,7 +156,7 @@ export default function SubscriptionRequired() {
           <div className="space-y-4">
             <button
               onClick={handleSubscribe}
-              disabled={loading || !technicianProfileId}
+              disabled={loading || !technicianProfileId || !userEmail}
               className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Loading...' : 'Subscribe Now - $19/month'}

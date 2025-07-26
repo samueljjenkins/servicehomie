@@ -35,7 +35,7 @@ export default function TechnicianSignUp() {
                 dividerText: "text-gray-500"
               }
             }}
-            redirectUrl="/technician-dashboard"
+            redirectUrl="/subscription-required"
           />
         </div>
       </div>
