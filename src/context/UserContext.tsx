@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
-import { getSession, getUserProfile } from '@/lib/auth-utils';
+import { getUserProfile } from '@/lib/auth-utils';
 import { User as AuthUser } from '@supabase/supabase-js';
 import { User as ProfileUser } from '@/types/database';
 
