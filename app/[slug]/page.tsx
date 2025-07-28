@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { createClient } from '@supabase/supabase-js';
+import { useAuth } from '@clerk/nextjs';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -10,6 +11,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export default function TechnicianPage() {
   const params = useParams();
   const slug = params.slug as string;
+  const { userId } = useAuth();
   
   // Profile data state
   const [businessName, setBusinessName] = useState("Loading...");
@@ -46,11 +48,40 @@ export default function TechnicianPage() {
 
       try {
         console.log('Querying Supabase for slug:', slug);
-        const { data, error } = await supabase
-          .from('technician_profiles')
-          .select('*')
-          .eq('url_slug', slug)
-          .single();
+        
+        let data, error;
+        
+        if (slug === 'preview') {
+          // For preview mode, we need to get the current user's data
+          // This is a special case for testing the landing page
+          console.log('Loading preview data for current user:', userId);
+          
+          if (!userId) {
+            setError("Please sign in to preview your landing page");
+            setLoading(false);
+            return;
+          }
+          
+          // Load the current user's profile data
+          const result = await supabase
+            .from('technician_profiles')
+            .select('*')
+            .eq('user_profile_id', userId)
+            .single();
+          
+          data = result.data;
+          error = result.error;
+        } else {
+          // Normal lookup by URL slug
+          const result = await supabase
+            .from('technician_profiles')
+            .select('*')
+            .eq('url_slug', slug)
+            .single();
+          
+          data = result.data;
+          error = result.error;
+        }
 
         console.log('Supabase response:', { data, error });
 
@@ -67,14 +98,14 @@ export default function TechnicianPage() {
 
         if (data) {
           console.log('Found technician data:', data);
-          setBusinessName(data.business_name || "Your Business Name");
+          setBusinessName(data.name || "Your Business Name");
           setLocation(data.location || "Your City, State");
-          setDescription(data.description || "Tell customers about your business and experience");
+          setDescription(data.bio || "Tell customers about your business and experience");
           setServiceType(data.service_type || "");
           setHourlyRate(data.hourly_rate ? data.hourly_rate.toString() : "");
           setEmail(data.email || "");
           setCalendlyLink(data.calendly_link || '');
-          setGoogleBusinessUrl(data.google_business_url || '');
+          setGoogleBusinessUrl(data.google_business_name || '');
         } else {
           console.log('No data returned from Supabase');
           setError("Technician profile not found");

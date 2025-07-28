@@ -342,25 +342,14 @@ export default function TechnicianDashboard() {
                   </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
-                {technicianProfile?.url_slug ? (
-                  <Link
-                    href={`/${technicianProfile.url_slug}`}
-                    target="_blank"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center font-medium"
-                    style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
-                  >
-                    View Page
-                  </Link>
-                ) : (
-                  <button
-                    disabled
-                    className="bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed text-center font-medium"
-                    style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
-                    title="Set a custom URL first"
-                  >
-                    View Page
-                  </button>
-                )}
+                <Link
+                  href={`/${technicianProfile?.url_slug || 'preview'}`}
+                  target="_blank"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center font-medium"
+                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                >
+                  {technicianProfile?.url_slug ? 'View Page' : 'Preview Page'}
+                </Link>
                 <Link
                   href="/technician-page/edit"
                   className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center font-medium"
