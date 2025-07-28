@@ -3,7 +3,6 @@
 import { useAuth, useUser } from '@clerk/nextjs';
 import { useState, useEffect } from 'react';
 import { getUserProfile, getTechnicianProfile, createUserProfile, createTechnicianProfile } from '@/lib/supabase-utils';
-import { createSubscriptionCheckoutSession } from '@/lib/stripe';
 import Link from 'next/link';
 
 export default function SubscriptionRequired() {
@@ -77,13 +76,28 @@ export default function SubscriptionRequired() {
     
     setLoading(true);
     try {
-      const session = await createSubscriptionCheckoutSession(
-        userEmail,
-        technicianProfileId
-      );
+      // Call the API route instead of importing Stripe directly
+      const response = await fetch('/api/create-subscription', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customerEmail: userEmail,
+          technicianProfileId: technicianProfileId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create subscription');
+      }
+
+      const data = await response.json();
       
-      if (session?.url) {
-        window.location.href = session.url;
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL received');
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);

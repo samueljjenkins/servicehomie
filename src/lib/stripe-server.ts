@@ -1,15 +1,16 @@
 import Stripe from 'stripe';
 
-// Validate Stripe secret key before initialization
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-if (!stripeSecretKey) {
-  throw new Error('STRIPE_SECRET_KEY environment variable is not set');
-}
+// Server-side only Stripe client
+export function getStripeServer() {
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+  if (!stripeSecretKey) {
+    throw new Error('STRIPE_SECRET_KEY environment variable is not set');
+  }
 
-// Initialize Stripe with your secret key
-export const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2025-06-30.basil',
-});
+  return new Stripe(stripeSecretKey, {
+    apiVersion: '2025-06-30.basil',
+  });
+}
 
 // Stripe configuration
 export const STRIPE_CONFIG = {
@@ -24,6 +25,7 @@ export async function createSubscriptionCheckoutSession(
   technicianProfileId: string
 ) {
   try {
+    const stripe = getStripeServer();
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'subscription',
@@ -51,6 +53,8 @@ export async function createSubscriptionCheckoutSession(
 // Create a customer portal session for managing subscriptions
 export async function createCustomerPortalSession(customerId: string) {
   try {
+    const stripe = getStripeServer();
+    
     // Validate customer ID format
     if (!customerId || typeof customerId !== 'string' || customerId.trim() === '') {
       throw new Error('Invalid customer ID provided');
@@ -85,6 +89,7 @@ export async function createCustomerPortalSession(customerId: string) {
 // Get subscription details
 export async function getSubscription(subscriptionId: string) {
   try {
+    const stripe = getStripeServer();
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     return subscription;
   } catch (error) {
@@ -96,6 +101,7 @@ export async function getSubscription(subscriptionId: string) {
 // Cancel subscription
 export async function cancelSubscription(subscriptionId: string) {
   try {
+    const stripe = getStripeServer();
     const subscription = await stripe.subscriptions.cancel(subscriptionId);
     return subscription;
   } catch (error) {
