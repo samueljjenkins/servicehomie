@@ -1,15 +1,11 @@
-'use client';
-
+"use client";
 import { useState, useEffect } from 'react';
-import { useAuth, useUser } from '@clerk/nextjs';
+import { useAuth } from '@clerk/nextjs';
 import { createClient } from '@supabase/supabase-js';
-import Link from 'next/link';
-import SubscriptionGuard from '@/components/SubscriptionGuard';
 
-// Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface TechnicianProfile {
   id: string;
@@ -25,8 +21,6 @@ interface TechnicianProfile {
   updated_at: string;
   calendly_link: string;
   subscription_status: string;
-  subscription_start_date: string;
-  subscription_end_date: string;
   monthly_fee: number;
   payment_processor: string;
   payment_link: string;
@@ -40,278 +34,235 @@ interface TechnicianProfile {
 
 export default function TechnicianPage() {
   const { userId } = useAuth();
-  const { user } = useUser();
   const [profile, setProfile] = useState<TechnicianProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (userId) {
-      fetchProfile();
-    }
-  }, [userId]);
-
-  const fetchProfile = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('technician_profiles')
-        .select('*')
-        .eq('user_profile_id', userId)
-        .single();
-
-      if (error) throw error;
-
-      if (data) {
-        setProfile(data);
+    async function fetchProfile() {
+      if (!userId) {
+        setError('User not authenticated');
+        setLoading(false);
+        return;
       }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-    } finally {
-      setLoading(false);
+
+      try {
+        const { data, error } = await supabase
+          .from('technician_profiles')
+          .select('*')
+          .eq('user_profile_id', userId)
+          .single();
+
+        if (error) {
+          console.error('Error fetching profile:', error);
+          setError('Failed to load profile');
+        } else {
+          setProfile(data);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        setError('Failed to load profile');
+      } finally {
+        setLoading(false);
+      }
     }
-  };
+
+    fetchProfile();
+  }, [userId]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your page...</p>
+          <p className="text-gray-600">Loading...</p>
         </div>
       </div>
     );
   }
 
-  if (!profile) {
+  if (error || !profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Profile Not Found</h1>
-          <p className="text-gray-600 mb-6">Please complete your profile setup first.</p>
-          <Link
-            href="/technician-dashboard"
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300"
-          >
-            Go to Dashboard
-          </Link>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Error</h1>
+          <p className="text-gray-600">{error || 'Profile not found'}</p>
         </div>
       </div>
     );
   }
+
+  // Get initials for avatar
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   return (
-    <SubscriptionGuard>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-        {/* Header */}
-        <div className="bg-white shadow-sm border-b border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-6">
-              <div className="mb-4 sm:mb-0">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  {profile.name || 'Your Business'}
-                </h1>
-                <p className="text-gray-600 mt-1">
-                  {profile.location || 'Your Location'}
-                </p>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Profile Header Section */}
+        <div className="text-center mb-8">
+          {/* Avatar */}
+          <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span className="text-white text-2xl font-bold">
+              {getInitials(profile.name || 'Your Business')}
+            </span>
+          </div>
+          
+          {/* Business Name */}
+          <h1 className="text-3xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+            {profile.name || 'Your Business'}
+          </h1>
+          
+          {/* Location */}
+          <p className="text-lg text-gray-700 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+            {profile.location || 'Your City, State'}
+          </p>
+          
+          {/* Description */}
+          <p className="text-gray-600 max-w-2xl mx-auto mb-8" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+            {profile.bio || 'Professional service provider committed to quality and customer satisfaction.'}
+          </p>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="bg-gray-50 rounded-xl p-6 mb-8">
+          <div className="flex items-center mb-4">
+            <div className="flex text-yellow-400 mr-3">
+              {[...Array(5)].map((_, i) => (
+                <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+            <span className="text-lg font-semibold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+              4.9 (127 reviews)
+            </span>
+          </div>
+          
+          {/* Individual Reviews */}
+          <div className="space-y-4 mb-4">
+            <div className="bg-white rounded-lg p-4">
+              <div className="flex justify-between items-start mb-2">
+                <span className="font-semibold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                  Sarah M.
+                </span>
+                <span className="text-sm text-gray-500" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+                  2 days ago
+                </span>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link
-                  href="/technician-dashboard"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/technician-page/edit"
-                  className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow-md text-center"
-                >
-                  Edit Page
-                </Link>
+              <p className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+                "John did an amazing job on our house windows. Professional, punctual, and the results were incredible!"
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-lg p-4">
+              <div className="flex justify-between items-start mb-2">
+                <span className="font-semibold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                  Mike R.
+                </span>
+                <span className="text-sm text-gray-500" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+                  1 week ago
+                </span>
+              </div>
+              <p className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+                "Best window cleaning service in Austin. Fair pricing and spotless results!"
+              </p>
+            </div>
+          </div>
+          
+          {/* View All Reviews Button */}
+          <button className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-semibold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+            View All 127 Reviews
+          </button>
+        </div>
+
+        {/* Services Section */}
+        <div className="space-y-4 mb-8">
+          {/* Residential Cleaning */}
+          <div className="bg-gray-50 rounded-xl p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                    Residential Cleaning
+                  </h3>
+                  <p className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+                    Houses, apartments, condos
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-xl font-bold text-blue-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                  $120+
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Commercial Cleaning */}
+          <div className="bg-gray-50 rounded-xl p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                    Commercial Cleaning
+                  </h3>
+                  <p className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+                    Office buildings, storefronts
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-xl font-bold text-blue-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                  $200+
+                </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Hero Section */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
-            <div className="p-8 text-center">
-              <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                {profile.name || 'Your Business Name'}
-              </h2>
-              <p className="text-xl text-gray-600 mb-6">
-                {profile.bio || 'Professional service provider committed to quality and customer satisfaction.'}
+        {/* Booking Section */}
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+            Book Your Window Cleaning
+          </h2>
+          {profile.calendly_link ? (
+            <a
+              href={profile.calendly_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-blue-600 text-white py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-lg" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+            >
+              Schedule Appointment
+            </a>
+          ) : (
+            <div className="bg-gray-100 rounded-lg p-8">
+              <p className="text-gray-600 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+                Calendly integration not set up yet
               </p>
-              
-              {profile.calendly_link && (
-                <a
-                  href={profile.calendly_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 font-medium"
-                >
-                  Book Now
-                </a>
-              )}
+              <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed" disabled>
+                Contact via Email
+              </button>
             </div>
-          </div>
-
-          {/* Stats Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">
-                {profile.reviews?.length || 0}
-              </div>
-              <div className="text-gray-600">Reviews</div>
-            </div>
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
-              <div className="text-3xl font-bold text-green-600 mb-2">
-                {profile.services?.length || 0}
-              </div>
-              <div className="text-gray-600">Services</div>
-            </div>
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-2">
-                {profile.subscription_status === 'active' ? 'Active' : 'Inactive'}
-              </div>
-              <div className="text-gray-600">Subscription</div>
-            </div>
-          </div>
-
-          {/* Services Section */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
-            <div className="px-8 py-6 border-b border-gray-100">
-              <h3 className="text-2xl font-bold text-gray-900">Services</h3>
-            </div>
-            <div className="p-8">
-              <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="text-xl font-semibold text-gray-900 mb-2">
-                      {profile.services?.length > 0 ? profile.services[0].name : 'No Services Listed'}
-                    </h4>
-                    <p className="text-gray-600 mb-2">
-                      {profile.services?.length > 0 ? profile.services[0].description : 'No description available.'}
-                    </p>
-                    {profile.services?.length > 0 && profile.services[0].price && (
-                      <p className="text-blue-600 font-semibold">
-                        Starting at ${profile.services[0].price}/hour
-                      </p>
-                    )}
-                  </div>
-                  {profile.calendly_link && (
-                    <a
-                      href={profile.calendly_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                    >
-                      Book Service
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* About Section */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
-            <div className="px-8 py-6 border-b border-gray-100">
-              <h3 className="text-2xl font-bold text-gray-900">About</h3>
-            </div>
-            <div className="p-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Business Information</h4>
-                  <div className="space-y-3">
-                    {profile.location && (
-                      <div className="flex items-center">
-                        <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        <span className="text-gray-700">{profile.location}</span>
-                      </div>
-                    )}
-                    {profile.email && (
-                      <div className="flex items-center">
-                        <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        <span className="text-gray-700">{profile.email}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Qualifications</h4>
-                  <div className="space-y-3">
-                    {profile.subscription_status === 'active' && (
-                      <div className="flex items-center">
-                        <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                        <span className="text-gray-700">Active Subscription</span>
-                      </div>
-                    )}
-                    {profile.google_business_name && (
-                      <div className="flex items-center">
-                        <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                        <span className="text-gray-700">Google Business Profile Linked</span>
-                      </div>
-                    )}
-                    {profile.calendly_link && (
-                      <div className="flex items-center">
-                        <svg className="w-5 h-5 text-blue-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                        </svg>
-                        <span className="text-gray-700">Calendly Integration</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Section */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-            <div className="px-8 py-6 border-b border-gray-100">
-              <h3 className="text-2xl font-bold text-gray-900">Get In Touch</h3>
-            </div>
-            <div className="p-8">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {profile.calendly_link && (
-                  <a
-                    href={profile.calendly_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center font-medium"
-                  >
-                    Schedule a Service
-                  </a>
-                )}
-                {profile.email && (
-                  <a
-                    href={`mailto:${profile.email}`}
-                    className="bg-gray-100 text-gray-700 px-6 py-4 rounded-lg hover:bg-gray-200 transition-all duration-300 shadow-sm hover:shadow-md text-center font-medium"
-                  >
-                    Send Email
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
-    </SubscriptionGuard>
+    </div>
   );
 } 
