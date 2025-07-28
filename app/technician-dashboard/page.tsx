@@ -81,21 +81,29 @@ export default function TechnicianDashboard() {
 
   const fetchTechnicianProfile = async () => {
     try {
+      console.log('Fetching profile for user:', userId);
       const { data, error } = await supabase
         .from('technician_profiles')
         .select('*')
         .eq('user_profile_id', userId)
         .single();
 
-      if (error) throw error;
+      console.log('Profile fetch result:', { data, error });
 
-      setTechnicianProfile(data);
-      setCalendlyLink(data.calendly_link || '');
-      setGoogleBusinessUrl(data.google_business_url || '');
-      setServices(data.services || []);
-      setCustomDomain(data.url_slug || '');
+      if (error) {
+        console.error('Error fetching profile:', error);
+        // If no profile exists, we'll handle this in the UI
+        setTechnicianProfile(null);
+      } else if (data) {
+        setTechnicianProfile(data);
+        setCalendlyLink(data.calendly_link || '');
+        setGoogleBusinessUrl(data.google_business_name || '');
+        setServices(data.services || []);
+        setCustomDomain(data.url_slug || '');
+      }
     } catch (error) {
       console.error('Error fetching technician profile:', error);
+      setTechnicianProfile(null);
     } finally {
       setLoading(false);
     }
@@ -115,8 +123,6 @@ export default function TechnicianDashboard() {
     console.log('=== CUSTOM URL UPDATE DEBUG ===');
     console.log('User ID:', userId);
     console.log('Input custom domain:', customDomain);
-    console.log('Supabase URL:', supabaseUrl);
-    console.log('Supabase Key exists:', !!supabaseKey);
 
     // Validate URL format
     const formattedSlug = customDomain.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
@@ -142,8 +148,8 @@ export default function TechnicianDashboard() {
 
     setSaving(true);
     try {
-      // First check if this URL is already taken by another user
-      console.log('Step 1: Checking if URL is already taken...');
+      // Check if this URL is already taken by another user
+      console.log('Checking if URL is already taken...');
       const { data: existingProfile, error: checkError } = await supabase
         .from('technician_profiles')
         .select('user_profile_id')
@@ -159,7 +165,7 @@ export default function TechnicianDashboard() {
       }
 
       // Check if technician profile exists for this user
-      console.log('Step 2: Checking if technician profile exists...');
+      console.log('Checking if technician profile exists...');
       const { data: currentProfile, error: profileError } = await supabase
         .from('technician_profiles')
         .select('*')
@@ -170,7 +176,7 @@ export default function TechnicianDashboard() {
 
       if (profileError && profileError.code === 'PGRST116') {
         // Profile doesn't exist, create it
-        console.log('Step 3: Creating new technician profile...');
+        console.log('Creating new technician profile...');
         const newProfileData = {
           user_profile_id: userId,
           url_slug: formattedSlug,
@@ -194,12 +200,6 @@ export default function TechnicianDashboard() {
 
         if (createError) {
           console.error('Error creating profile:', createError);
-          console.error('Error details:', {
-            message: createError.message,
-            details: createError.details,
-            hint: createError.hint,
-            code: createError.code
-          });
           alert(`Error creating technician profile: ${createError.message}`);
           return;
         }
@@ -209,17 +209,11 @@ export default function TechnicianDashboard() {
         alert('Custom URL created successfully! Your page is now available at: servicehomie.com/' + formattedSlug);
       } else if (profileError) {
         console.error('Error checking profile:', profileError);
-        console.error('Profile error details:', {
-          message: profileError.message,
-          details: profileError.details,
-          hint: profileError.hint,
-          code: profileError.code
-        });
         alert(`Error checking technician profile: ${profileError.message}`);
         return;
       } else {
         // Profile exists, update it
-        console.log('Step 3: Updating existing profile...');
+        console.log('Updating existing profile...');
         const { error } = await supabase
           .from('technician_profiles')
           .update({ url_slug: formattedSlug })
@@ -229,12 +223,6 @@ export default function TechnicianDashboard() {
 
         if (error) {
           console.error('Error updating profile:', error);
-          console.error('Update error details:', {
-            message: error.message,
-            details: error.details,
-            hint: error.hint,
-            code: error.code
-          });
           throw error;
         }
         
@@ -248,16 +236,9 @@ export default function TechnicianDashboard() {
       console.error('Error type:', typeof error);
       console.error('Error object:', error);
       console.error('Error message:', error.message);
-      console.error('Error code:', error.code);
-      console.error('Error details:', error.details);
-      console.error('Error hint:', error.hint);
       
       if (error.message?.includes('duplicate')) {
         alert('This URL is already taken. Please choose a different one.');
-      } else if (error.message?.includes('permission')) {
-        alert('Permission denied. Please check your account status.');
-      } else if (error.message?.includes('RLS')) {
-        alert('Row Level Security error. Please contact support.');
       } else {
         alert(`Error updating custom URL: ${error.message || 'Unknown error occurred. Please try again.'}`);
       }
@@ -282,9 +263,9 @@ export default function TechnicianDashboard() {
       // Update local state
       setTechnicianProfile(prev => prev ? { ...prev, calendly_link: calendlyLink } : null);
       alert('Calendly link updated successfully!');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating Calendly link:', error);
-      alert('Error updating Calendly link. Please try again.');
+      alert(`Error updating Calendly link: ${error.message || 'Please try again.'}`);
     } finally {
       setSaving(false);
     }
@@ -305,9 +286,9 @@ export default function TechnicianDashboard() {
       // Update local state
       setTechnicianProfile(prev => prev ? { ...prev, google_business_name: googleBusinessUrl } : null);
       alert('Google Business URL updated successfully!');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating Google Business URL:', error);
-      alert('Error updating Google Business URL. Please try again.');
+      alert(`Error updating Google Business URL: ${error.message || 'Please try again.'}`);
     } finally {
       setSaving(false);
     }
@@ -319,6 +300,62 @@ export default function TechnicianDashboard() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If no profile exists, show setup message
+  if (!technicianProfile) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+              Welcome to Service Homie!
+            </h1>
+            <p className="text-lg text-gray-600 mb-8" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+              Let's set up your professional landing page. Start by creating your custom URL.
+            </p>
+            
+            <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                Create Your Custom URL
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                    Your Custom URL
+                  </label>
+                  <div className="flex">
+                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                      servicehomie.com/
+                    </span>
+                    <input
+                      type="text"
+                      value={customDomain}
+                      onChange={(e) => setCustomDomain(e.target.value)}
+                      placeholder="your-business-name"
+                      className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md focus:ring-blue-500 focus:border-blue-500 text-sm border border-gray-300"
+                      style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
+                    />
+                  </div>
+                  <p className="text-sm text-gray-500 mt-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                    This will be your public landing page URL
+                  </p>
+                </div>
+                
+                <button
+                  onClick={handleCustomDomain}
+                  disabled={saving}
+                  className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                >
+                  {saving ? 'Creating...' : 'Create Your Landing Page'}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -498,6 +535,31 @@ export default function TechnicianDashboard() {
                           This will be your public landing page URL
                         </p>
                         
+                        {technicianProfile?.url_slug && (
+                          <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <p className="text-sm text-blue-800 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                              Your current URL:
+                            </p>
+                            <p className="font-mono text-blue-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                              servicehomie.com/{technicianProfile.url_slug}
+                            </p>
+                            <div className="mt-3">
+                              <Link
+                                href={`/${technicianProfile.url_slug}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium"
+                                style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                              >
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                Test your URL
+                              </Link>
+                            </div>
+                          </div>
+                        )}
+                      
                         {!technicianProfile?.url_slug && (
                           <div className="mt-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                             <p className="text-sm text-yellow-800" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
@@ -506,31 +568,6 @@ export default function TechnicianDashboard() {
                           </div>
                         )}
                       </div>
-
-                      {technicianProfile?.url_slug && (
-                        <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                          <p className="text-sm text-blue-800 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            Your current URL:
-                          </p>
-                          <p className="font-mono text-blue-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                            servicehomie.com/{technicianProfile.url_slug}
-                          </p>
-                          <div className="mt-3">
-                            <Link
-                              href={`/${technicianProfile.url_slug}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium"
-                              style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
-                            >
-                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                              </svg>
-                              Test your URL
-                            </Link>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
