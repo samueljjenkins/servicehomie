@@ -13,34 +13,29 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface TechnicianProfile {
   id: string;
-  user_id: string;
-  business_name: string;
-  service_type: string;
-  description: string;
-  hourly_rate: number;
-  availability: string;
+  user_profile_id: string;
+  name: string;
   location: string;
-  phone: string;
+  bio: string;
   email: string;
-  website: string;
-  social_media: string;
-  certifications: string;
-  insurance: boolean;
-  background_check: boolean;
-  profile_image: string;
-  gallery_images: string[];
-  rating: number;
-  review_count: number;
-  completed_jobs: number;
-  response_time: string;
+  avatar: string;
+  services: any[];
+  reviews: any[];
+  created_at: string;
+  updated_at: string;
+  calendly_link: string;
   subscription_status: string;
-  stripe_subscription_id: string;
   subscription_start_date: string;
   subscription_end_date: string;
-  calendly_link: string;
-  google_business_url: string;
+  monthly_fee: number;
+  payment_processor: string;
+  payment_link: string;
+  stripe_customer_id: string;
+  stripe_subscription_id: string;
+  google_business_name: string;
+  google_place_id: string;
+  social_links: any[];
   url_slug: string;
-  services: any[];
 }
 
 export default function TechnicianDashboard() {
@@ -89,7 +84,7 @@ export default function TechnicianDashboard() {
       const { data, error } = await supabase
         .from('technician_profiles')
         .select('*')
-        .eq('id', userId)
+        .eq('user_profile_id', userId)
         .single();
 
       if (error) throw error;
@@ -151,9 +146,9 @@ export default function TechnicianDashboard() {
       console.log('Step 1: Checking if URL is already taken...');
       const { data: existingProfile, error: checkError } = await supabase
         .from('technician_profiles')
-        .select('id')
+        .select('user_profile_id')
         .eq('url_slug', formattedSlug)
-        .neq('id', userId)
+        .neq('user_profile_id', userId)
         .single();
 
       console.log('Existing profile check result:', { existingProfile, checkError });
@@ -168,7 +163,7 @@ export default function TechnicianDashboard() {
       const { data: currentProfile, error: profileError } = await supabase
         .from('technician_profiles')
         .select('*')
-        .eq('id', userId)
+        .eq('user_profile_id', userId)
         .single();
 
       console.log('Current profile check result:', { currentProfile, profileError });
@@ -177,15 +172,14 @@ export default function TechnicianDashboard() {
         // Profile doesn't exist, create it
         console.log('Step 3: Creating new technician profile...');
         const newProfileData = {
-          id: userId,
+          user_profile_id: userId,
           url_slug: formattedSlug,
-          business_name: 'Your Business Name',
+          name: 'Your Business Name',
           location: 'Your City, State',
-          description: 'Tell customers about your business and experience',
-          service_type: 'Professional Service',
-          hourly_rate: 50,
+          bio: 'Tell customers about your business and experience',
           email: user?.emailAddresses?.[0]?.emailAddress || '',
-          subscription_status: 'active' // Default to active for testing
+          subscription_status: 'active',
+          monthly_fee: 19
         };
         
         console.log('New profile data to insert:', newProfileData);
@@ -229,7 +223,7 @@ export default function TechnicianDashboard() {
         const { error } = await supabase
           .from('technician_profiles')
           .update({ url_slug: formattedSlug })
-          .eq('id', userId);
+          .eq('user_profile_id', userId);
 
         console.log('Update result:', { error });
 
@@ -281,7 +275,7 @@ export default function TechnicianDashboard() {
       const { error } = await supabase
         .from('technician_profiles')
         .update({ calendly_link: calendlyLink })
-        .eq('id', userId);
+        .eq('user_profile_id', userId);
 
       if (error) throw error;
       
@@ -303,13 +297,13 @@ export default function TechnicianDashboard() {
     try {
       const { error } = await supabase
         .from('technician_profiles')
-        .update({ google_business_url: googleBusinessUrl })
-        .eq('id', userId);
+        .update({ google_business_name: googleBusinessUrl })
+        .eq('user_profile_id', userId);
 
       if (error) throw error;
       
       // Update local state
-      setTechnicianProfile(prev => prev ? { ...prev, google_business_url: googleBusinessUrl } : null);
+      setTechnicianProfile(prev => prev ? { ...prev, google_business_name: googleBusinessUrl } : null);
       alert('Google Business URL updated successfully!');
     } catch (error) {
       console.error('Error updating Google Business URL:', error);
@@ -337,13 +331,15 @@ export default function TechnicianDashboard() {
         <div className="bg-white shadow-sm border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-6">
-              <div className="mb-4 sm:mb-0">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                  Technician Dashboard
-                </h1>
-                <p className="text-gray-600 mt-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                  Manage your business profile and bookings
-                </p>
+              <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                      {technicianProfile?.name || 'Your Business'}
+                    </h2>
+                    <p className="text-gray-600 mt-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                      Manage your business profile and bookings
+                    </p>
+                  </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
                 {technicianProfile?.url_slug ? (
@@ -597,10 +593,10 @@ export default function TechnicianDashboard() {
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            Payment method:
+                            Monthly fee:
                           </span>
                           <p className="text-gray-900 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                            {technicianProfile?.stripe_subscription_id ? 'Connected to Stripe' : 'Not connected'}
+                            ${technicianProfile?.monthly_fee || 19}/month
                           </p>
                         </div>
                       </div>
