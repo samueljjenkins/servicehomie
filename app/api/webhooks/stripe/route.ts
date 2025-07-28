@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { stripe } from '@/lib/stripe';
+import { getStripeServer } from '@/lib/stripe-server';
 import { supabase } from '@/lib/supabase';
 import Stripe from 'stripe';
 
@@ -7,14 +7,22 @@ export async function POST(request: NextRequest) {
   const body = await request.text();
   const signature = request.headers.get('stripe-signature')!;
 
+  console.log('Webhook received:', {
+    signature: signature ? 'Present' : 'Missing',
+    bodyLength: body.length,
+    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET ? 'Set' : 'Missing'
+  });
+
   let event: Stripe.Event;
 
   try {
+    const stripe = getStripeServer();
     event = stripe.webhooks.constructEvent(
       body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
+    console.log('Webhook verified successfully, event type:', event.type);
   } catch (err) {
     console.error('Webhook signature verification failed:', err);
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
@@ -23,14 +31,27 @@ export async function POST(request: NextRequest) {
   try {
     switch (event.type) {
       case 'checkout.session.completed':
+        console.log('Processing checkout.session.completed');
         const session = event.data.object as Stripe.Checkout.Session;
+        console.log('Session data:', {
+          mode: session.mode,
+          subscription: session.subscription,
+          customer: session.customer,
+          metadata: session.metadata
+        });
+        
         if (session.mode === 'subscription') {
           const technicianProfileId = session.metadata?.technicianProfileId;
           const subscriptionId = session.subscription as string;
           
+          console.log('Updating technician profile:', {
+            technicianProfileId,
+            subscriptionId,
+            customerId: session.customer
+          });
+          
           if (technicianProfileId && subscriptionId) {
-            // Update technician profile with subscription info
-            await supabase
+            const { data, error } = await supabase
               .from('technician_profiles')
               .update({
                 subscription_status: 'active',
@@ -38,45 +59,70 @@ export async function POST(request: NextRequest) {
                 stripe_subscription_id: subscriptionId,
                 stripe_customer_id: session.customer as string,
               })
-              .eq('id', technicianProfileId);
+              .eq('id', technicianProfileId)
+              .select();
+
+            if (error) {
+              console.error('Error updating technician profile:', error);
+            } else {
+              console.log('Successfully updated technician profile:', data);
+            }
           }
         }
         break;
 
       case 'customer.subscription.updated':
+        console.log('Processing customer.subscription.updated');
         const subscription = event.data.object as Stripe.Subscription;
-        const technicianProfile = await supabase
+        const { data: technicianProfile, error: profileError } = await supabase
           .from('technician_profiles')
           .select('id')
           .eq('stripe_subscription_id', subscription.id)
           .single();
 
-        if (technicianProfile.data) {
-          await supabase
+        if (profileError) {
+          console.error('Error finding technician profile:', profileError);
+        } else if (technicianProfile) {
+          const { error: updateError } = await supabase
             .from('technician_profiles')
             .update({
               subscription_status: subscription.status,
             })
-            .eq('id', technicianProfile.data.id);
+            .eq('id', technicianProfile.id);
+
+          if (updateError) {
+            console.error('Error updating subscription status:', updateError);
+          } else {
+            console.log('Successfully updated subscription status to:', subscription.status);
+          }
         }
         break;
 
       case 'customer.subscription.deleted':
+        console.log('Processing customer.subscription.deleted');
         const deletedSubscription = event.data.object as Stripe.Subscription;
-        const deletedTechnicianProfile = await supabase
+        const { data: deletedTechnicianProfile, error: deletedProfileError } = await supabase
           .from('technician_profiles')
           .select('id')
           .eq('stripe_subscription_id', deletedSubscription.id)
           .single();
 
-        if (deletedTechnicianProfile.data) {
-          await supabase
+        if (deletedProfileError) {
+          console.error('Error finding technician profile for deletion:', deletedProfileError);
+        } else if (deletedTechnicianProfile) {
+          const { error: deleteUpdateError } = await supabase
             .from('technician_profiles')
             .update({
               subscription_status: 'cancelled',
               subscription_end_date: new Date().toISOString(),
             })
-            .eq('id', deletedTechnicianProfile.data.id);
+            .eq('id', deletedTechnicianProfile.id);
+
+          if (deleteUpdateError) {
+            console.error('Error updating cancelled subscription:', deleteUpdateError);
+          } else {
+            console.log('Successfully cancelled subscription');
+          }
         }
         break;
 
