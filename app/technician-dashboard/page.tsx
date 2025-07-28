@@ -126,10 +126,30 @@ export default function TechnicianDashboard() {
       return;
     }
 
+    // Check for reserved words
+    const reservedWords = ['admin', 'api', 'dashboard', 'login', 'signup', 'test', 'debug'];
+    if (reservedWords.includes(formattedSlug)) {
+      alert('This URL is reserved and cannot be used. Please choose a different one.');
+      return;
+    }
+
     if (!userId) return;
     
     setSaving(true);
     try {
+      // First check if this URL is already taken by another user
+      const { data: existingProfile, error: checkError } = await supabase
+        .from('technician_profiles')
+        .select('user_id')
+        .eq('url_slug', formattedSlug)
+        .neq('user_id', userId)
+        .single();
+
+      if (existingProfile) {
+        alert('This URL is already taken by another user. Please choose a different one.');
+        return;
+      }
+
       const { error } = await supabase
         .from('technician_profiles')
         .update({ url_slug: formattedSlug })
@@ -141,9 +161,13 @@ export default function TechnicianDashboard() {
       setTechnicianProfile(prev => prev ? { ...prev, url_slug: formattedSlug } : null);
       setCustomDomain(formattedSlug);
       alert('Custom URL updated successfully! Your page is now available at: servicehomie.com/' + formattedSlug);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating custom URL:', error);
-      alert('Error updating custom URL. Please try again.');
+      if (error.message?.includes('duplicate')) {
+        alert('This URL is already taken. Please choose a different one.');
+      } else {
+        alert('Error updating custom URL. Please try again.');
+      }
     } finally {
       setSaving(false);
     }
@@ -222,13 +246,25 @@ export default function TechnicianDashboard() {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Link
-                  href={`/${technicianProfile?.url_slug || 'your-name'}`}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center font-medium"
-                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
-                >
-                  View Page
-                </Link>
+                {technicianProfile?.url_slug ? (
+                  <Link
+                    href={`/${technicianProfile.url_slug}`}
+                    target="_blank"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center font-medium"
+                    style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                  >
+                    View Page
+                  </Link>
+                ) : (
+                  <button
+                    disabled
+                    className="bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed text-center font-medium"
+                    style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                    title="Set a custom URL first"
+                  >
+                    View Page
+                  </button>
+                )}
                 <Link
                   href="/technician-page/edit"
                   className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center font-medium"
@@ -376,6 +412,14 @@ export default function TechnicianDashboard() {
                         <p className="text-sm text-gray-500 mt-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                           This will be your public landing page URL
                         </p>
+                        
+                        {!technicianProfile?.url_slug && (
+                          <div className="mt-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                            <p className="text-sm text-yellow-800" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                              Set a custom URL to make your landing page public
+                            </p>
+                          </div>
+                        )}
                       </div>
 
                       {technicianProfile?.url_slug && (
@@ -390,6 +434,7 @@ export default function TechnicianDashboard() {
                             <Link
                               href={`/${technicianProfile.url_slug}`}
                               target="_blank"
+                              rel="noopener noreferrer"
                               className="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium"
                               style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
                             >
