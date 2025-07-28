@@ -89,7 +89,7 @@ export default function TechnicianDashboard() {
       const { data, error } = await supabase
         .from('technician_profiles')
         .select('*')
-        .eq('user_id', userId)
+        .eq('id', userId)
         .single();
 
       if (error) throw error;
@@ -98,7 +98,6 @@ export default function TechnicianDashboard() {
       setCalendlyLink(data.calendly_link || '');
       setGoogleBusinessUrl(data.google_business_url || '');
       setServices(data.services || []);
-      // Initialize customDomain with current url_slug
       setCustomDomain(data.url_slug || '');
     } catch (error) {
       console.error('Error fetching technician profile:', error);
@@ -152,9 +151,9 @@ export default function TechnicianDashboard() {
       console.log('Step 1: Checking if URL is already taken...');
       const { data: existingProfile, error: checkError } = await supabase
         .from('technician_profiles')
-        .select('user_id')
+        .select('id')
         .eq('url_slug', formattedSlug)
-        .neq('user_id', userId)
+        .neq('id', userId)
         .single();
 
       console.log('Existing profile check result:', { existingProfile, checkError });
@@ -169,7 +168,7 @@ export default function TechnicianDashboard() {
       const { data: currentProfile, error: profileError } = await supabase
         .from('technician_profiles')
         .select('*')
-        .eq('user_id', userId)
+        .eq('id', userId)
         .single();
 
       console.log('Current profile check result:', { currentProfile, profileError });
@@ -178,7 +177,7 @@ export default function TechnicianDashboard() {
         // Profile doesn't exist, create it
         console.log('Step 3: Creating new technician profile...');
         const newProfileData = {
-          user_id: userId,
+          id: userId,
           url_slug: formattedSlug,
           business_name: 'Your Business Name',
           location: 'Your City, State',
@@ -230,7 +229,7 @@ export default function TechnicianDashboard() {
         const { error } = await supabase
           .from('technician_profiles')
           .update({ url_slug: formattedSlug })
-          .eq('user_id', userId);
+          .eq('id', userId);
 
         console.log('Update result:', { error });
 
@@ -282,7 +281,7 @@ export default function TechnicianDashboard() {
       const { error } = await supabase
         .from('technician_profiles')
         .update({ calendly_link: calendlyLink })
-        .eq('user_id', userId);
+        .eq('id', userId);
 
       if (error) throw error;
       
@@ -305,7 +304,7 @@ export default function TechnicianDashboard() {
       const { error } = await supabase
         .from('technician_profiles')
         .update({ google_business_url: googleBusinessUrl })
-        .eq('user_id', userId);
+        .eq('id', userId);
 
       if (error) throw error;
       
