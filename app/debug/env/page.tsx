@@ -6,6 +6,14 @@ export default function TestEnvPage() {
         
         <div className="space-y-4">
           <div className="border rounded-lg p-4">
+            <h2 className="font-semibold text-gray-800 mb-2">App Configuration:</h2>
+            <div className="text-sm space-y-1">
+              <div><strong>NEXT_PUBLIC_APP_URL:</strong> {process.env.NEXT_PUBLIC_APP_URL ? '✅ Set' : '❌ Missing'}</div>
+              <div><strong>Value:</strong> {process.env.NEXT_PUBLIC_APP_URL || 'Not set'}</div>
+            </div>
+          </div>
+          
+          <div className="border rounded-lg p-4">
             <h2 className="font-semibold text-gray-800 mb-2">Supabase Variables:</h2>
             <div className="text-sm space-y-1">
               <div><strong>URL:</strong> {process.env.NEXT_PUBLIC_SUPABASE_URL ? '✅ Set' : '❌ Missing'}</div>
