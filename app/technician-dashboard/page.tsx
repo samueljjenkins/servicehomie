@@ -118,8 +118,11 @@ export default function TechnicianDashboard() {
       return;
     }
 
-    console.log('Updating custom URL for user:', userId);
+    console.log('=== CUSTOM URL UPDATE DEBUG ===');
+    console.log('User ID:', userId);
     console.log('Input custom domain:', customDomain);
+    console.log('Supabase URL:', supabaseUrl);
+    console.log('Supabase Key exists:', !!supabaseKey);
 
     // Validate URL format
     const formattedSlug = customDomain.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
@@ -146,7 +149,7 @@ export default function TechnicianDashboard() {
     setSaving(true);
     try {
       // First check if this URL is already taken by another user
-      console.log('Checking if URL is already taken...');
+      console.log('Step 1: Checking if URL is already taken...');
       const { data: existingProfile, error: checkError } = await supabase
         .from('technician_profiles')
         .select('user_id')
@@ -154,7 +157,7 @@ export default function TechnicianDashboard() {
         .neq('user_id', userId)
         .single();
 
-      console.log('Existing profile check:', { existingProfile, checkError });
+      console.log('Existing profile check result:', { existingProfile, checkError });
 
       if (existingProfile) {
         alert('This URL is already taken by another user. Please choose a different one.');
@@ -162,37 +165,49 @@ export default function TechnicianDashboard() {
       }
 
       // Check if technician profile exists for this user
-      console.log('Checking if technician profile exists...');
+      console.log('Step 2: Checking if technician profile exists...');
       const { data: currentProfile, error: profileError } = await supabase
         .from('technician_profiles')
         .select('*')
         .eq('user_id', userId)
         .single();
 
-      console.log('Current profile:', { currentProfile, profileError });
+      console.log('Current profile check result:', { currentProfile, profileError });
 
       if (profileError && profileError.code === 'PGRST116') {
         // Profile doesn't exist, create it
-        console.log('Creating new technician profile...');
+        console.log('Step 3: Creating new technician profile...');
+        const newProfileData = {
+          user_id: userId,
+          url_slug: formattedSlug,
+          business_name: 'Your Business Name',
+          location: 'Your City, State',
+          description: 'Tell customers about your business and experience',
+          service_type: 'Professional Service',
+          hourly_rate: 50,
+          email: user?.emailAddresses?.[0]?.emailAddress || '',
+          subscription_status: 'active' // Default to active for testing
+        };
+        
+        console.log('New profile data to insert:', newProfileData);
+        
         const { data: newProfile, error: createError } = await supabase
           .from('technician_profiles')
-          .insert({
-            user_id: userId,
-            url_slug: formattedSlug,
-            business_name: 'Your Business Name',
-            location: 'Your City, State',
-            description: 'Tell customers about your business and experience',
-            service_type: 'Professional Service',
-            hourly_rate: 50
-          })
+          .insert(newProfileData)
           .select()
           .single();
 
-        console.log('New profile created:', { newProfile, createError });
+        console.log('Profile creation result:', { newProfile, createError });
 
         if (createError) {
           console.error('Error creating profile:', createError);
-          alert('Error creating technician profile. Please try again.');
+          console.error('Error details:', {
+            message: createError.message,
+            details: createError.details,
+            hint: createError.hint,
+            code: createError.code
+          });
+          alert(`Error creating technician profile: ${createError.message}`);
           return;
         }
 
@@ -201,11 +216,17 @@ export default function TechnicianDashboard() {
         alert('Custom URL created successfully! Your page is now available at: servicehomie.com/' + formattedSlug);
       } else if (profileError) {
         console.error('Error checking profile:', profileError);
-        alert('Error checking technician profile. Please try again.');
+        console.error('Profile error details:', {
+          message: profileError.message,
+          details: profileError.details,
+          hint: profileError.hint,
+          code: profileError.code
+        });
+        alert(`Error checking technician profile: ${profileError.message}`);
         return;
       } else {
         // Profile exists, update it
-        console.log('Updating existing profile...');
+        console.log('Step 3: Updating existing profile...');
         const { error } = await supabase
           .from('technician_profiles')
           .update({ url_slug: formattedSlug })
@@ -215,6 +236,12 @@ export default function TechnicianDashboard() {
 
         if (error) {
           console.error('Error updating profile:', error);
+          console.error('Update error details:', {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+          });
           throw error;
         }
         
@@ -224,14 +251,26 @@ export default function TechnicianDashboard() {
         alert('Custom URL updated successfully! Your page is now available at: servicehomie.com/' + formattedSlug);
       }
     } catch (error: any) {
-      console.error('Error updating custom URL:', error);
+      console.error('=== ERROR SUMMARY ===');
+      console.error('Error type:', typeof error);
+      console.error('Error object:', error);
+      console.error('Error message:', error.message);
+      console.error('Error code:', error.code);
+      console.error('Error details:', error.details);
+      console.error('Error hint:', error.hint);
+      
       if (error.message?.includes('duplicate')) {
         alert('This URL is already taken. Please choose a different one.');
+      } else if (error.message?.includes('permission')) {
+        alert('Permission denied. Please check your account status.');
+      } else if (error.message?.includes('RLS')) {
+        alert('Row Level Security error. Please contact support.');
       } else {
-        alert(`Error updating custom URL: ${error.message || 'Please try again.'}`);
+        alert(`Error updating custom URL: ${error.message || 'Unknown error occurred. Please try again.'}`);
       }
     } finally {
       setSaving(false);
+      console.log('=== CUSTOM URL UPDATE COMPLETE ===');
     }
   };
 
