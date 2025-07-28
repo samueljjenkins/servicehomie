@@ -34,6 +34,12 @@ export default function SubscriptionRequired() {
           userProfile = await createUserProfile(user as any);
         }
 
+        // Check if userProfile was created successfully
+        if (!userProfile) {
+          console.error('Failed to create user profile');
+          return;
+        }
+
         // Try to get existing technician profile
         let techProfile = await getTechnicianProfile(userProfile.id);
         
