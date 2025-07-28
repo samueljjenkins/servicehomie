@@ -1,240 +1,341 @@
-"use client";
-import { useState } from "react";
+'use client';
 
-const services = [
-  {
-    name: "Add your first service",
-    description: "Describe what you offer to customers",
-    price: "$0",
-    icon: "🛠️",
-  },
-];
+import { useState, useEffect } from 'react';
+import { useAuth, useUser } from '@clerk/nextjs';
+import { createClient } from '@supabase/supabase-js';
+import Link from 'next/link';
+import SubscriptionGuard from '@/components/SubscriptionGuard';
 
-const reviews = [
-  {
-    name: "Customer reviews will appear here",
-    rating: 5,
-    text: "Great feedback from your customers will show up here once you start getting bookings.",
-  },
-];
+// Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-const socials = [
-  { name: "Instagram", href: "https://instagram.com/", icon: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" y1="6.5" x2="17.5" y2="6.5" /></svg>
-  ) },
-  { name: "TikTok", href: "https://tiktok.com/", icon: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M9 17a4 4 0 1 1 0-8h1V7h2v2h2v2h-2v6a2 2 0 1 1-2-2" /></svg>
-  ) },
-  { name: "Facebook", href: "https://facebook.com/", icon: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M18 2h-3a4 4 0 0 0-4 4v3H7v4h4v8h4v-8h3l1-4h-4V6a1 1 0 0 1 1-1h3z" /></svg>
-  ) },
-];
-
-// Helper to get days in month
-function getDaysInMonth(year: number, month: number) {
-  return new Date(year, month + 1, 0).getDate();
+interface TechnicianProfile {
+  id: string;
+  user_id: string;
+  business_name: string;
+  service_type: string;
+  description: string;
+  hourly_rate: number;
+  availability: string;
+  location: string;
+  phone: string;
+  email: string;
+  website: string;
+  social_media: string;
+  certifications: string;
+  insurance: boolean;
+  background_check: boolean;
+  profile_image: string;
+  gallery_images: string[];
+  rating: number;
+  review_count: number;
+  completed_jobs: number;
+  response_time: string;
+  subscription_status: string;
+  stripe_subscription_id: string;
+  subscription_start_date: string;
+  subscription_end_date: string;
+  calendly_link: string;
+  google_business_url: string;
+  url_slug: string;
+  services: any[];
 }
-
-// Helper to get weekday (0=Sun, 1=Mon, ...)
-function getWeekday(year: number, month: number, day: number) {
-  return new Date(year, month, day).getDay();
-}
-
-const availableWeekdays = [1, 2, 3, 4, 5]; // Mon-Fri
-const timeSlots = ["9:00 AM", "11:00 AM", "1:00 PM", "3:00 PM", "5:00 PM"];
 
 export default function TechnicianPage() {
-  // Calendar state
-  const today = new Date();
-  const [month, setMonth] = useState(today.getMonth());
-  const [year, setYear] = useState(today.getFullYear());
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [bookingSuccess, setBookingSuccess] = useState(false);
+  const { userId } = useAuth();
+  const { user } = useUser();
+  const [profile, setProfile] = useState<TechnicianProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const daysInMonth = getDaysInMonth(year, month);
-  const firstDayOfWeek = getWeekday(year, month, 1);
+  useEffect(() => {
+    if (userId) {
+      fetchProfile();
+    }
+  }, [userId]);
 
-  // Generate calendar grid
-  const calendarDays = [];
-  for (let i = 0; i < firstDayOfWeek; i++) {
-    calendarDays.push(null);
+  const fetchProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('technician_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setProfile(data);
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your page...</p>
+        </div>
+      </div>
+    );
   }
-  for (let d = 1; d <= daysInMonth; d++) {
-    calendarDays.push(d);
-  }
 
-  // Only allow booking on Mon-Fri
-  function isAvailable(day: number | null) {
-    if (!day) return false;
-    const wd = getWeekday(year, month, day);
-    return availableWeekdays.includes(wd);
-  }
-
-  function handleBook() {
-    setBookingSuccess(true);
-    setTimeout(() => {
-      setBookingSuccess(false);
-      setSelectedDay(null);
-      setSelectedTime(null);
-    }, 3000);
+  if (!profile) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Profile Not Found</h1>
+          <p className="text-gray-600 mb-6">Please complete your profile setup first.</p>
+          <Link
+            href="/technician-dashboard"
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300"
+          >
+            Go to Dashboard
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center bg-gradient-to-br from-blue-50 via-white to-blue-100">
-      {/* Hero Section */}
-      <section className="w-full max-w-xl mx-auto flex flex-col items-center py-10 px-4">
-        <div className="relative mb-4">
-          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-400 via-blue-200 to-blue-100 blur-sm opacity-60 scale-110" />
-          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border-4 border-white shadow-2xl relative z-10 flex items-center justify-center">
-            <span className="text-3xl text-white font-bold">👤</span>
+    <SubscriptionGuard>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        {/* Header */}
+        <div className="bg-white shadow-sm border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-6">
+              <div className="mb-4 sm:mb-0">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                  {profile.business_name || 'Your Business'}
+                </h1>
+                <p className="text-gray-600 mt-1">
+                  {profile.location || 'Your Location'}
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link
+                  href="/technician-dashboard"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href="/technician-page/edit"
+                  className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow-md text-center"
+                >
+                  Edit Page
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-1 tracking-tight">Your Name</h1>
-        <div className="text-blue-600 font-medium mb-2">Your City, State</div>
-        <p className="text-center text-gray-700 mb-4 max-w-md">Tell customers about your business and experience</p>
-        <button className="bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white font-bold px-8 py-3 rounded-full shadow-xl transition mb-2 text-lg">Book a Service</button>
-      </section>
 
-      {/* Services Showcase */}
-      <section className="w-full max-w-xl mx-auto py-6 px-4">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Services</h2>
-        <div className="flex flex-col gap-4">
-          {services.map((service, i) => (
-            <div key={i} className="flex items-center bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-blue-100 p-4 justify-between hover:shadow-2xl transition">
-              <div className="flex items-center gap-4">
-                <span className="text-3xl">{service.icon}</span>
-                <div>
-                  <div className="font-semibold text-gray-900">{service.name}</div>
-                  <div className="text-gray-500 text-sm">{service.description}</div>
+        {/* Main Content */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Hero Section */}
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
+            <div className="p-8 text-center">
+              <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                {profile.business_name || 'Your Business Name'}
+              </h2>
+              <p className="text-xl text-gray-600 mb-6">
+                {profile.service_type || 'Professional Service'}
+              </p>
+              <p className="text-gray-700 max-w-2xl mx-auto mb-8">
+                {profile.description || 'Professional service provider committed to quality and customer satisfaction.'}
+              </p>
+              
+              {profile.calendly_link && (
+                <a
+                  href={profile.calendly_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 font-medium"
+                >
+                  Book Now
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Stats Section */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
+              <div className="text-3xl font-bold text-blue-600 mb-2">
+                {profile.completed_jobs || 0}
+              </div>
+              <div className="text-gray-600">Jobs Completed</div>
+            </div>
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
+              <div className="text-3xl font-bold text-green-600 mb-2">
+                {profile.rating || 0}
+              </div>
+              <div className="text-gray-600">Average Rating</div>
+            </div>
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
+              <div className="text-3xl font-bold text-purple-600 mb-2">
+                {profile.review_count || 0}
+              </div>
+              <div className="text-gray-600">Reviews</div>
+            </div>
+          </div>
+
+          {/* Services Section */}
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
+            <div className="px-8 py-6 border-b border-gray-100">
+              <h3 className="text-2xl font-bold text-gray-900">Services</h3>
+            </div>
+            <div className="p-8">
+              <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-xl font-semibold text-gray-900 mb-2">
+                      {profile.service_type || 'Professional Service'}
+                    </h4>
+                    <p className="text-gray-600 mb-2">
+                      {profile.description || 'Professional service with attention to detail and quality workmanship.'}
+                    </p>
+                    {profile.hourly_rate && (
+                      <p className="text-blue-600 font-semibold">
+                        Starting at ${profile.hourly_rate}/hour
+                      </p>
+                    )}
+                  </div>
+                  {profile.calendly_link && (
+                    <a
+                      href={profile.calendly_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                    >
+                      Book Service
+                    </a>
+                  )}
                 </div>
               </div>
-              <div className="flex flex-col items-end gap-2">
-                <div className="font-bold text-blue-600 text-lg">{service.price}</div>
-                <button className="bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white font-semibold px-4 py-2 rounded-full text-sm shadow transition">Book Now</button>
+            </div>
+          </div>
+
+          {/* About Section */}
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
+            <div className="px-8 py-6 border-b border-gray-100">
+              <h3 className="text-2xl font-bold text-gray-900">About</h3>
+            </div>
+            <div className="p-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Business Information</h4>
+                  <div className="space-y-3">
+                    {profile.location && (
+                      <div className="flex items-center">
+                        <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span className="text-gray-700">{profile.location}</span>
+                      </div>
+                    )}
+                    {profile.availability && (
+                      <div className="flex items-center">
+                        <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="text-gray-700">{profile.availability}</span>
+                      </div>
+                    )}
+                    {profile.phone && (
+                      <div className="flex items-center">
+                        <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                        <span className="text-gray-700">{profile.phone}</span>
+                      </div>
+                    )}
+                    {profile.email && (
+                      <div className="flex items-center">
+                        <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <span className="text-gray-700">{profile.email}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Qualifications</h4>
+                  <div className="space-y-3">
+                    {profile.insurance && (
+                      <div className="flex items-center">
+                        <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-gray-700">Liability Insurance</span>
+                      </div>
+                    )}
+                    {profile.background_check && (
+                      <div className="flex items-center">
+                        <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-gray-700">Background Check Verified</span>
+                      </div>
+                    )}
+                    {profile.certifications && (
+                      <div className="flex items-start">
+                        <svg className="w-5 h-5 text-blue-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                        </svg>
+                        <span className="text-gray-700">{profile.certifications}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
 
-      {/* Reviews Section */}
-      <section className="w-full max-w-xl mx-auto py-6 px-4">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Customer Reviews</h2>
-        <div className="flex flex-col gap-4">
-          {reviews.map((review, i) => (
-            <div key={i} className="bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-blue-100 p-4 flex flex-col">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-semibold text-gray-900">{review.name}</span>
-                <span className="flex gap-0.5">
-                  {[...Array(5)].map((_, idx) => (
-                    <svg key={idx} className={`w-4 h-4 ${idx < review.rating ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z" /></svg>
-                  ))}
-                </span>
-              </div>
-              <div className="text-gray-700 text-sm">{review.text}</div>
+          {/* Contact Section */}
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <div className="px-8 py-6 border-b border-gray-100">
+              <h3 className="text-2xl font-bold text-gray-900">Get In Touch</h3>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Availability Calendar */}
-      <section className="w-full max-w-xl mx-auto py-6 px-4">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Book a Time</h2>
-        <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-blue-100 p-4 flex flex-col items-center">
-          {/* Calendar header */}
-          <div className="flex justify-between items-center w-full mb-2">
-            <button
-              onClick={() => {
-                if (month === 0) {
-                  setMonth(11);
-                  setYear(y => y - 1);
-                } else {
-                  setMonth(month - 1);
-                }
-              }}
-              className="p-2 rounded hover:bg-blue-100" aria-label="Prev Month"
-            >&lt;</button>
-            <span className="font-semibold">{new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
-            <button
-              onClick={() => {
-                if (month === 11) {
-                  setMonth(0);
-                  setYear(y => y + 1);
-                } else {
-                  setMonth(month + 1);
-                }
-              }}
-              className="p-2 rounded hover:bg-blue-100" aria-label="Next Month"
-            >&gt;</button>
-          </div>
-          {/* Calendar grid */}
-          <div className="grid grid-cols-7 gap-1 w-full text-center text-xs mb-2">
-            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => <div key={d} className="font-semibold text-gray-500">{d}</div>)}
-            {calendarDays.map((day, idx) => (
-              <button
-                key={idx}
-                disabled={!isAvailable(day)}
-                onClick={() => setSelectedDay(day)}
-                className={`h-8 w-8 flex items-center justify-center rounded-full transition text-sm
-                  ${!day ? '' : isAvailable(day) ? (selectedDay === day ? 'bg-blue-600 text-white shadow-lg' : 'bg-blue-100 text-blue-700 hover:bg-blue-200') : 'text-gray-300 cursor-not-allowed'}`}
-              >
-                {day || ''}
-              </button>
-            ))}
-          </div>
-          {/* Time slots */}
-          {selectedDay && (
-            <div className="w-full mt-4 flex flex-col items-center">
-              <div className="mb-2 text-gray-700 font-semibold">Select a time:</div>
-              <div className="flex flex-wrap gap-2 justify-center">
-                {timeSlots.map(slot => (
-                  <button
-                    key={slot}
-                    onClick={() => setSelectedTime(slot)}
-                    className={`px-4 py-2 rounded-full border text-sm font-medium transition
-                      ${selectedTime === slot ? 'bg-blue-600 text-white border-blue-600 shadow-lg' : 'bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-200'}`}
+            <div className="p-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {profile.calendly_link && (
+                  <a
+                    href={profile.calendly_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center font-medium"
                   >
-                    {slot}
-                  </button>
-                ))}
+                    Schedule a Service
+                  </a>
+                )}
+                {profile.phone && (
+                  <a
+                    href={`tel:${profile.phone}`}
+                    className="bg-gray-100 text-gray-700 px-6 py-4 rounded-lg hover:bg-gray-200 transition-all duration-300 shadow-sm hover:shadow-md text-center font-medium"
+                  >
+                    Call Now
+                  </a>
+                )}
               </div>
-              <button
-                className="mt-4 bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white font-bold px-8 py-3 rounded-full shadow-xl text-lg transition"
-                disabled={!selectedTime}
-                onClick={handleBook}
-              >
-                Book Now
-              </button>
-              {bookingSuccess && <div className="mt-2 text-green-600 font-semibold">Booking confirmed!</div>}
             </div>
-          )}
+          </div>
         </div>
-      </section>
-
-      {/* Payment Section */}
-      <section className="w-full max-w-xl mx-auto py-6 px-4 flex flex-col items-center">
-        <button className="bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white font-bold px-10 py-4 rounded-full shadow-xl text-lg transition mb-2">Book Now (Stripe Checkout)</button>
-        <div className="text-gray-500 text-sm">Secure payments powered by Stripe</div>
-      </section>
-
-      {/* Contact & Socials */}
-      <section className="w-full max-w-xl mx-auto py-6 px-4 flex flex-col items-center">
-        <div className="text-gray-700 font-semibold mb-2">Contact</div>
-        <a href="mailto:your@email.com" className="text-blue-600 hover:underline mb-4">your@email.com</a>
-        <div className="flex gap-4">
-          {socials.map((social, i) => (
-            <a key={i} href={social.href} target="_blank" rel="noopener noreferrer" className="bg-white/80 backdrop-blur rounded-full p-3 shadow hover:bg-blue-100 transition border border-blue-100" aria-label={social.name}>
-              {social.icon}
-            </a>
-          ))}
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="w-full py-6 text-center text-gray-400 text-sm mt-8">
-        Powered by <span className="font-bold text-blue-600">Service Homie</span>
-      </footer>
-    </div>
+      </div>
+    </SubscriptionGuard>
   );
 } 

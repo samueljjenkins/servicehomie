@@ -1,237 +1,418 @@
-"use client";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from '@clerk/nextjs';
+'use client';
 
-const defaultServices = [
-  {
-    name: "Add your first service",
-    description: "Describe what you offer",
-    price: "$0",
-    icon: "🛠️",
-  },
-];
+import { useState, useEffect } from 'react';
+import { useAuth, useUser } from '@clerk/nextjs';
+import { createClient } from '@supabase/supabase-js';
+import Link from 'next/link';
+import SubscriptionGuard from '@/components/SubscriptionGuard';
 
-const defaultReviews = [
-  {
-    name: "Add a review",
-    rating: 5,
-    text: "Customer feedback will appear here",
-  },
-];
+// Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-const socials = [
-  { name: "Instagram", href: "https://instagram.com/", icon: "📸" },
-  { name: "TikTok", href: "https://tiktok.com/", icon: "🎵" },
-  { name: "Facebook", href: "https://facebook.com/", icon: "📘" },
-];
+interface TechnicianProfile {
+  id: string;
+  user_id: string;
+  business_name: string;
+  service_type: string;
+  description: string;
+  hourly_rate: number;
+  availability: string;
+  location: string;
+  phone: string;
+  email: string;
+  website: string;
+  social_media: string;
+  certifications: string;
+  insurance: boolean;
+  background_check: boolean;
+  profile_image: string;
+  gallery_images: string[];
+  rating: number;
+  review_count: number;
+  completed_jobs: number;
+  response_time: string;
+  subscription_status: string;
+  stripe_subscription_id: string;
+  subscription_start_date: string;
+  subscription_end_date: string;
+  calendly_link: string;
+  google_business_url: string;
+  url_slug: string;
+  services: any[];
+}
 
-export default function TechnicianPageEdit() {
-  const router = useRouter();
-  const { isSignedIn, isLoaded } = useAuth();
-  const [avatar, setAvatar] = useState("https://randomuser.me/api/portraits/men/32.jpg");
-  const [name, setName] = useState("Your Name");
-  const [location, setLocation] = useState("Your City, State");
-  const [bio, setBio] = useState("Tell customers about your business and experience");
-  const [services, setServices] = useState(defaultServices);
-  const [reviews, setReviews] = useState(defaultReviews);
-  const [email, setEmail] = useState("your@email.com");
-  const [editingServiceIdx, setEditingServiceIdx] = useState<number | null>(null);
-  const [editingReviewIdx, setEditingReviewIdx] = useState<number | null>(null);
-  const [showSaved, setShowSaved] = useState(false);
+export default function EditTechnicianPage() {
+  const { userId } = useAuth();
+  const { user } = useUser();
+  const [profile, setProfile] = useState<TechnicianProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  // Form fields
+  const [businessName, setBusinessName] = useState('');
+  const [serviceType, setServiceType] = useState('');
+  const [description, setDescription] = useState('');
+  const [hourlyRate, setHourlyRate] = useState('');
+  const [availability, setAvailability] = useState('');
+  const [location, setLocation] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [website, setWebsite] = useState('');
+  const [socialMedia, setSocialMedia] = useState('');
+  const [certifications, setCertifications] = useState('');
+  const [insurance, setInsurance] = useState(false);
+  const [backgroundCheck, setBackgroundCheck] = useState(false);
 
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
-      router.push('/login');
+    if (userId) {
+      fetchProfile();
     }
-  }, [isLoaded, isSignedIn, router]);
+  }, [userId]);
 
-  if (!isLoaded) {
+  const fetchProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('technician_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setProfile(data);
+        setBusinessName(data.business_name || '');
+        setServiceType(data.service_type || '');
+        setDescription(data.description || '');
+        setHourlyRate(data.hourly_rate?.toString() || '');
+        setAvailability(data.availability || '');
+        setLocation(data.location || '');
+        setPhone(data.phone || '');
+        setEmail(data.email || '');
+        setWebsite(data.website || '');
+        setSocialMedia(data.social_media || '');
+        setCertifications(data.certifications || '');
+        setInsurance(data.insurance || false);
+        setBackgroundCheck(data.background_check || false);
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!userId) return;
+    
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('technician_profiles')
+        .update({
+          business_name: businessName,
+          service_type: serviceType,
+          description: description,
+          hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
+          availability: availability,
+          location: location,
+          phone: phone,
+          email: email,
+          website: website,
+          social_media: socialMedia,
+          certifications: certifications,
+          insurance: insurance,
+          background_check: backgroundCheck,
+        })
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      alert('Error saving profile');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your profile...</p>
         </div>
       </div>
     );
   }
 
-  if (!isSignedIn) {
-    return null; // Will redirect to login
-  }
-
-  function handleServiceChange(idx: number, field: string, value: string) {
-    setServices(svcs => svcs.map((svc, i) => i === idx ? { ...svc, [field]: value } : svc));
-  }
-  function handleReviewChange(idx: number, field: string, value: string) {
-    setReviews(revs => revs.map((rev, i) => i === idx ? { ...rev, [field]: value } : rev));
-  }
-  function handleSave() {
-    setShowSaved(true);
-    setTimeout(() => {
-      setShowSaved(false);
-      router.push("/technician-dashboard");
-    }, 1200);
-  }
-  function handleCancel() {
-    window.location.href = "/technician-page";
-  }
-
   return (
-    <div className="min-h-screen w-full flex flex-col items-center bg-gradient-to-b from-blue-50 via-white to-blue-100 px-2 pb-10">
-      {/* Hero Section */}
-      <section className="w-full max-w-lg mx-auto flex flex-col items-center pt-10 pb-6">
-        <div className="relative mb-4">
-          <img src={avatar} alt={name} className="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl" />
-          <input
-            type="text"
-            className="block w-full mt-4 text-center text-2xl font-bold bg-transparent focus:bg-white/80 rounded p-2 border border-transparent focus:border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            style={{ fontFamily: 'inherit' }}
-          />
-          <input
-            type="text"
-            className="block w-full mt-1 text-center text-blue-600 font-medium bg-transparent focus:bg-white/80 rounded p-2 border border-transparent focus:border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={location}
-            onChange={e => setLocation(e.target.value)}
-            style={{ fontFamily: 'inherit' }}
-          />
+    <SubscriptionGuard>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        {/* Header */}
+        <div className="bg-white shadow-sm border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-6">
+              <div className="mb-4 sm:mb-0">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                  Edit Your Profile
+                </h1>
+                <p className="text-gray-600 mt-1">
+                  Update your business information and services
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link
+                  href="/technician-dashboard"
+                  className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center"
+                >
+                  Back to Dashboard
+                </Link>
+                <Link
+                  href="/technician-page"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center"
+                >
+                  View Page
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
-        <textarea
-          className="w-full text-center text-gray-700 mb-4 max-w-md bg-transparent focus:bg-white/80 rounded p-2 border border-transparent focus:border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          value={bio}
-          onChange={e => setBio(e.target.value)}
-          rows={2}
-        />
-        <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-full shadow-lg transition mb-2 text-lg cursor-default opacity-60">Book a Service</button>
-      </section>
 
-      {/* Services Showcase */}
-      <section className="w-full max-w-lg mx-auto pb-2">
-        <h2 className="text-lg font-bold text-gray-900 mb-4 text-left">Services</h2>
-        <div className="flex flex-col gap-6">
-          {services.map((service, i) => (
-            <div key={i} className="flex items-center bg-white rounded-2xl shadow-lg px-6 py-5 justify-between border border-blue-100">
-              <div className="flex items-center gap-4 min-w-0">
-                <span className="text-3xl cursor-pointer" onClick={() => setEditingServiceIdx(i)}>{service.icon}</span>
-                <div className="min-w-0">
-                  {editingServiceIdx === i ? (
-                    <>
+        {/* Success Message */}
+        {success && (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <p className="text-green-800 font-medium">Profile updated successfully!</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Main Content */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-gray-100">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Business Information</h2>
+            </div>
+            
+            <div className="p-4 sm:p-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Left Column */}
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Business Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Your Business Name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Service Type *
+                    </label>
+                    <select
+                      value={serviceType}
+                      onChange={(e) => setServiceType(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="">Select a service type</option>
+                      <option value="Window Cleaning">Window Cleaning</option>
+                      <option value="Gutter Cleaning">Gutter Cleaning</option>
+                      <option value="Pressure Washing">Pressure Washing</option>
+                      <option value="Lawn Care">Lawn Care</option>
+                      <option value="Handyman">Handyman</option>
+                      <option value="Junk Removal">Junk Removal</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description *
+                    </label>
+                    <textarea
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      rows={4}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Describe your services and what makes you unique..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Hourly Rate ($)
+                    </label>
+                    <input
+                      type="number"
+                      value={hourlyRate}
+                      onChange={(e) => setHourlyRate(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Availability
+                    </label>
+                    <input
+                      type="text"
+                      value={availability}
+                      onChange={(e) => setAvailability(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Mon-Fri 8AM-6PM, Weekends available"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Location *
+                    </label>
+                    <input
+                      type="text"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="City, State"
+                    />
+                  </div>
+                </div>
+
+                {/* Right Column */}
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="(555) 123-4567"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Website
+                    </label>
+                    <input
+                      type="url"
+                      value={website}
+                      onChange={(e) => setWebsite(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="https://yourwebsite.com"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Social Media
+                    </label>
+                    <input
+                      type="text"
+                      value={socialMedia}
+                      onChange={(e) => setSocialMedia(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Instagram, Facebook, etc."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Certifications
+                    </label>
+                    <textarea
+                      value={certifications}
+                      onChange={(e) => setCertifications(e.target.value)}
+                      rows={3}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="List your certifications, licenses, and qualifications..."
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center">
                       <input
-                        className="font-semibold text-gray-900 bg-white/80 rounded p-1 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 mb-1 w-full"
-                        value={service.name}
-                        onChange={e => handleServiceChange(i, "name", e.target.value)}
+                        type="checkbox"
+                        id="insurance"
+                        checked={insurance}
+                        onChange={(e) => setInsurance(e.target.checked)}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       />
+                      <label htmlFor="insurance" className="ml-2 block text-sm text-gray-700">
+                        I have liability insurance
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
                       <input
-                        className="text-gray-500 text-sm bg-white/80 rounded p-1 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
-                        value={service.description}
-                        onChange={e => handleServiceChange(i, "description", e.target.value)}
+                        type="checkbox"
+                        id="backgroundCheck"
+                        checked={backgroundCheck}
+                        onChange={(e) => setBackgroundCheck(e.target.checked)}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       />
-                      <input
-                        className="font-bold text-blue-600 text-lg bg-white/80 rounded p-1 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 mt-1 w-20"
-                        value={service.price}
-                        onChange={e => handleServiceChange(i, "price", e.target.value)}
-                      />
-                      <input
-                        className="w-12 text-center bg-white/80 rounded p-1 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 mt-1"
-                        value={service.icon}
-                        onChange={e => handleServiceChange(i, "icon", e.target.value)}
-                        maxLength={2}
-                      />
-                      <button className="ml-2 text-blue-600 underline text-xs" onClick={() => setEditingServiceIdx(null)}>Done</button>
-                    </>
-                  ) : (
-                    <>
-                      <div className="font-semibold text-gray-900 truncate">{service.name}</div>
-                      <div className="text-gray-500 text-sm truncate">{service.description}</div>
-                    </>
-                  )}
+                      <label htmlFor="backgroundCheck" className="ml-2 block text-sm text-gray-700">
+                        I have passed a background check
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col items-end gap-2">
-                <div className="font-bold text-blue-600 text-lg">{service.price}</div>
-                <button className="bg-blue-600 text-white font-semibold px-5 py-2 rounded-full text-sm shadow transition opacity-60 cursor-default">Book Now</button>
+
+              {/* Save Button */}
+              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="w-full sm:w-auto bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                >
+                  {saving ? 'Saving...' : 'Save Changes'}
+                </button>
+                <Link
+                  href="/technician-dashboard"
+                  className="w-full sm:w-auto bg-gray-100 text-gray-700 px-8 py-3 rounded-lg hover:bg-gray-200 transition-all duration-300 shadow-sm hover:shadow-md text-center font-medium"
+                >
+                  Cancel
+                </Link>
               </div>
             </div>
-          ))}
+          </div>
         </div>
-      </section>
-
-      {/* Reviews Section */}
-      <section className="w-full max-w-lg mx-auto py-6 px-2">
-        <h2 className="text-lg font-bold text-gray-900 mb-4 text-left">Customer Reviews</h2>
-        <div className="flex flex-col gap-4">
-          {reviews.map((review, i) => (
-            <div key={i} className="bg-white rounded-2xl shadow p-4 flex flex-col border border-blue-100">
-              <div className="flex items-center gap-2 mb-1">
-                {editingReviewIdx === i ? (
-                  <>
-                    <input
-                      className="font-semibold text-gray-900 bg-white/80 rounded p-1 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                      value={review.name}
-                      onChange={e => handleReviewChange(i, "name", e.target.value)}
-                    />
-                    <input
-                      className="w-12 text-center bg-white/80 rounded p-1 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                      value={review.rating}
-                      onChange={e => handleReviewChange(i, "rating", e.target.value)}
-                      type="number"
-                      min={1}
-                      max={5}
-                    />
-                    <button className="ml-2 text-blue-600 underline text-xs" onClick={() => setEditingReviewIdx(null)}>Done</button>
-                  </>
-                ) : (
-                  <span className="font-semibold text-gray-900 cursor-pointer" onClick={() => setEditingReviewIdx(i)}>{review.name}</span>
-                )}
-                <span className="flex gap-0.5">
-                  {[...Array(5)].map((_, idx) => (
-                    <svg key={idx} className={`w-4 h-4 ${idx < review.rating ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z" /></svg>
-                  ))}
-                </span>
-              </div>
-              <div className="text-gray-700 text-sm">
-                {editingReviewIdx === i ? (
-                  <textarea
-                    className="w-full bg-white/80 rounded p-1 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    value={review.text}
-                    onChange={e => handleReviewChange(i, "text", e.target.value)}
-                  />
-                ) : (
-                  <span onClick={() => setEditingReviewIdx(i)} className="cursor-pointer">{review.text}</span>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Contact & Socials */}
-      <section className="w-full max-w-lg mx-auto py-6 flex flex-col items-center">
-        <div className="text-gray-700 font-semibold mb-2">Contact</div>
-        <input
-          type="email"
-          className="text-blue-600 hover:underline mb-4 bg-white/70 rounded p-2 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-        <div className="flex gap-4">
-          {socials.map((social, i) => (
-            <a key={i} href={social.href} target="_blank" rel="noopener noreferrer" className="bg-white/80 backdrop-blur rounded-full p-3 shadow hover:bg-blue-100 transition border border-blue-100" aria-label={social.name}>
-              <span className="text-2xl">{social.icon}</span>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      {/* Save/Cancel */}
-      <div className="w-full max-w-lg mx-auto flex justify-end gap-4 py-6 px-2">
-        <button className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-6 py-2 rounded-full shadow transition" onClick={handleCancel}>Cancel</button>
-        <button className="bg-blue-600 text-white font-bold px-8 py-2 rounded-full shadow-lg transition" onClick={handleSave}>Save</button>
-        {showSaved && <span className="ml-4 text-green-600 font-semibold self-center">Saved!</span>}
       </div>
-    </div>
+    </SubscriptionGuard>
   );
 } 
