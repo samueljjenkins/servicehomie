@@ -1,94 +1,76 @@
 "use client";
-
-import { useState } from "react";
 import { createClient } from '@supabase/supabase-js';
+import { useState, useEffect } from 'react';
 
-export default function TestSupabasePage() {
-  const [email, setEmail] = useState("");
-  const [result, setResult] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-  const testInvite = async () => {
-    setLoading(true);
-    setResult(null);
+export default function TestSupabase() {
+  const [profiles, setProfiles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    try {
-      const supabaseAdmin = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-      );
+  useEffect(() => {
+    async function fetchProfiles() {
+      try {
+        console.log('Fetching all technician profiles...');
+        const { data, error } = await supabase
+          .from('technician_profiles')
+          .select('*');
 
-      console.log('Testing with email:', email);
-      console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
-      console.log('Service role key exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+        console.log('Supabase response:', { data, error });
 
-      const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
-        data: {
-          full_name: 'Test User',
-          user_type: 'technician'
-        },
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/technician-onboarding`
-      });
-
-      if (error) {
-        console.error('Error details:', error);
-        setResult({ error: error.message, details: error });
-      } else {
-        console.log('Success:', data);
-        setResult({ success: true, user: data.user });
+        if (error) {
+          console.error('Error fetching profiles:', error);
+          setError(error.message);
+        } else {
+          console.log('Found profiles:', data);
+          setProfiles(data || []);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        setError('Failed to fetch profiles');
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error('Unexpected error:', err);
-      setResult({ error: 'Unexpected error', details: err });
-    } finally {
-      setLoading(false);
     }
-  };
+
+    fetchProfiles();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center py-12">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="text-center text-3xl font-extrabold text-gray-900">
-            Test Supabase Invite
-          </h2>
-        </div>
-        
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <div className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="test@example.com"
-              />
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-4">Technician Profiles in Database</h1>
+      {profiles.length === 0 ? (
+        <p>No technician profiles found in database.</p>
+      ) : (
+        <div className="space-y-4">
+          {profiles.map((profile, index) => (
+            <div key={index} className="border p-4 rounded">
+              <h3 className="font-bold">Profile {index + 1}</h3>
+              <p><strong>User ID:</strong> {profile.user_id}</p>
+              <p><strong>Business Name:</strong> {profile.business_name}</p>
+              <p><strong>URL Slug:</strong> {profile.url_slug || 'NOT SET'}</p>
+              <p><strong>Email:</strong> {profile.email}</p>
+              <p><strong>Location:</strong> {profile.location}</p>
+              <p><strong>Service Type:</strong> {profile.service_type}</p>
+              <p><strong>Description:</strong> {profile.description}</p>
+              <p><strong>Hourly Rate:</strong> {profile.hourly_rate}</p>
+              <p><strong>Calendly Link:</strong> {profile.calendly_link || 'NOT SET'}</p>
+              <p><strong>Google Business URL:</strong> {profile.google_business_url || 'NOT SET'}</p>
             </div>
-            
-            <button
-              onClick={testInvite}
-              disabled={loading || !email}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-            >
-              {loading ? "Testing..." : "Test Invite"}
-            </button>
-          </div>
-
-          {result && (
-            <div className="mt-6 p-4 bg-gray-50 rounded-md">
-              <h3 className="text-sm font-medium text-gray-900 mb-2">Result:</h3>
-              <pre className="text-xs text-gray-600 overflow-auto">
-                {JSON.stringify(result, null, 2)}
-              </pre>
-            </div>
-          )}
+          ))}
         </div>
-      </div>
+      )}
     </div>
   );
 } 

@@ -23,34 +23,46 @@ export default function TechnicianPage() {
   useEffect(() => {
     async function loadTechnicianBySlug() {
       if (!slug) {
+        console.log('No slug provided');
         setError("Invalid technician URL");
         setLoading(false);
         return;
       }
 
+      console.log('Loading technician with slug:', slug);
+
       // Skip certain paths that shouldn't be treated as technician slugs
       const excludedPaths = ['test-env', 'test-simple', 'test-supabase', 'debug', 'api'];
       if (excludedPaths.includes(slug)) {
+        console.log('Slug is in excluded paths');
         setError("Invalid technician URL");
         setLoading(false);
         return;
       }
 
       try {
+        console.log('Querying Supabase for slug:', slug);
         const { data, error } = await supabase
           .from('technician_profiles')
           .select('*')
           .eq('url_slug', slug)
           .single();
 
+        console.log('Supabase response:', { data, error });
+
         if (error) {
           console.error('Error loading technician:', error);
-          setError("Technician not found");
+          if (error.code === 'PGRST116') {
+            setError("Technician not found - no profile with this URL exists");
+          } else {
+            setError(`Database error: ${error.message}`);
+          }
           setLoading(false);
           return;
         }
 
         if (data) {
+          console.log('Found technician data:', data);
           setBusinessName(data.business_name || "Your Business Name");
           setLocation(data.location || "Your City, State");
           setDescription(data.description || "Tell customers about your business and experience");
@@ -59,6 +71,9 @@ export default function TechnicianPage() {
           setEmail(data.email || "");
           setCalendlyLink(data.calendly_link || '');
           setGoogleBusinessUrl(data.google_business_url || '');
+        } else {
+          console.log('No data returned from Supabase');
+          setError("Technician profile not found");
         }
       } catch (error) {
         console.error('Error loading technician data:', error);
