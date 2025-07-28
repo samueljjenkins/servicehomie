@@ -76,6 +76,11 @@ export default function SubscriptionRequired() {
     
     setLoading(true);
     try {
+      console.log('Attempting to create subscription with:', {
+        customerEmail: userEmail,
+        technicianProfileId: technicianProfileId
+      });
+
       // Call the API route instead of importing Stripe directly
       const response = await fetch('/api/create-subscription', {
         method: 'POST',
@@ -88,11 +93,17 @@ export default function SubscriptionRequired() {
         }),
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
       if (!response.ok) {
-        throw new Error('Failed to create subscription');
+        const errorData = await response.json();
+        console.error('API Error:', errorData);
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
+      console.log('Success response:', data);
       
       if (data.url) {
         window.location.href = data.url;
@@ -101,7 +112,7 @@ export default function SubscriptionRequired() {
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);
-      alert('Error creating checkout session. Please try again.');
+      alert(`Error creating checkout session: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
