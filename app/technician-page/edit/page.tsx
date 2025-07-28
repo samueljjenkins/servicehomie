@@ -65,6 +65,7 @@ export default function EditTechnicianPage() {
   const [certifications, setCertifications] = useState('');
   const [insurance, setInsurance] = useState(false);
   const [backgroundCheck, setBackgroundCheck] = useState(false);
+  const [calendlyLink, setCalendlyLink] = useState('');
 
   useEffect(() => {
     if (userId) {
@@ -97,6 +98,7 @@ export default function EditTechnicianPage() {
         setCertifications(data.certifications || '');
         setInsurance(data.insurance || false);
         setBackgroundCheck(data.background_check || false);
+        setCalendlyLink(data.calendly_link || '');
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -126,6 +128,7 @@ export default function EditTechnicianPage() {
           certifications: certifications,
           insurance: insurance,
           background_check: backgroundCheck,
+          calendly_link: calendlyLink,
         })
         .eq('user_id', userId);
 
@@ -154,29 +157,31 @@ export default function EditTechnicianPage() {
 
   return (
     <SubscriptionGuard>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
         {/* Header */}
         <div className="bg-white shadow-sm border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-6">
               <div className="mb-4 sm:mb-0">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  Edit Your Profile
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                  Edit Your Landing Page
                 </h1>
-                <p className="text-gray-600 mt-1">
-                  Update your business information and services
+                <p className="text-gray-600 mt-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                  Customize your public profile
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                   href="/technician-dashboard"
-                  className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center"
+                  className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center font-medium"
+                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
                 >
                   Back to Dashboard
                 </Link>
                 <Link
                   href={`/${profile?.url_slug || 'your-name'}`}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center font-medium"
+                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
                 >
                   View Page
                 </Link>
@@ -199,217 +204,298 @@ export default function EditTechnicianPage() {
           </div>
         )}
 
-        {/* Main Content */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-            <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-gray-100">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Business Information</h2>
+        {/* Main Content - Landing Page Style */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Hero Section */}
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
+            <div className="p-8 text-center">
+              <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              
+              {/* Business Name */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                  Business Name
+                </label>
+                <input
+                  type="text"
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  className="text-3xl font-bold text-gray-900 text-center bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none px-4 py-2 w-full max-w-md mx-auto"
+                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}
+                  placeholder="Your Business Name"
+                />
+              </div>
+
+              {/* Service Type */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                  Service Type
+                </label>
+                <input
+                  type="text"
+                  value={serviceType}
+                  onChange={(e) => setServiceType(e.target.value)}
+                  className="text-xl text-gray-600 text-center bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none px-4 py-2 w-full max-w-md mx-auto"
+                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
+                  placeholder="Professional Service Provider"
+                />
+              </div>
+
+              {/* Description */}
+              <div className="mb-8">
+                <label className="block text-sm font-medium text-gray-700 mb-2 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                  Description
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={3}
+                  className="text-gray-700 text-center bg-transparent border-2 border-gray-300 focus:border-blue-500 focus:outline-none rounded-lg px-4 py-2 w-full max-w-2xl mx-auto resize-none"
+                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
+                  placeholder="Tell customers about your business and experience..."
+                />
+              </div>
             </div>
-            
-            <div className="p-4 sm:p-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Left Column */}
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Business Name *
+          </div>
+
+          {/* Stats Section */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
+              <div className="text-3xl font-bold text-blue-600 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                50+
+              </div>
+              <div className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                Happy Customers
+              </div>
+            </div>
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
+              <div className="text-3xl font-bold text-green-600 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                4.8
+              </div>
+              <div className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                Average Rating
+              </div>
+            </div>
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
+              <div className="text-3xl font-bold text-purple-600 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                100+
+              </div>
+              <div className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                Jobs Completed
+              </div>
+            </div>
+          </div>
+
+          {/* Services Section */}
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
+            <div className="px-8 py-6 border-b border-gray-100">
+              <h3 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                Services
+              </h3>
+            </div>
+            <div className="p-8">
+              <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                      Service Name
                     </label>
                     <input
                       type="text"
-                      value={businessName}
-                      onChange={(e) => setBusinessName(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Your Business Name"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Service Type *
-                    </label>
-                    <select
                       value={serviceType}
                       onChange={(e) => setServiceType(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">Select a service type</option>
-                      <option value="Window Cleaning">Window Cleaning</option>
-                      <option value="Gutter Cleaning">Gutter Cleaning</option>
-                      <option value="Pressure Washing">Pressure Washing</option>
-                      <option value="Lawn Care">Lawn Care</option>
-                      <option value="Handyman">Handyman</option>
-                      <option value="Junk Removal">Junk Removal</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Description *
+                      className="text-xl font-semibold text-gray-900 bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none px-2 py-1 w-full"
+                      style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}
+                      placeholder="Professional Service"
+                    />
+                    
+                    <label className="block text-sm font-medium text-gray-700 mb-2 mt-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                      Service Description
                     </label>
                     <textarea
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      rows={4}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Describe your services and what makes you unique..."
+                      rows={2}
+                      className="text-gray-600 bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none px-2 py-1 w-full resize-none"
+                      style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
+                      placeholder="Describe your service..."
                     />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Hourly Rate ($)
+                    
+                    <label className="block text-sm font-medium text-gray-700 mb-2 mt-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                      Hourly Rate
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       value={hourlyRate}
                       onChange={(e) => setHourlyRate(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="50"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Availability
-                    </label>
-                    <input
-                      type="text"
-                      value={availability}
-                      onChange={(e) => setAvailability(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Mon-Fri 8AM-6PM, Weekends available"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Location *
-                    </label>
-                    <input
-                      type="text"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="City, State"
+                      className="text-blue-600 font-semibold bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none px-2 py-1 w-full"
+                      style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                      placeholder="Starting at $50/hour"
                     />
                   </div>
                 </div>
-
-                {/* Right Column */}
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="(555) 123-4567"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Website
-                    </label>
-                    <input
-                      type="url"
-                      value={website}
-                      onChange={(e) => setWebsite(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="https://yourwebsite.com"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Social Media
-                    </label>
-                    <input
-                      type="text"
-                      value={socialMedia}
-                      onChange={(e) => setSocialMedia(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Instagram, Facebook, etc."
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Certifications
-                    </label>
-                    <textarea
-                      value={certifications}
-                      onChange={(e) => setCertifications(e.target.value)}
-                      rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="List your certifications, licenses, and qualifications..."
-                    />
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="insurance"
-                        checked={insurance}
-                        onChange={(e) => setInsurance(e.target.checked)}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                      <label htmlFor="insurance" className="ml-2 block text-sm text-gray-700">
-                        I have liability insurance
-                      </label>
-                    </div>
-
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="backgroundCheck"
-                        checked={backgroundCheck}
-                        onChange={(e) => setBackgroundCheck(e.target.checked)}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                      <label htmlFor="backgroundCheck" className="ml-2 block text-sm text-gray-700">
-                        I have passed a background check
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Save Button */}
-              <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                <button
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="w-full sm:w-auto bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-                >
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </button>
-                <Link
-                  href="/technician-dashboard"
-                  className="w-full sm:w-auto bg-gray-100 text-gray-700 px-8 py-3 rounded-lg hover:bg-gray-200 transition-all duration-300 shadow-sm hover:shadow-md text-center font-medium"
-                >
-                  Cancel
-                </Link>
               </div>
             </div>
+          </div>
+
+          {/* About Section */}
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
+            <div className="px-8 py-6 border-b border-gray-100">
+              <h3 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                About
+              </h3>
+            </div>
+            <div className="p-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                    Business Information
+                  </h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        Location
+                      </label>
+                      <input
+                        type="text"
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="City, State"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="your@email.com"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        Phone
+                      </label>
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="(555) 123-4567"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        Website
+                      </label>
+                      <input
+                        type="url"
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="https://yourwebsite.com"
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                    Why Choose Us
+                  </h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        Professional & Reliable
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        Quality Guaranteed
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        Satisfaction Guaranteed
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Section */}
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <div className="px-8 py-6 border-b border-gray-100">
+              <h3 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                Get In Touch
+              </h3>
+            </div>
+            <div className="p-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                    Calendly Link
+                  </label>
+                  <input
+                    type="url"
+                    value={calendlyLink}
+                    onChange={(e) => setCalendlyLink(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="https://calendly.com/your-name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                    Email Contact
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="your@email.com"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Save Button */}
+          <div className="mt-8 flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="w-full sm:w-auto bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+            >
+              {saving ? 'Saving...' : 'Save Changes'}
+            </button>
+            <Link
+              href="/technician-dashboard"
+              className="w-full sm:w-auto bg-gray-100 text-gray-700 px-8 py-3 rounded-lg hover:bg-gray-200 transition-all duration-300 shadow-sm hover:shadow-md text-center font-medium"
+              style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+            >
+              Cancel
+            </Link>
           </div>
         </div>
       </div>
