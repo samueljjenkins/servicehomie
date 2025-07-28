@@ -51,6 +51,14 @@ export default function TechnicianPage() {
         return;
       }
 
+      // Skip certain paths that shouldn't be treated as technician slugs
+      const excludedPaths = ['test-env', 'test-simple', 'test-supabase'];
+      if (excludedPaths.includes(slug)) {
+        setError("Invalid technician URL");
+        setLoading(false);
+        return;
+      }
+
       try {
         const { data, error } = await supabase
           .from('technician_profiles')
