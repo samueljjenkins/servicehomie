@@ -2,7 +2,7 @@
 
 import { useAuth, useUser } from '@clerk/nextjs';
 import { useState, useEffect } from 'react';
-import { getUserProfile, getTechnicianProfile } from '@/lib/supabase-utils';
+import { getUserProfile, getTechnicianProfile, createUserProfile, createTechnicianProfile } from '@/lib/supabase-utils';
 import { createSubscriptionCheckoutSession } from '@/lib/stripe';
 import Link from 'next/link';
 
@@ -13,10 +13,11 @@ export default function SubscriptionRequired() {
   const [technicianProfileId, setTechnicianProfileId] = useState('');
   const [name, setName] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
     async function loadTechnicianData() {
-      if (!isSignedIn || !userId) return;
+      if (!isSignedIn || !userId || !user) return;
       
       try {
         // Get user email from Clerk
@@ -24,16 +25,38 @@ export default function SubscriptionRequired() {
           setUserEmail(user.emailAddresses[0].emailAddress);
         }
 
-        const userProfile = await getUserProfile(userId);
-        if (userProfile) {
-          const techProfile = await getTechnicianProfile(userProfile.id);
-          if (techProfile) {
-            setTechnicianProfileId(techProfile.id);
-            setName(techProfile.name || '');
-          }
+        // Try to get existing user profile
+        let userProfile = await getUserProfile(userId);
+        
+        // If user profile doesn't exist, create it
+        if (!userProfile) {
+          console.log('Creating user profile for:', userId);
+          userProfile = await createUserProfile(user as any);
+        }
+
+        // Try to get existing technician profile
+        let techProfile = await getTechnicianProfile(userProfile.id);
+        
+        // If technician profile doesn't exist, create it
+        if (!techProfile) {
+          console.log('Creating technician profile for:', userProfile.id);
+          techProfile = await createTechnicianProfile(userProfile.id, {
+            name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'New Technician',
+            email: user.emailAddresses[0]?.emailAddress || '',
+            location: '',
+            bio: '',
+            services: []
+          });
+        }
+
+        if (techProfile) {
+          setTechnicianProfileId(techProfile.id);
+          setName(techProfile.name || '');
         }
       } catch (error) {
-        console.error('Error loading technician data:', error);
+        console.error('Error loading/creating technician data:', error);
+      } finally {
+        setInitializing(false);
       }
     }
 
@@ -80,6 +103,23 @@ export default function SubscriptionRequired() {
             >
               Sign In
             </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (initializing) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center px-4">
+        <div className="max-w-md w-full text-center">
+          <div className="bg-white rounded-2xl shadow-xl p-8">
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <span className="text-white text-3xl">⏳</span>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Setting Up Your Account</h1>
+            <p className="text-gray-600 mb-6">Please wait while we prepare your profile...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
           </div>
         </div>
       </div>
