@@ -175,7 +175,7 @@ export default function EditTechnicianPage() {
                   Back to Dashboard
                 </Link>
                 <Link
-                  href="/technician-page"
+                  href={`/${profile?.url_slug || 'your-name'}`}
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center"
                 >
                   View Page
