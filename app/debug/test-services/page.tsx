@@ -19,7 +19,7 @@ export default function TestServicesPage() {
           clerkSecret: !!process.env.CLERK_SECRET_KEY,
           stripeSecret: !!process.env.STRIPE_SECRET_KEY,
           stripePubKey: !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
-          appUrl: !!process.env.NEXT_PUBLIC_APP_URL,
+          siteUrl: !!process.env.NEXT_PUBLIC_SITE_URL,
         };
       } catch (error) {
         testResults.envVars = { error: error instanceof Error ? error.message : 'Unknown error' };

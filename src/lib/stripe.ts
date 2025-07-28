@@ -8,8 +8,8 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 // Stripe configuration
 export const STRIPE_CONFIG = {
   subscriptionPriceId: process.env.STRIPE_SUBSCRIPTION_PRICE_ID!,
-  successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/technician-dashboard?success=true`,
-  cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/technician-dashboard?canceled=true`,
+  successUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/technician-dashboard?success=true`,
+  cancelUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/technician-dashboard?canceled=true`,
 };
 
 // Create a checkout session for subscription
@@ -62,7 +62,7 @@ export async function createCustomerPortalSession(customerId: string) {
 
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/technician-dashboard`,
+      return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/technician-dashboard`,
     });
 
     if (!session || !session.url) {
