@@ -113,8 +113,18 @@ export default function TechnicianDashboard() {
       return;
     }
 
+    if (!userId) {
+      alert('User not authenticated');
+      return;
+    }
+
+    console.log('Updating custom URL for user:', userId);
+    console.log('Input custom domain:', customDomain);
+
     // Validate URL format
     const formattedSlug = customDomain.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    
+    console.log('Formatted slug:', formattedSlug);
     
     if (formattedSlug.length < 3) {
       alert('URL must be at least 3 characters long');
@@ -133,11 +143,10 @@ export default function TechnicianDashboard() {
       return;
     }
 
-    if (!userId) return;
-    
     setSaving(true);
     try {
       // First check if this URL is already taken by another user
+      console.log('Checking if URL is already taken...');
       const { data: existingProfile, error: checkError } = await supabase
         .from('technician_profiles')
         .select('user_id')
@@ -145,28 +154,81 @@ export default function TechnicianDashboard() {
         .neq('user_id', userId)
         .single();
 
+      console.log('Existing profile check:', { existingProfile, checkError });
+
       if (existingProfile) {
         alert('This URL is already taken by another user. Please choose a different one.');
         return;
       }
 
-      const { error } = await supabase
+      // Check if technician profile exists for this user
+      console.log('Checking if technician profile exists...');
+      const { data: currentProfile, error: profileError } = await supabase
         .from('technician_profiles')
-        .update({ url_slug: formattedSlug })
-        .eq('user_id', userId);
+        .select('*')
+        .eq('user_id', userId)
+        .single();
 
-      if (error) throw error;
-      
-      // Update local state
-      setTechnicianProfile(prev => prev ? { ...prev, url_slug: formattedSlug } : null);
-      setCustomDomain(formattedSlug);
-      alert('Custom URL updated successfully! Your page is now available at: servicehomie.com/' + formattedSlug);
+      console.log('Current profile:', { currentProfile, profileError });
+
+      if (profileError && profileError.code === 'PGRST116') {
+        // Profile doesn't exist, create it
+        console.log('Creating new technician profile...');
+        const { data: newProfile, error: createError } = await supabase
+          .from('technician_profiles')
+          .insert({
+            user_id: userId,
+            url_slug: formattedSlug,
+            business_name: 'Your Business Name',
+            location: 'Your City, State',
+            description: 'Tell customers about your business and experience',
+            service_type: 'Professional Service',
+            hourly_rate: 50
+          })
+          .select()
+          .single();
+
+        console.log('New profile created:', { newProfile, createError });
+
+        if (createError) {
+          console.error('Error creating profile:', createError);
+          alert('Error creating technician profile. Please try again.');
+          return;
+        }
+
+        setTechnicianProfile(newProfile);
+        setCustomDomain(formattedSlug);
+        alert('Custom URL created successfully! Your page is now available at: servicehomie.com/' + formattedSlug);
+      } else if (profileError) {
+        console.error('Error checking profile:', profileError);
+        alert('Error checking technician profile. Please try again.');
+        return;
+      } else {
+        // Profile exists, update it
+        console.log('Updating existing profile...');
+        const { error } = await supabase
+          .from('technician_profiles')
+          .update({ url_slug: formattedSlug })
+          .eq('user_id', userId);
+
+        console.log('Update result:', { error });
+
+        if (error) {
+          console.error('Error updating profile:', error);
+          throw error;
+        }
+        
+        // Update local state
+        setTechnicianProfile(prev => prev ? { ...prev, url_slug: formattedSlug } : null);
+        setCustomDomain(formattedSlug);
+        alert('Custom URL updated successfully! Your page is now available at: servicehomie.com/' + formattedSlug);
+      }
     } catch (error: any) {
       console.error('Error updating custom URL:', error);
       if (error.message?.includes('duplicate')) {
         alert('This URL is already taken. Please choose a different one.');
       } else {
-        alert('Error updating custom URL. Please try again.');
+        alert(`Error updating custom URL: ${error.message || 'Please try again.'}`);
       }
     } finally {
       setSaving(false);
