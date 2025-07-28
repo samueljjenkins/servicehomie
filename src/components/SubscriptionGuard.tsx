@@ -28,14 +28,19 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
         if (userProfile) {
           const techProfile = await getTechnicianProfile(userProfile.id);
           if (techProfile) {
-            const subscriptionStatus = await checkSubscriptionStatus(techProfile.id);
-            
-            if (!subscriptionStatus.isActive) {
-              router.push('/subscription-required');
-              return;
-            }
-            
+            // TEMPORARY: Allow access if user has any profile (bypass subscription check)
+            console.log('Temporary bypass: Allowing dashboard access');
             setHasSubscription(true);
+            setLoading(false);
+            return;
+            
+            // Original code (commented out for now):
+            // const subscriptionStatus = await checkSubscriptionStatus(techProfile.id);
+            // if (!subscriptionStatus.isActive) {
+            //   router.push('/subscription-required');
+            //   return;
+            // }
+            // setHasSubscription(true);
           } else {
             // No technician profile found, redirect to subscription
             router.push('/subscription-required');
