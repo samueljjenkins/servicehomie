@@ -71,11 +71,6 @@ export default function TechnicianDashboard() {
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
       </svg>
     ) },
-    { id: 'payments', label: 'Payments', icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-      </svg>
-    ) },
     { id: 'reviews', label: 'Reviews', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
@@ -109,46 +104,6 @@ export default function TechnicianDashboard() {
       console.error('Error fetching technician profile:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleCalendlySave = async () => {
-    if (!userId) return;
-    
-    setSaving(true);
-    try {
-      const { error } = await supabase
-        .from('technician_profiles')
-        .update({ calendly_link: calendlyLink })
-        .eq('user_id', userId);
-
-      if (error) throw error;
-      alert('Calendly link saved successfully!');
-    } catch (error) {
-      console.error('Error saving Calendly link:', error);
-      alert('Error saving Calendly link');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleGoogleReviewsConnect = async () => {
-    if (!userId) return;
-    
-    setSaving(true);
-    try {
-      const { error } = await supabase
-        .from('technician_profiles')
-        .update({ google_business_url: googleBusinessUrl })
-        .eq('user_id', userId);
-
-      if (error) throw error;
-      alert('Google Business URL saved successfully!');
-    } catch (error) {
-      console.error('Error saving Google Business URL:', error);
-      alert('Error saving Google Business URL');
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -189,6 +144,52 @@ export default function TechnicianDashboard() {
     } catch (error) {
       console.error('Error updating custom URL:', error);
       alert('Error updating custom URL. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCalendlySave = async () => {
+    if (!userId) return;
+    
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('technician_profiles')
+        .update({ calendly_link: calendlyLink })
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      
+      // Update local state
+      setTechnicianProfile(prev => prev ? { ...prev, calendly_link: calendlyLink } : null);
+      alert('Calendly link updated successfully!');
+    } catch (error) {
+      console.error('Error updating Calendly link:', error);
+      alert('Error updating Calendly link. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleGoogleBusinessSave = async () => {
+    if (!userId) return;
+    
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('technician_profiles')
+        .update({ google_business_url: googleBusinessUrl })
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      
+      // Update local state
+      setTechnicianProfile(prev => prev ? { ...prev, google_business_url: googleBusinessUrl } : null);
+      alert('Google Business URL updated successfully!');
+    } catch (error) {
+      console.error('Error updating Google Business URL:', error);
+      alert('Error updating Google Business URL. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -274,15 +275,16 @@ export default function TechnicianDashboard() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-blue-100 text-sm font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            Total Bookings
+                            Landing Page Views
                           </p>
                           <p className="text-3xl font-bold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                            24
+                            0
                           </p>
                         </div>
                         <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
                         </div>
                       </div>
@@ -292,15 +294,15 @@ export default function TechnicianDashboard() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-green-100 text-sm font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            Average Rating
+                            Calendly Clicks
                           </p>
                           <p className="text-3xl font-bold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                            4.8
+                            0
                           </p>
                         </div>
                         <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
                         </div>
                       </div>
@@ -310,15 +312,15 @@ export default function TechnicianDashboard() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-purple-100 text-sm font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            Total Revenue
+                            Email Clicks
                           </p>
                           <p className="text-3xl font-bold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                            $2,450
+                            0
                           </p>
                         </div>
                         <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                           </svg>
                         </div>
                       </div>
@@ -328,54 +330,54 @@ export default function TechnicianDashboard() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-orange-100 text-sm font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            This Month
+                            Page Status
                           </p>
                           <p className="text-3xl font-bold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                            8
+                            Live
                           </p>
                         </div>
                         <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Custom Domain Section */}
-                  <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-100">
-                      <h3 className="text-lg font-semibold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                        Custom URL
-                      </h3>
-                    </div>
-                    <div className="p-6">
-                      <div className="flex flex-col sm:flex-row gap-4">
-                        <div className="flex-1">
-                          <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            Your Custom URL
-                          </label>
-                          <div className="flex items-center">
-                            <span className="text-gray-500 mr-2">servicehomie.com/</span>
-                            <input
-                              type="text"
-                              value={customDomain}
-                              onChange={(e) => setCustomDomain(e.target.value)}
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                              placeholder="your-business-name"
-                            />
-                          </div>
+                  {/* Custom URL Section */}
+                  <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                      Custom URL
+                    </h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          Your Landing Page URL
+                        </label>
+                        <div className="flex gap-3">
+                          <input
+                            type="text"
+                            value={customDomain}
+                            onChange={(e) => setCustomDomain(e.target.value)}
+                            placeholder="your-business-name"
+                            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
+                          />
+                          <button
+                            onClick={handleCustomDomain}
+                            disabled={saving}
+                            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                            style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                          >
+                            {saving ? 'Saving...' : 'Save URL'}
+                          </button>
                         </div>
-                        <button
-                          onClick={handleCustomDomain}
-                          disabled={saving}
-                          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-                          style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
-                        >
-                          {saving ? 'Saving...' : 'Save URL'}
-                        </button>
+                        <p className="text-sm text-gray-500 mt-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          This will be your public landing page URL
+                        </p>
                       </div>
+
                       {technicianProfile?.url_slug && (
                         <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
                           <p className="text-sm text-blue-800 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
@@ -399,63 +401,6 @@ export default function TechnicianDashboard() {
                           </div>
                         </div>
                       )}
-                      <p className="text-sm text-gray-600 mt-3" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                        This will be your public landing page URL. Choose something memorable and professional.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Quick Actions */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-shadow duration-300">
-                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
-                        <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                        Manage Bookings
-                      </h3>
-                      <p className="text-gray-600 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                        View and manage your upcoming appointments
-                      </p>
-                      <button className="text-blue-600 hover:text-blue-700 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                        View Bookings →
-                      </button>
-                    </div>
-
-                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-shadow duration-300">
-                      <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
-                        <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                        </svg>
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                        View Reviews
-                      </h3>
-                      <p className="text-gray-600 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                        See what your customers are saying about you
-                      </p>
-                      <button className="text-green-600 hover:text-green-700 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                        View Reviews →
-                      </button>
-                    </div>
-
-                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-shadow duration-300">
-                      <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
-                        <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                        </svg>
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                        Payment History
-                      </h3>
-                      <p className="text-gray-600 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                        Track your earnings and payment history
-                      </p>
-                      <button className="text-purple-600 hover:text-purple-700 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                        View Payments →
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -471,12 +416,12 @@ export default function TechnicianDashboard() {
                           Starter Plan
                         </h3>
                         <p className="text-blue-100 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                          Your subscription is active and you have access to all features.
+                          Your subscription is {technicianProfile?.subscription_status === 'active' ? 'active' : 'inactive'} and you have access to all features.
                         </p>
                         <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                          <div className={`w-3 h-3 ${technicianProfile?.subscription_status === 'active' ? 'bg-green-400' : 'bg-red-400'} rounded-full`}></div>
                           <span className="text-sm font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                            Active Subscription
+                            {technicianProfile?.subscription_status === 'active' ? 'Active Subscription' : 'Inactive Subscription'}
                           </span>
                         </div>
                       </div>
@@ -491,320 +436,360 @@ export default function TechnicianDashboard() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
                       <h4 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                        Plan Features
-                      </h4>
-                      <div className="space-y-3">
-                        {[
-                          'Professional landing page',
-                          'Calendly booking integration',
-                          'Google Reviews integration',
-                          'Custom URL (servicehomie.com/yourname)',
-                          'Mobile responsive design',
-                          'Handle your own payments (0% commission)',
-                          'Profile photo upload',
-                          '24/7 customer support'
-                        ].map((feature, index) => (
-                          <div key={index} className="flex items-center gap-3">
-                            <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                            <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                              {feature}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
-                      <h4 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                        Billing Information
+                        Plan Details
                       </h4>
                       <div className="space-y-4">
-                        <div>
-                          <p className="text-sm text-gray-600 mb-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            Next billing date
-                          </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            Next billing date:
+                          </span>
                           <p className="text-gray-900 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                            January 15, 2025
+                            {technicianProfile?.subscription_end_date ? new Date(technicianProfile.subscription_end_date).toLocaleDateString() : 'N/A'}
                           </p>
                         </div>
-                        <div>
-                          <p className="text-sm text-gray-600 mb-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            Payment method
-                          </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            Payment method:
+                          </span>
                           <p className="text-gray-900 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                            •••• •••• •••• 4242
+                            {technicianProfile?.stripe_subscription_id ? 'Connected to Stripe' : 'Not connected'}
                           </p>
                         </div>
-                        <button className="w-full bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                          Manage Billing
-                        </button>
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+                      <h4 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                        What's Included
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            Professional landing page
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            Custom URL
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            Calendly integration
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            Google Reviews integration
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            Mobile responsive design
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Bookings Tab */}
-              {activeTab === 'bookings' && (
-                <div className="space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <h3 className="text-xl font-semibold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                      Recent Bookings
-                    </h3>
-                    <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                      View All Bookings
-                    </button>
-                  </div>
-
-                  <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                          <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                              Customer
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                              Service
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                              Date & Time
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                              Status
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                              Amount
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                          {[
-                            { customer: 'Sarah Johnson', service: 'Window Cleaning', date: 'Jan 15, 2025', time: '9:00 AM', status: 'Confirmed', amount: '$120' },
-                            { customer: 'Mike Rodriguez', service: 'Gutter Cleaning', date: 'Jan 16, 2025', time: '2:00 PM', status: 'Pending', amount: '$180' },
-                            { customer: 'Emily Chen', service: 'Pressure Washing', date: 'Jan 17, 2025', time: '10:30 AM', status: 'Confirmed', amount: '$250' }
-                          ].map((booking, index) => (
-                            <tr key={index} className="hover:bg-gray-50">
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                                  {booking.customer}
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                                  {booking.service}
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                                  {booking.date}
-                                </div>
-                                <div className="text-sm text-gray-500" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                                  {booking.time}
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                  booking.status === 'Confirmed' 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-yellow-100 text-yellow-800'
-                                }`} style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                                  {booking.status}
-                                </span>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                                {booking.amount}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Payments Tab */}
-              {activeTab === 'payments' && (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-blue-600 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                          $2,450
-                        </div>
-                        <div className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                          Total Earnings
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-green-600 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                          $580
-                        </div>
-                        <div className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                          This Month
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-purple-600 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                          24
-                        </div>
-                        <div className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                          Completed Jobs
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-100">
-                      <h3 className="text-lg font-semibold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                        Recent Transactions
+                {/* Bookings Tab */}
+                {activeTab === 'bookings' && (
+                  <div className="space-y-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                      <h3 className="text-xl font-semibold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                        Calendly Integration
                       </h3>
                     </div>
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                          <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                              Date
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                              Customer
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                              Service
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                              Amount
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                              Status
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                          {[
-                            { date: 'Jan 10, 2025', customer: 'Sarah Johnson', service: 'Window Cleaning', amount: '$120', status: 'Paid' },
-                            { date: 'Jan 8, 2025', customer: 'Mike Rodriguez', service: 'Gutter Cleaning', amount: '$180', status: 'Paid' },
-                            { date: 'Jan 5, 2025', customer: 'Emily Chen', service: 'Pressure Washing', amount: '$250', status: 'Paid' }
-                          ].map((transaction, index) => (
-                            <tr key={index} className="hover:bg-gray-50">
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                                {transaction.date}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                                  {transaction.customer}
+
+                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-lg font-semibold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                            Connect Your Calendly
+                          </h4>
+                          <p className="text-gray-600 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            Link your Calendly account to allow customers to book appointments directly from your landing page.
+                          </p>
+                          
+                          <div className="space-y-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                                Calendly Link
+                              </label>
+                              <div className="flex gap-3">
+                                <input
+                                  type="url"
+                                  value={calendlyLink}
+                                  onChange={(e) => setCalendlyLink(e.target.value)}
+                                  placeholder="https://calendly.com/your-name"
+                                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
+                                />
+                                <button
+                                  onClick={handleCalendlySave}
+                                  disabled={saving}
+                                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                                >
+                                  {saving ? 'Saving...' : 'Save'}
+                                </button>
+                              </div>
+                            </div>
+
+                            {calendlyLink && (
+                              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                                <div className="flex items-center">
+                                  <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                  </svg>
+                                  <span className="text-green-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                                    Calendly Connected
+                                  </span>
                                 </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                                  {transaction.service}
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                                {transaction.amount}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                                  {transaction.status}
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                                <p className="text-green-700 text-sm mt-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                                  Your Calendly is now linked to your landing page
+                                </p>
+                                <a
+                                  href={calendlyLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center text-green-600 hover:text-green-700 text-sm font-medium mt-2"
+                                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                                >
+                                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                  </svg>
+                                  View Calendly
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-blue-50 rounded-2xl border border-blue-200 p-6">
+                      <h4 className="text-lg font-semibold text-blue-900 mb-3" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                        How it works
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="flex items-start space-x-3">
+                          <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                            1
+                          </div>
+                          <div>
+                            <p className="text-blue-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                              Connect your Calendly account
+                            </p>
+                            <p className="text-blue-700 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                              Add your Calendly link above to enable booking functionality
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-start space-x-3">
+                          <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                            2
+                          </div>
+                          <div>
+                            <p className="text-blue-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                              Customers book through your landing page
+                            </p>
+                            <p className="text-blue-700 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                              Visitors can schedule appointments directly from your Service Homie page
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-start space-x-3">
+                          <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                            3
+                          </div>
+                          <div>
+                            <p className="text-blue-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                              Manage everything in Calendly
+                            </p>
+                            <p className="text-blue-700 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                              All appointments, payments, and scheduling are handled through your Calendly dashboard
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {/* Reviews Tab */}
               {activeTab === 'reviews' && (
                 <div className="space-y-6">
-                  <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                      <div>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                          Customer Reviews
-                        </h3>
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <svg key={star} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z" />
-                              </svg>
-                            ))}
-                          </div>
-                          <span className="text-lg font-bold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                            4.8
-                          </span>
-                          <span className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            (127 reviews)
-                          </span>
-                        </div>
-                      </div>
-                      <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                        View All Reviews
-                      </button>
-                    </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <h3 className="text-xl font-semibold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                      Google Reviews Integration
+                    </h3>
+                  </div>
 
-                    <div className="space-y-6">
-                      {[
-                        {
-                          name: 'Sarah Johnson',
-                          rating: 5,
-                          date: '2 days ago',
-                          comment: 'Amazing service! John was professional, punctual, and did an incredible job on our windows. The results were better than expected and the price was very reasonable. Highly recommend!'
-                        },
-                        {
-                          name: 'Mike Rodriguez',
-                          rating: 5,
-                          date: '1 week ago',
-                          comment: 'Best window cleaning service in the area. Fair pricing, excellent work, and very reliable. Will definitely use again and recommend to friends and family.'
-                        },
-                        {
-                          name: 'Emily Chen',
-                          rating: 4,
-                          date: '2 weeks ago',
-                          comment: 'Great service overall. The windows look fantastic and the team was very professional. Only giving 4 stars because they were a bit late, but the quality of work made up for it.'
-                        }
-                      ].map((review, index) => (
-                        <div key={index} className="border border-gray-200 rounded-xl p-6">
-                          <div className="flex items-start justify-between mb-4">
-                            <div>
-                              <div className="flex items-center gap-2 mb-2">
-                                <div className="flex items-center">
-                                  {[1, 2, 3, 4, 5].map((star) => (
-                                    <svg key={star} className={`w-4 h-4 ${star <= review.rating ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
-                                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z" />
-                                    </svg>
-                                  ))}
-                                </div>
-                                <span className="text-sm text-gray-500" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                                  {review.date}
-                                </span>
-                              </div>
-                              <h4 className="font-semibold text-gray-900" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                                {review.name}
-                              </h4>
+                  <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                        <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-lg font-semibold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                          Connect Your Google Business
+                        </h4>
+                        <p className="text-gray-600 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          Link your Google Business profile to display your reviews on your landing page.
+                        </p>
+                        
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                              Google Business URL
+                            </label>
+                            <div className="flex gap-3">
+                              <input
+                                type="url"
+                                value={googleBusinessUrl}
+                                onChange={(e) => setGoogleBusinessUrl(e.target.value)}
+                                placeholder="https://maps.google.com/your-business"
+                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
+                              />
+                              <button
+                                onClick={handleGoogleBusinessSave}
+                                disabled={saving}
+                                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                                style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                              >
+                                {saving ? 'Saving...' : 'Save'}
+                              </button>
                             </div>
                           </div>
-                          <p className="text-gray-700 leading-relaxed" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            {review.comment}
+
+                          {googleBusinessUrl && (
+                            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                              <div className="flex items-center">
+                                <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                                <span className="text-green-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                                  Google Business Connected
+                                </span>
+                              </div>
+                              <p className="text-green-700 text-sm mt-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                                Your Google reviews will now appear on your landing page
+                              </p>
+                              <a
+                                href={googleBusinessUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center text-green-600 hover:text-green-700 text-sm font-medium mt-2"
+                                style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                              >
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                View Google Business
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-green-50 rounded-2xl border border-green-200 p-6">
+                    <h4 className="text-lg font-semibold text-green-900 mb-3" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                      How to find your Google Business URL
+                    </h4>
+                    <div className="space-y-3">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                          1
+                        </div>
+                        <div>
+                          <p className="text-green-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                            Go to Google Maps
+                          </p>
+                          <p className="text-green-700 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            Search for your business name on Google Maps
                           </p>
                         </div>
-                      ))}
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                          2
+                        </div>
+                        <div>
+                          <p className="text-green-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                            Click on your business listing
+                          </p>
+                          <p className="text-green-700 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            Open your business profile from the search results
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                          3
+                        </div>
+                        <div>
+                          <p className="text-green-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                            Copy the URL
+                          </p>
+                          <p className="text-green-700 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            Copy the URL from your browser's address bar and paste it above
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Current Reviews Display */}
+                  <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                      Current Reviews
+                    </h4>
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                        </svg>
+                      </div>
+                      <h5 className="text-lg font-semibold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                        {googleBusinessUrl ? 'Reviews Connected' : 'No Reviews Connected'}
+                      </h5>
+                      <p className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        {googleBusinessUrl 
+                          ? 'Your Google reviews will appear on your landing page' 
+                          : 'Connect your Google Business to display reviews'
+                        }
+                      </p>
                     </div>
                   </div>
                 </div>

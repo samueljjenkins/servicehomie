@@ -3,52 +3,6 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
-const defaultServices = [
-  {
-    name: "Add your first service",
-    description: "Describe what you offer to customers",
-    price: "$0",
-  },
-];
-
-const socials = [
-  { name: "Instagram", href: "", icon: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-      <rect width="20" height="20" x="2" y="2" rx="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
-    </svg>
-  ) },
-  { name: "Facebook", href: "", icon: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-      <path d="M18 2h-3a4 4 0 0 0-4 4v3H7v4h4v8h4v-8h3l1-4h-4V6a1 1 0 0 1 1-1h3z" />
-    </svg>
-  ) },
-  { name: "YouTube", href: "", icon: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-      <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
-      <polygon points="9.75,15.02 15.5,11.75 9.75,8.48" />
-    </svg>
-  ) },
-  { name: "TikTok", href: "", icon: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-      <path d="M9 17a4 4 0 1 1 0-8h1V7h2v2h2v2h-2v6a2 2 0 1 1-2-2" />
-    </svg>
-  ) },
-  { name: "LinkedIn", href: "", icon: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-      <rect x="2" y="9" width="4" height="12" />
-      <circle cx="4" cy="4" r="2" />
-    </svg>
-  ) },
-  { name: "Twitter", href: "", icon: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-      <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
-    </svg>
-  ) },
-];
-
 export default function TechnicianPage() {
   const params = useParams();
   const slug = params.slug as string;
@@ -57,16 +11,11 @@ export default function TechnicianPage() {
   const [businessName, setBusinessName] = useState("Loading...");
   const [location, setLocation] = useState("Loading...");
   const [description, setDescription] = useState("Loading...");
-  const [services, setServices] = useState(defaultServices);
+  const [serviceType, setServiceType] = useState("");
+  const [hourlyRate, setHourlyRate] = useState("");
   const [email, setEmail] = useState("");
-  const [profileImage, setProfileImage] = useState("");
-  const [socialLinks, setSocialLinks] = useState(socials);
   const [calendlyLink, setCalendlyLink] = useState('');
-  const [paymentProcessor, setPaymentProcessor] = useState('');
-  const [paymentLink, setPaymentLink] = useState('');
-  const [selectedService, setSelectedService] = useState<{ name: string; description: string; price: string; icon: string } | null>(null);
-  const [googleBusinessName, setGoogleBusinessName] = useState('');
-  const [googlePlaceId, setGooglePlaceId] = useState('');
+  const [googleBusinessUrl, setGoogleBusinessUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -105,15 +54,11 @@ export default function TechnicianPage() {
           setBusinessName(data.business_name || "Your Business Name");
           setLocation(data.location || "Your City, State");
           setDescription(data.description || "Tell customers about your business and experience");
-          setServices(data.services || defaultServices);
+          setServiceType(data.service_type || "");
+          setHourlyRate(data.hourly_rate ? data.hourly_rate.toString() : "");
           setEmail(data.email || "");
-          setProfileImage(data.profile_image || "");
-          setSocialLinks(data.social_media ? JSON.parse(data.social_media) : socials);
           setCalendlyLink(data.calendly_link || '');
-          setPaymentProcessor(data.payment_processor || '');
-          setPaymentLink(data.payment_link || '');
-          setGoogleBusinessName(data.google_business_name || '');
-          setGooglePlaceId(data.google_place_id || '');
+          setGoogleBusinessUrl(data.google_business_url || '');
         }
       } catch (error) {
         console.error('Error loading technician data:', error);
@@ -154,207 +99,212 @@ export default function TechnicianPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-6">
-            <div className="mb-4 sm:mb-0">
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                {businessName}
-              </h1>
-              <p className="text-gray-600 mt-1">
-                {location}
+      {/* Main Content */}
+      <div className="max-w-md mx-auto p-8">
+        {/* Hero Section - Compact */}
+        <div className="text-center mb-8">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full mx-auto mb-4 shadow-lg flex items-center justify-center">
+            <span className="text-white text-2xl font-bold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+              {businessName.split(' ').map(word => word.charAt(0)).join('').toUpperCase()}
+            </span>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+            {businessName}
+          </h1>
+          <p className="text-lg text-gray-600 mb-3" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+            {location}
+          </p>
+          <p className="text-gray-700 text-sm leading-relaxed" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+            {description}
+          </p>
+        </div>
+
+        {/* Reviews - Compact with Real Mock Data */}
+        <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4 mb-6">
+          <div className="flex items-center justify-center gap-1 mb-3">
+            <span className="text-yellow-400 text-lg">★★★★★</span>
+            <span className="text-gray-600 text-sm font-semibold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+              4.9
+            </span>
+            <span className="text-gray-500 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+              (127 reviews)
+            </span>
+          </div>
+          
+          {/* Sample Reviews */}
+          <div className="space-y-3 mb-3">
+            <div className="bg-gray-50 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-yellow-400 text-sm">★★★★★</span>
+                <span className="text-gray-700 text-xs font-semibold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                  Sarah M.
+                </span>
+                <span className="text-gray-500 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                  2 days ago
+                </span>
+              </div>
+              <p className="text-gray-600 text-xs leading-relaxed" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                "Amazing service! Professional, punctual, and the results were incredible!"
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-3">
-              {calendlyLink && (
-                <a
-                  href={calendlyLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center"
-                >
-                  Book Now
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
-          <div className="p-8 text-center">
-            <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              {businessName}
-            </h2>
-            <p className="text-xl text-gray-600 mb-6">
-              Professional Service Provider
-            </p>
-            <p className="text-gray-700 max-w-2xl mx-auto mb-8">
-              {description}
-            </p>
             
-            {calendlyLink && (
-              <a
-                href={calendlyLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 font-medium"
-              >
-                Book Now
-              </a>
-            )}
+            <div className="bg-gray-50 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-yellow-400 text-sm">★★★★★</span>
+                <span className="text-gray-700 text-xs font-semibold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                  Mike R.
+                </span>
+                <span className="text-gray-500 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                  1 week ago
+                </span>
+              </div>
+              <p className="text-gray-600 text-xs leading-relaxed" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                "Best service in the area. Fair pricing and spotless results!"
+              </p>
+            </div>
           </div>
+          
+          <button className="w-full bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors text-xs font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+            View All 127 Reviews
+          </button>
         </div>
 
-        {/* Stats Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
-            <div className="text-3xl font-bold text-blue-600 mb-2">
-              50+
-            </div>
-            <div className="text-gray-600">Happy Customers</div>
-          </div>
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
-            <div className="text-3xl font-bold text-green-600 mb-2">
-              4.8
-            </div>
-            <div className="text-gray-600">Average Rating</div>
-          </div>
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
-            <div className="text-3xl font-bold text-purple-600 mb-2">
-              100+
-            </div>
-            <div className="text-gray-600">Jobs Completed</div>
-          </div>
-        </div>
-
-        {/* Services Section */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
-          <div className="px-8 py-6 border-b border-gray-100">
-            <h3 className="text-2xl font-bold text-gray-900">Services</h3>
-          </div>
-          <div className="p-8">
-            <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
-              <div className="flex items-center justify-between">
+        {/* Services - Compact */}
+        <div className="space-y-3 mb-6">
+          <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white text-lg">🏠</span>
+                </div>
                 <div>
-                  <h4 className="text-xl font-semibold text-gray-900 mb-2">
-                    Professional Service
-                  </h4>
-                  <p className="text-gray-600 mb-2">
-                    {description}
-                  </p>
-                  <p className="text-blue-600 font-semibold">
-                    Starting at $50/hour
+                  <h3 className="font-bold text-gray-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                    {serviceType || 'Professional Service'}
+                  </h3>
+                  <p className="text-gray-600 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                    {description || 'Professional service provider'}
                   </p>
                 </div>
-                {calendlyLink && (
-                  <a
-                    href={calendlyLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                  >
-                    Book Service
-                  </a>
-                )}
+              </div>
+              <div className="text-right">
+                <p className="text-lg font-bold text-blue-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                  ${hourlyRate || 50}+
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* About Section */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
-          <div className="px-8 py-6 border-b border-gray-100">
-            <h3 className="text-2xl font-bold text-gray-900">About</h3>
-          </div>
-          <div className="p-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Business Information</h4>
-                <div className="space-y-3">
-                  {location && (
-                    <div className="flex items-center">
-                      <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      <span className="text-gray-700">{location}</span>
-                    </div>
-                  )}
-                  {email && (
-                    <div className="flex items-center">
-                      <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                      <span className="text-gray-700">{email}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
+        {/* Booking CTA - Compact with Real Calendly */}
+        <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4 text-center">
+          <h3 className="font-bold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+            Book Your Service
+          </h3>
+          <p className="text-gray-600 text-xs mb-3" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+            Schedule your service today
+          </p>
+          
+          {/* Mock Calendly Calendar */}
+          <div className="bg-white rounded-lg border border-gray-200 p-4 mb-3">
+            <div className="text-center mb-4">
+              <h4 className="font-semibold text-gray-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                Select a Date & Time
+              </h4>
+              <p className="text-gray-500 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                Available times for {businessName}
+              </p>
+            </div>
+            
+            {/* Mock Calendar Grid */}
+            <div className="grid grid-cols-7 gap-1 mb-4">
+              {/* Calendar Header */}
+              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>S</div>
+              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>M</div>
+              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>T</div>
+              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>W</div>
+              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>T</div>
+              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>F</div>
+              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>S</div>
               
-              <div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Why Choose Us</h4>
-                <div className="space-y-3">
-                  <div className="flex items-center">
-                    <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-gray-700">Professional & Reliable</span>
-                  </div>
-                  <div className="flex items-center">
-                    <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-gray-700">Quality Guaranteed</span>
-                  </div>
-                  <div className="flex items-center">
-                    <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-gray-700">Satisfaction Guaranteed</span>
-                  </div>
-                </div>
+              {/* Calendar Days */}
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>28</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>29</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>30</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>1</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>2</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>3</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>4</div>
+              
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>5</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>6</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>7</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>8</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>9</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>10</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>11</div>
+              
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>12</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>13</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>14</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>15</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>16</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>17</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>18</div>
+              
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>19</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>20</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>21</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>22</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>23</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>24</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>25</div>
+              
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>26</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>27</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>28</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>29</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>30</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>31</div>
+              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>1</div>
+            </div>
+            
+            {/* Mock Time Slots */}
+            <div className="space-y-2">
+              <div className="text-xs font-semibold text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                Available Times
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button className="bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs text-blue-700 hover:bg-blue-100 transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                  9:00 AM
+                </button>
+                <button className="bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs text-blue-700 hover:bg-blue-100 transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                  10:30 AM
+                </button>
+                <button className="bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs text-blue-700 hover:bg-blue-100 transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                  1:00 PM
+                </button>
+                <button className="bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs text-blue-700 hover:bg-blue-100 transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                  2:30 PM
+                </button>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Contact Section */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-          <div className="px-8 py-6 border-b border-gray-100">
-            <h3 className="text-2xl font-bold text-gray-900">Get In Touch</h3>
-          </div>
-          <div className="p-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {calendlyLink && (
-                <a
-                  href={calendlyLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center font-medium"
-                >
-                  Schedule a Service
-                </a>
-              )}
-              {email && (
-                <a
-                  href={`mailto:${email}`}
-                  className="bg-gray-100 text-gray-700 px-6 py-4 rounded-lg hover:bg-gray-200 transition-all duration-300 shadow-sm hover:shadow-md text-center font-medium"
-                >
-                  Send Email
-                </a>
-              )}
-            </div>
-          </div>
+          
+          {calendlyLink ? (
+            <a
+              href={calendlyLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors font-semibold text-sm inline-block"
+              style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+            >
+              Book Now
+            </a>
+          ) : (
+            <button className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors font-semibold text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+              Book Now
+            </button>
+          )}
         </div>
       </div>
     </div>
