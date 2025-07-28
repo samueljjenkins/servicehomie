@@ -82,6 +82,16 @@ export default function TechnicianDashboard() {
   const fetchTechnicianProfile = async () => {
     try {
       console.log('Fetching profile for user:', userId);
+      console.log('User ID type:', typeof userId);
+      console.log('User ID length:', userId?.length);
+      
+      if (!userId) {
+        console.log('No userId available');
+        setTechnicianProfile(null);
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('technician_profiles')
         .select('*')
@@ -92,6 +102,20 @@ export default function TechnicianDashboard() {
 
       if (error) {
         console.error('Error fetching profile:', error);
+        console.error('Error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        
+        // If it's a UUID format error, provide specific guidance
+        if (error.message?.includes('uuid') || error.message?.includes('invalid input syntax')) {
+          console.error('UUID FORMAT ERROR DETECTED');
+          console.error('This suggests the database column is expecting UUID format but receiving string format from Clerk');
+          console.error('Please run the fix_user_profile_id.sql script in your Supabase dashboard');
+        }
+        
         // If no profile exists, we'll handle this in the UI
         setTechnicianProfile(null);
       } else if (data) {
