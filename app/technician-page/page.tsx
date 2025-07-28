@@ -13,34 +13,29 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface TechnicianProfile {
   id: string;
-  user_id: string;
-  business_name: string;
-  service_type: string;
-  description: string;
-  hourly_rate: number;
-  availability: string;
+  user_profile_id: string;
+  name: string;
   location: string;
-  phone: string;
+  bio: string;
   email: string;
-  website: string;
-  social_media: string;
-  certifications: string;
-  insurance: boolean;
-  background_check: boolean;
-  profile_image: string;
-  gallery_images: string[];
-  rating: number;
-  review_count: number;
-  completed_jobs: number;
-  response_time: string;
+  avatar: string;
+  services: any[];
+  reviews: any[];
+  created_at: string;
+  updated_at: string;
+  calendly_link: string;
   subscription_status: string;
-  stripe_subscription_id: string;
   subscription_start_date: string;
   subscription_end_date: string;
-  calendly_link: string;
-  google_business_url: string;
+  monthly_fee: number;
+  payment_processor: string;
+  payment_link: string;
+  stripe_customer_id: string;
+  stripe_subscription_id: string;
+  google_business_name: string;
+  google_place_id: string;
+  social_links: any[];
   url_slug: string;
-  services: any[];
 }
 
 export default function TechnicianPage() {
@@ -60,7 +55,7 @@ export default function TechnicianPage() {
       const { data, error } = await supabase
         .from('technician_profiles')
         .select('*')
-        .eq('user_id', userId)
+        .eq('user_profile_id', userId)
         .single();
 
       if (error) throw error;
@@ -112,7 +107,7 @@ export default function TechnicianPage() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-6">
               <div className="mb-4 sm:mb-0">
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  {profile.business_name || 'Your Business'}
+                  {profile.name || 'Your Business'}
                 </h1>
                 <p className="text-gray-600 mt-1">
                   {profile.location || 'Your Location'}
@@ -147,13 +142,10 @@ export default function TechnicianPage() {
                 </svg>
               </div>
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                {profile.business_name || 'Your Business Name'}
+                {profile.name || 'Your Business Name'}
               </h2>
               <p className="text-xl text-gray-600 mb-6">
-                {profile.service_type || 'Professional Service'}
-              </p>
-              <p className="text-gray-700 max-w-2xl mx-auto mb-8">
-                {profile.description || 'Professional service provider committed to quality and customer satisfaction.'}
+                {profile.bio || 'Professional service provider committed to quality and customer satisfaction.'}
               </p>
               
               {profile.calendly_link && (
@@ -173,21 +165,21 @@ export default function TechnicianPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
               <div className="text-3xl font-bold text-blue-600 mb-2">
-                {profile.completed_jobs || 0}
+                {profile.reviews?.length || 0}
               </div>
-              <div className="text-gray-600">Jobs Completed</div>
+              <div className="text-gray-600">Reviews</div>
             </div>
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
               <div className="text-3xl font-bold text-green-600 mb-2">
-                {profile.rating || 0}
+                {profile.services?.length || 0}
               </div>
-              <div className="text-gray-600">Average Rating</div>
+              <div className="text-gray-600">Services</div>
             </div>
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 text-center">
               <div className="text-3xl font-bold text-purple-600 mb-2">
-                {profile.review_count || 0}
+                {profile.subscription_status === 'active' ? 'Active' : 'Inactive'}
               </div>
-              <div className="text-gray-600">Reviews</div>
+              <div className="text-gray-600">Subscription</div>
             </div>
           </div>
 
@@ -201,14 +193,14 @@ export default function TechnicianPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="text-xl font-semibold text-gray-900 mb-2">
-                      {profile.service_type || 'Professional Service'}
+                      {profile.services?.length > 0 ? profile.services[0].name : 'No Services Listed'}
                     </h4>
                     <p className="text-gray-600 mb-2">
-                      {profile.description || 'Professional service with attention to detail and quality workmanship.'}
+                      {profile.services?.length > 0 ? profile.services[0].description : 'No description available.'}
                     </p>
-                    {profile.hourly_rate && (
+                    {profile.services?.length > 0 && profile.services[0].price && (
                       <p className="text-blue-600 font-semibold">
-                        Starting at ${profile.hourly_rate}/hour
+                        Starting at ${profile.services[0].price}/hour
                       </p>
                     )}
                   </div>
@@ -246,22 +238,6 @@ export default function TechnicianPage() {
                         <span className="text-gray-700">{profile.location}</span>
                       </div>
                     )}
-                    {profile.availability && (
-                      <div className="flex items-center">
-                        <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span className="text-gray-700">{profile.availability}</span>
-                      </div>
-                    )}
-                    {profile.phone && (
-                      <div className="flex items-center">
-                        <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                        </svg>
-                        <span className="text-gray-700">{profile.phone}</span>
-                      </div>
-                    )}
                     {profile.email && (
                       <div className="flex items-center">
                         <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -276,28 +252,28 @@ export default function TechnicianPage() {
                 <div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-4">Qualifications</h4>
                   <div className="space-y-3">
-                    {profile.insurance && (
+                    {profile.subscription_status === 'active' && (
                       <div className="flex items-center">
                         <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
-                        <span className="text-gray-700">Liability Insurance</span>
+                        <span className="text-gray-700">Active Subscription</span>
                       </div>
                     )}
-                    {profile.background_check && (
+                    {profile.google_business_name && (
                       <div className="flex items-center">
                         <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
-                        <span className="text-gray-700">Background Check Verified</span>
+                        <span className="text-gray-700">Google Business Profile Linked</span>
                       </div>
                     )}
-                    {profile.certifications && (
-                      <div className="flex items-start">
+                    {profile.calendly_link && (
+                      <div className="flex items-center">
                         <svg className="w-5 h-5 text-blue-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                         </svg>
-                        <span className="text-gray-700">{profile.certifications}</span>
+                        <span className="text-gray-700">Calendly Integration</span>
                       </div>
                     )}
                   </div>
@@ -323,12 +299,12 @@ export default function TechnicianPage() {
                     Schedule a Service
                   </a>
                 )}
-                {profile.phone && (
+                {profile.email && (
                   <a
-                    href={`tel:${profile.phone}`}
+                    href={`mailto:${profile.email}`}
                     className="bg-gray-100 text-gray-700 px-6 py-4 rounded-lg hover:bg-gray-200 transition-all duration-300 shadow-sm hover:shadow-md text-center font-medium"
                   >
-                    Call Now
+                    Send Email
                   </a>
                 )}
               </div>
