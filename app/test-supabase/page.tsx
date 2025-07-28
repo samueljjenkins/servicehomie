@@ -10,37 +10,65 @@ export default function TestSupabase() {
   const [profiles, setProfiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [schema, setSchema] = useState<any>(null);
 
   useEffect(() => {
-    async function fetchProfiles() {
+    async function fetchData() {
       try {
-        console.log('Fetching all technician profiles...');
+        console.log('=== DATABASE SCHEMA TEST ===');
+        console.log('Supabase URL:', supabaseUrl);
+        console.log('Supabase Key exists:', !!supabaseAnonKey);
+
+        // First, let's try to get the schema information
+        console.log('Testing database connection...');
+        
+        // Try to fetch all profiles to see the structure
         const { data, error } = await supabase
+          .from('technician_profiles')
+          .select('*')
+          .limit(1);
+
+        console.log('Database test result:', { data, error });
+
+        if (error) {
+          console.error('Database error:', error);
+          setError(error.message);
+          return;
+        }
+
+        if (data && data.length > 0) {
+          console.log('Sample profile structure:', data[0]);
+          console.log('Available columns:', Object.keys(data[0]));
+          setSchema(data[0]);
+        }
+
+        // Now try to fetch all profiles
+        const { data: allProfiles, error: profilesError } = await supabase
           .from('technician_profiles')
           .select('*');
 
-        console.log('Supabase response:', { data, error });
+        console.log('All profiles result:', { allProfiles, profilesError });
 
-        if (error) {
-          console.error('Error fetching profiles:', error);
-          setError(error.message);
+        if (profilesError) {
+          console.error('Error fetching profiles:', profilesError);
+          setError(profilesError.message);
         } else {
-          console.log('Found profiles:', data);
-          setProfiles(data || []);
+          console.log('Found profiles:', allProfiles);
+          setProfiles(allProfiles || []);
         }
       } catch (err) {
         console.error('Error:', err);
-        setError('Failed to fetch profiles');
+        setError('Failed to fetch data');
       } finally {
         setLoading(false);
       }
     }
 
-    fetchProfiles();
+    fetchData();
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading database test...</div>;
   }
 
   if (error) {
@@ -49,7 +77,25 @@ export default function TestSupabase() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Technician Profiles in Database</h1>
+      <h1 className="text-2xl font-bold mb-4">Database Schema Test</h1>
+      
+      {schema && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-2">Database Schema</h2>
+          <div className="bg-gray-100 p-4 rounded">
+            <p><strong>Available columns:</strong></p>
+            <ul className="list-disc list-inside">
+              {Object.keys(schema).map((column) => (
+                <li key={column} className="font-mono text-sm">
+                  {column}: {typeof schema[column]} = {JSON.stringify(schema[column])}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      <h2 className="text-xl font-semibold mb-4">Technician Profiles in Database</h2>
       {profiles.length === 0 ? (
         <p>No technician profiles found in database.</p>
       ) : (
@@ -57,16 +103,9 @@ export default function TestSupabase() {
           {profiles.map((profile, index) => (
             <div key={index} className="border p-4 rounded">
               <h3 className="font-bold">Profile {index + 1}</h3>
-              <p><strong>User ID:</strong> {profile.user_id}</p>
-              <p><strong>Business Name:</strong> {profile.business_name}</p>
-              <p><strong>URL Slug:</strong> {profile.url_slug || 'NOT SET'}</p>
-              <p><strong>Email:</strong> {profile.email}</p>
-              <p><strong>Location:</strong> {profile.location}</p>
-              <p><strong>Service Type:</strong> {profile.service_type}</p>
-              <p><strong>Description:</strong> {profile.description}</p>
-              <p><strong>Hourly Rate:</strong> {profile.hourly_rate}</p>
-              <p><strong>Calendly Link:</strong> {profile.calendly_link || 'NOT SET'}</p>
-              <p><strong>Google Business URL:</strong> {profile.google_business_url || 'NOT SET'}</p>
+              <pre className="text-xs bg-gray-100 p-2 rounded overflow-auto">
+                {JSON.stringify(profile, null, 2)}
+              </pre>
             </div>
           ))}
         </div>
