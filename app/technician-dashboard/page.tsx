@@ -55,6 +55,64 @@ export default function TechnicianDashboard() {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelling, setCancelling] = useState(false);
 
+  // Direct subscription check
+  useEffect(() => {
+    const checkSubscription = async () => {
+      if (!userId) return;
+      
+      try {
+        console.log('🔍 DASHBOARD: Checking subscription directly');
+        const { data: userProfile, error: userError } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('clerk_user_id', userId)
+          .single();
+
+        if (userError) {
+          console.log('🔍 DASHBOARD: No user profile, redirecting to subscription');
+          window.location.href = '/subscription-required';
+          return;
+        }
+
+        const { data: techProfile, error: techError } = await supabase
+          .from('technician_profiles')
+          .select('*')
+          .eq('user_profile_id', userProfile.id)
+          .single();
+
+        if (techError) {
+          console.log('🔍 DASHBOARD: No tech profile, redirecting to subscription');
+          window.location.href = '/subscription-required';
+          return;
+        }
+
+        // Check if user has active subscription with real Stripe ID
+        const hasActiveSubscription = techProfile.subscription_status === 'active' && 
+                                    techProfile.stripe_subscription_id && 
+                                    techProfile.stripe_subscription_id.trim() !== '';
+
+        console.log('🔍 DASHBOARD: Subscription check result:', {
+          status: techProfile.subscription_status,
+          stripeId: techProfile.stripe_subscription_id,
+          hasActive: hasActiveSubscription
+        });
+
+        if (!hasActiveSubscription) {
+          console.log('🔍 DASHBOARD: No active subscription, redirecting');
+          window.location.href = '/subscription-required';
+          return;
+        }
+
+        console.log('🔍 DASHBOARD: Active subscription found, allowing access');
+      } catch (error) {
+        console.error('🔍 DASHBOARD: Error checking subscription:', error);
+        window.location.href = '/subscription-required';
+      }
+    };
+
+    checkSubscription();
+  }, [userId]);
+
   const tabs = [
     { id: 'overview', label: 'Overview', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
