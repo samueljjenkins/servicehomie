@@ -47,7 +47,7 @@ export default function DebugSubscription() {
         }
       } catch (error) {
         console.error('Debug: Error getting info:', error);
-        setDebugInfo({ error: error.message });
+        setDebugInfo({ error: error instanceof Error ? error.message : 'Unknown error' });
       }
 
       setLoading(false);
