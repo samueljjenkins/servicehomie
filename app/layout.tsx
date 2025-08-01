@@ -17,7 +17,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        elements: {
+          userButtonPopoverCard: {
+            userPreview: {
+              identifier: "emailAddress"
+            }
+          },
+          userProfile: {
+            identifier: "emailAddress"
+          }
+        }
+      }}
+    >
       <html lang="en">
         <body className={inter.className}>
           <ClientLayout>{children}</ClientLayout>
