@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
 import SubscriptionGuard from '@/components/SubscriptionGuard';
 
+// Immediate debugging
+console.log('🔍 DASHBOARD PAGE LOADED - SubscriptionGuard should be active');
+
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;

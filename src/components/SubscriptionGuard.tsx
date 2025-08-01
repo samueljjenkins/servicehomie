@@ -17,6 +17,14 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
   const [loading, setLoading] = useState(true);
   const [hasSubscription, setHasSubscription] = useState(false);
 
+  // Immediate debugging
+  console.log('🔒 SUBSCRIPTION GUARD RENDERED');
+  console.log('🔒 IsSignedIn:', isSignedIn);
+  console.log('🔒 UserId:', userId);
+  console.log('🔒 Pathname:', pathname);
+  console.log('🔒 Loading:', loading);
+  console.log('🔒 HasSubscription:', hasSubscription);
+
   const checkSubscription = useCallback(async () => {
     if (!isSignedIn || !userId) {
       console.log('SubscriptionGuard: Not signed in or no userId');
