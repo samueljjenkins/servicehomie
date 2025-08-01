@@ -173,53 +173,83 @@ export default function TechnicianPage() {
           </button>
         </div>
 
-        {/* Services - Compact */}
+        {/* Services Section */}
         <div className="space-y-3 mb-6">
-          <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-lg">🏠</span>
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                    Residential Cleaning
-                  </h3>
-                  <p className="text-gray-600 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                    Houses, apartments, condos
-                  </p>
+          {profile?.services && profile.services.length > 0 ? (
+            profile.services.map((service: any) => (
+              <div key={service.id} className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
+                      <span className="text-white text-lg">{service.emoji || '🔧'}</span>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                        {service.title || 'Service'}
+                      </h3>
+                      <p className="text-gray-600 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        {service.description || 'Service description'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-blue-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                      {service.price || '$0+'}
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-lg font-bold text-blue-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                  $120+
-                </p>
+            ))
+          ) : (
+            // Fallback to default services if none exist
+            <>
+              <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
+                      <span className="text-white text-lg">🏠</span>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                        Residential Cleaning
+                      </h3>
+                      <p className="text-gray-600 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        Houses, apartments, condos
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-blue-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                      $120+
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-lg">🏢</span>
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                    Commercial Cleaning
-                  </h3>
-                  <p className="text-gray-600 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                    Office buildings, storefronts
-                  </p>
+              <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
+                      <span className="text-white text-lg">🏢</span>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                        Commercial Cleaning
+                      </h3>
+                      <p className="text-gray-600 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        Office buildings, storefronts
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-blue-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                      $200+
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-lg font-bold text-blue-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                  $200+
-                </p>
-              </div>
-            </div>
-          </div>
+            </>
+          )}
         </div>
 
         {/* Booking CTA - Compact with Real Calendly */}

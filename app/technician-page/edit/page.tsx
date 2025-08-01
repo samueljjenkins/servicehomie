@@ -10,6 +10,14 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+interface Service {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  emoji: string;
+}
+
 interface TechnicianProfile {
   id: string;
   user_profile_id: string;
@@ -18,7 +26,7 @@ interface TechnicianProfile {
   bio: string;
   email: string;
   avatar: string;
-  services: any[];
+  services: Service[];
   reviews: any[];
   created_at: string;
   updated_at: string;
@@ -48,6 +56,22 @@ export default function EditTechnicianPage() {
   const [description, setDescription] = useState('');
   const [email, setEmail] = useState('');
   const [calendlyLink, setCalendlyLink] = useState('');
+  const [services, setServices] = useState<Service[]>([
+    {
+      id: '1',
+      title: 'Residential Cleaning',
+      description: 'Houses, apartments, condos',
+      price: '$120+',
+      emoji: '🏠'
+    },
+    {
+      id: '2',
+      title: 'Commercial Cleaning',
+      description: 'Office buildings, storefronts',
+      price: '$200+',
+      emoji: '🏢'
+    }
+  ]);
 
   useEffect(() => {
     if (userId) {
@@ -76,6 +100,11 @@ export default function EditTechnicianPage() {
         setDescription(data.bio || '');
         setEmail(data.email || '');
         setCalendlyLink(data.calendly_link || '');
+        
+        // Load services from database or use defaults
+        if (data.services && data.services.length > 0) {
+          setServices(data.services);
+        }
       }
     } catch (err) {
       console.error('Error:', err);
@@ -99,6 +128,7 @@ export default function EditTechnicianPage() {
           bio: description,
           email: email,
           calendly_link: calendlyLink,
+          services: services,
           updated_at: new Date().toISOString()
         })
         .eq('user_profile_id', userId);
@@ -115,7 +145,8 @@ export default function EditTechnicianPage() {
           location: location,
           bio: description,
           email: email,
-          calendly_link: calendlyLink
+          calendly_link: calendlyLink,
+          services: services
         } : null);
         
         // Hide success message after 3 seconds
@@ -128,6 +159,31 @@ export default function EditTechnicianPage() {
       setSaving(false);
     }
   };
+
+  const updateService = (id: string, field: keyof Service, value: string) => {
+    setServices(prev => prev.map(service => 
+      service.id === id ? { ...service, [field]: value } : service
+    ));
+  };
+
+  const addService = () => {
+    const newService: Service = {
+      id: Date.now().toString(),
+      title: 'New Service',
+      description: 'Service description',
+      price: '$0+',
+      emoji: '🔧'
+    };
+    setServices(prev => [...prev, newService]);
+  };
+
+  const removeService = (id: string) => {
+    if (services.length > 1) {
+      setServices(prev => prev.filter(service => service.id !== id));
+    }
+  };
+
+  const emojiOptions = ['🏠', '🏢', '🔧', '🧹', '🚿', '🌱', '🛠️', '⚡', '🔌', '🚰', '🔥', '❄️'];
 
   if (loading) {
     return (
@@ -315,59 +371,93 @@ export default function EditTechnicianPage() {
           </button>
         </div>
 
-        {/* Services Section - Read Only */}
+        {/* Services Section - Editable */}
         <div className="space-y-3 mb-6">
-          <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-lg">🏠</span>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-gray-900 text-lg" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+              Services
+            </h3>
+            <button
+              onClick={addService}
+              className="bg-green-600 text-white px-3 py-1 rounded-lg hover:bg-green-700 transition-colors text-xs font-medium"
+              style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+            >
+              + Add Service
+            </button>
+          </div>
+          
+          {services.map((service, index) => (
+            <div key={service.id} className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3 flex-1">
+                  {/* Emoji Selector */}
+                  <select
+                    value={service.emoji}
+                    onChange={(e) => updateService(service.id, 'emoji', e.target.value)}
+                    className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center text-white text-lg cursor-pointer border-0 focus:ring-2 focus:ring-blue-500"
+                  >
+                    {emojiOptions.map(emoji => (
+                      <option key={emoji} value={emoji} className="bg-white text-gray-900">
+                        {emoji}
+                      </option>
+                    ))}
+                  </select>
+                  
+                  <div className="flex-1">
+                    {/* Service Title */}
+                    <input
+                      type="text"
+                      value={service.title}
+                      onChange={(e) => updateService(service.id, 'title', e.target.value)}
+                      placeholder="Service Title"
+                      className="font-bold text-gray-900 text-sm bg-transparent border-b border-transparent hover:border-blue-300 focus:border-blue-500 focus:outline-none w-full transition-colors"
+                      style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}
+                    />
+                    
+                    {/* Service Description */}
+                    <input
+                      type="text"
+                      value={service.description}
+                      onChange={(e) => updateService(service.id, 'description', e.target.value)}
+                      placeholder="Service description"
+                      className="text-gray-600 text-xs bg-transparent border-b border-transparent hover:border-blue-300 focus:border-blue-500 focus:outline-none w-full transition-colors mt-1"
+                      style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                    Residential Cleaning
-                  </h3>
-                  <p className="text-gray-600 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                    Houses, apartments, condos
-                  </p>
+                
+                <div className="flex items-center gap-2">
+                  {/* Price */}
+                  <input
+                    type="text"
+                    value={service.price}
+                    onChange={(e) => updateService(service.id, 'price', e.target.value)}
+                    placeholder="$0+"
+                    className="text-lg font-bold text-blue-600 bg-transparent border-b border-transparent hover:border-blue-300 focus:border-blue-500 focus:outline-none text-right w-20 transition-colors"
+                    style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}
+                  />
+                  
+                  {/* Remove Button */}
+                  {services.length > 1 && (
+                    <button
+                      onClick={() => removeService(service.id)}
+                      className="text-red-500 hover:text-red-700 transition-colors p-1"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
-              </div>
-              <div className="text-right">
-                <p className="text-lg font-bold text-blue-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                  $120+
-                </p>
               </div>
             </div>
-          </div>
-
-          <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-lg">🏢</span>
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                    Commercial Cleaning
-                  </h3>
-                  <p className="text-gray-600 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                    Office buildings, storefronts
-                  </p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="text-lg font-bold text-blue-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                  $200+
-                </p>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Booking Section - Editable Calendly Link */}
         <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4 text-center">
           <h3 className="font-bold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-            Book Your Window Cleaning
+            Book Your Service
           </h3>
           <p className="text-gray-600 text-xs mb-3" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
             Schedule your service today
