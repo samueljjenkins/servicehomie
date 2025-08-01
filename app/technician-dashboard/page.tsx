@@ -42,7 +42,7 @@ interface TechnicianProfile {
 }
 
 export default function TechnicianDashboard() {
-  const { userId } = useAuth();
+  const { userId, isSignedIn } = useAuth();
   const { user } = useUser();
   const [activeTab, setActiveTab] = useState('overview');
   const [technicianProfile, setTechnicianProfile] = useState<TechnicianProfile | null>(null);
@@ -54,11 +54,22 @@ export default function TechnicianDashboard() {
   const [customDomain, setCustomDomain] = useState('');
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [subscriptionChecked, setSubscriptionChecked] = useState(false);
 
-  // Direct subscription check
+  // Direct subscription check - runs immediately
   useEffect(() => {
     const checkSubscription = async () => {
-      if (!userId) return;
+      // If not signed in, redirect to sign in
+      if (!isSignedIn) {
+        console.log('🔍 DASHBOARD: Not signed in, redirecting to sign in');
+        window.location.href = '/sign-in?redirect=/technician-dashboard';
+        return;
+      }
+
+      if (!userId) {
+        console.log('🔍 DASHBOARD: No userId, waiting...');
+        return;
+      }
       
       try {
         console.log('🔍 DASHBOARD: Checking subscription directly');
@@ -104,6 +115,7 @@ export default function TechnicianDashboard() {
         }
 
         console.log('🔍 DASHBOARD: Active subscription found, allowing access');
+        setSubscriptionChecked(true);
       } catch (error) {
         console.error('🔍 DASHBOARD: Error checking subscription:', error);
         window.location.href = '/subscription-required';
@@ -111,7 +123,19 @@ export default function TechnicianDashboard() {
     };
 
     checkSubscription();
-  }, [userId]);
+  }, [userId, isSignedIn]);
+
+  // Show loading while checking subscription
+  if (!subscriptionChecked || !isSignedIn) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking subscription status...</p>
+        </div>
+      </div>
+    );
+  }
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: (
