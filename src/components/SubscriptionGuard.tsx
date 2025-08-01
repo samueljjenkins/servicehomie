@@ -47,20 +47,16 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
         } : 'No profile');
         
         if (techProfile) {
-          // Check if user has an active subscription
-          const hasActiveSubscription = techProfile.subscription_status === 'active' && techProfile.stripe_subscription_id;
+          // Check if user has an active subscription with real Stripe ID
+          const hasActiveSubscription = techProfile.subscription_status === 'active' && 
+                                      techProfile.stripe_subscription_id && 
+                                      techProfile.stripe_subscription_id.trim() !== '';
+          
           console.log('SubscriptionGuard: Has active subscription?', hasActiveSubscription);
-          console.log('SubscriptionGuard: Status check:', techProfile.subscription_status === 'active');
-          console.log('SubscriptionGuard: Stripe ID check:', !!techProfile.stripe_subscription_id);
+          console.log('SubscriptionGuard: Status:', techProfile.subscription_status);
+          console.log('SubscriptionGuard: Stripe ID:', techProfile.stripe_subscription_id);
           
-          // Also check if status is 'pending' or 'inactive' - both require payment
-          const requiresPayment = techProfile.subscription_status === 'pending' || 
-                                techProfile.subscription_status === 'inactive' ||
-                                !techProfile.stripe_subscription_id;
-          
-          console.log('SubscriptionGuard: Requires payment?', requiresPayment);
-          
-          if (hasActiveSubscription && !requiresPayment) {
+          if (hasActiveSubscription) {
             console.log('Active subscription found, allowing access');
             setHasSubscription(true);
             setLoading(false);
@@ -149,6 +145,14 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
         console.log('SubscriptionGuard: No subscription found, forcing redirect');
         router.push('/subscription-required');
       }
+    }
+  });
+
+  // Immediate redirect if no subscription - this runs on every render
+  useEffect(() => {
+    if (!loading && isSignedIn && userId && !hasSubscription) {
+      console.log('SubscriptionGuard: IMMEDIATE REDIRECT - No subscription');
+      router.push('/subscription-required');
     }
   });
 
