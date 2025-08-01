@@ -71,6 +71,11 @@ export default function TechnicianDashboard() {
         return;
       }
       
+      // Prevent multiple checks
+      if (subscriptionChecked) {
+        return;
+      }
+      
       try {
         console.log('🔍 DASHBOARD: Checking subscription directly');
         const { data: userProfile, error: userError } = await supabase
@@ -123,7 +128,7 @@ export default function TechnicianDashboard() {
     };
 
     checkSubscription();
-  }, [userId, isSignedIn]);
+  }, [userId, isSignedIn, subscriptionChecked]);
 
   // Show loading while checking subscription
   if (!subscriptionChecked || !isSignedIn) {

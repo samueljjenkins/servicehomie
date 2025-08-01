@@ -32,7 +32,11 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
       return false;
     }
 
-    // Force fresh check by clearing any cached data
+    // Prevent multiple simultaneous checks
+    if (loading && hasSubscription) {
+      return true;
+    }
+
     console.log('SubscriptionGuard: Starting fresh subscription check for path:', pathname);
     console.log('SubscriptionGuard: Current userId:', userId);
     setLoading(true);
@@ -100,7 +104,7 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
       setLoading(false);
       return false;
     }
-  }, [isSignedIn, userId, router, pathname]);
+  }, [isSignedIn, userId, router, pathname, loading, hasSubscription]);
 
   // Check subscription on mount and route changes
   useEffect(() => {
@@ -129,19 +133,19 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
   useEffect(() => {
     const handleFocus = () => {
       console.log('SubscriptionGuard: Window focused, re-checking subscription');
-      if (!loading && isSignedIn && userId) {
+      if (!loading && isSignedIn && userId && !hasSubscription) {
         checkSubscription();
       }
     };
 
     window.addEventListener('focus', handleFocus);
     return () => window.removeEventListener('focus', handleFocus);
-  }, [checkSubscription, loading, isSignedIn, userId]);
+  }, [checkSubscription, loading, isSignedIn, userId, hasSubscription]);
 
   // Check subscription on visibility change (user switches tabs)
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (!document.hidden && !loading && isSignedIn && userId) {
+      if (!document.hidden && !loading && isSignedIn && userId && !hasSubscription) {
         console.log('SubscriptionGuard: Page visible, re-checking subscription');
         checkSubscription();
       }
@@ -149,39 +153,7 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [checkSubscription, loading, isSignedIn, userId]);
-
-  // Also check subscription on every render when not loading
-  useEffect(() => {
-    if (!loading && isSignedIn && userId && !hasSubscription) {
-      console.log('SubscriptionGuard: Re-checking subscription on render');
-      router.push('/subscription-required');
-    }
-  }, [loading, isSignedIn, userId, hasSubscription, router]);
-
-  // Force redirect if no subscription - this runs on every render
-  useEffect(() => {
-    if (!loading && isSignedIn && userId) {
-      console.log('SubscriptionGuard: Force checking subscription status');
-      console.log('SubscriptionGuard: Loading:', loading);
-      console.log('SubscriptionGuard: IsSignedIn:', isSignedIn);
-      console.log('SubscriptionGuard: UserId:', userId);
-      console.log('SubscriptionGuard: HasSubscription:', hasSubscription);
-      
-      if (!hasSubscription) {
-        console.log('SubscriptionGuard: No subscription found, forcing redirect');
-        router.push('/subscription-required');
-      }
-    }
-  });
-
-  // Immediate redirect if no subscription - this runs on every render
-  useEffect(() => {
-    if (!loading && isSignedIn && userId && !hasSubscription) {
-      console.log('SubscriptionGuard: IMMEDIATE REDIRECT - No subscription');
-      router.push('/subscription-required');
-    }
-  });
+  }, [checkSubscription, loading, isSignedIn, userId, hasSubscription]);
 
   if (loading) {
     return (
