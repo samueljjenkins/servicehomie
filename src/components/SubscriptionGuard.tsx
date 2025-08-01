@@ -83,11 +83,11 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
             return false;
           }
         } else {
-          // No technician profile found, redirect to subscription
-          console.log('No technician profile found, redirecting to subscription page');
-          router.push('/subscription-required');
+          // No technician profile found - allow access, dashboard will create one
+          console.log('No technician profile found, allowing access (dashboard will create profile)');
+          setHasSubscription(true);
           setLoading(false);
-          return false;
+          return true;
         }
       } else {
         // No user profile found, redirect to subscription
