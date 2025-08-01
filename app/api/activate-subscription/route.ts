@@ -1,53 +1,57 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
-import { supabase } from '@/lib/supabase';
-import { getUserProfile, getTechnicianProfile } from '@/lib/supabase-utils';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const { userId } = await request.json();
     
+    console.log('Activate subscription API received:', { userId });
+
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Missing userId' },
+        { status: 400 }
+      );
     }
 
-    // Get user profile
-    const userProfile = await getUserProfile(userId);
-    if (!userProfile) {
-      return NextResponse.json({ error: 'User profile not found' }, { status: 404 });
-    }
-
-    // Get technician profile
-    const technicianProfile = await getTechnicianProfile(userProfile.id);
-    if (!technicianProfile) {
-      return NextResponse.json({ error: 'Technician profile not found' }, { status: 404 });
-    }
-
-    // Update subscription status to active
-    const { data, error } = await supabase
+    // Update the database to set subscription as active with a test subscription ID
+    const { error: updateError } = await supabase
       .from('technician_profiles')
       .update({
         subscription_status: 'active',
+        stripe_subscription_id: 'sub_test_' + Date.now(), // Generate a test subscription ID
         subscription_start_date: new Date().toISOString(),
+        subscription_end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+        monthly_fee: 19,
+        updated_at: new Date().toISOString()
       })
-      .eq('id', technicianProfile.id)
-      .select();
+      .eq('user_profile_id', userId);
 
-    if (error) {
-      console.error('Error activating subscription:', error);
-      return NextResponse.json({ error: 'Failed to activate subscription' }, { status: 500 });
+    if (updateError) {
+      console.error('Error updating database:', updateError);
+      return NextResponse.json(
+        { error: 'Failed to activate subscription in database' },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Subscription activated successfully! You can now access your dashboard.',
-      data 
+    return NextResponse.json({
+      success: true,
+      message: 'Subscription activated successfully for testing',
+      subscription: {
+        status: 'active',
+        stripe_subscription_id: 'sub_test_' + Date.now()
+      }
     });
 
   } catch (error) {
     console.error('Error activating subscription:', error);
     return NextResponse.json(
-      { error: 'Failed to activate subscription' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

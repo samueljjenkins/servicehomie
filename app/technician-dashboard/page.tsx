@@ -742,6 +742,46 @@ export default function TechnicianDashboard() {
                           </p>
                         </div>
                       )}
+
+                      {/* Debug Section - Remove in production */}
+                      <div className="mt-6 pt-6 border-t border-gray-200">
+                        <h5 className="text-sm font-semibold text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                          Debug Info (Remove in production):
+                        </h5>
+                        <div className="text-xs text-gray-600 space-y-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <p>Status: {technicianProfile?.subscription_status || 'Not set'}</p>
+                          <p>Stripe ID: {technicianProfile?.stripe_subscription_id || 'Not set'}</p>
+                          <p>User ID: {userId}</p>
+                        </div>
+                        
+                        {!technicianProfile?.stripe_subscription_id && (
+                          <div className="mt-3">
+                            <button
+                              onClick={async () => {
+                                try {
+                                  const response = await fetch('/api/activate-subscription', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ userId })
+                                  });
+                                  if (response.ok) {
+                                    alert('Subscription activated for testing!');
+                                    window.location.reload();
+                                  } else {
+                                    alert('Failed to activate subscription');
+                                  }
+                                } catch (error) {
+                                  alert('Error activating subscription');
+                                }
+                              }}
+                              className="w-full bg-green-600 text-white px-3 py-1 rounded text-xs font-medium"
+                              style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                            >
+                              Activate Test Subscription
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6">
