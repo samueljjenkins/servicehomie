@@ -75,6 +75,21 @@ export default function TechnicianDashboard() {
     ) }
   ];
 
+  // Helper function to check if profile exists
+  const checkProfileExists = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('technician_profiles')
+        .select('id')
+        .eq('user_profile_id', userId)
+        .single();
+      
+      return { exists: !!data, error };
+    } catch (error) {
+      return { exists: false, error };
+    }
+  };
+
   useEffect(() => {
     if (userId) {
       fetchTechnicianProfile();
@@ -226,7 +241,21 @@ export default function TechnicianDashboard() {
 
         if (createError) {
           console.error('Error creating profile:', createError);
-          alert(`Error creating technician profile: ${createError.message}`);
+          
+          // Handle unique constraint violations
+          if (createError.code === '23505') {
+            if (createError.message.includes('user_profile_id')) {
+              alert('A profile already exists for this user. Please refresh the page.');
+            } else if (createError.message.includes('url_slug')) {
+              alert('This URL is already taken. Please choose a different one.');
+            } else if (createError.message.includes('email')) {
+              alert('This email is already registered. Please use a different email.');
+            } else {
+              alert('Profile already exists. Please refresh the page.');
+            }
+          } else {
+            alert(`Error creating technician profile: ${createError.message}`);
+          }
           return;
         }
 
