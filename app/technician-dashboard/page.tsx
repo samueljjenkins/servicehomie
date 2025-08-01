@@ -132,13 +132,11 @@ export default function TechnicianDashboard() {
           return;
         }
 
-        // Check if user has active subscription with real Stripe ID
-        const hasActiveSubscription = techProfile.subscription_status === 'active' && 
-                                    techProfile.stripe_subscription_id && 
+        // Check if user has a valid Stripe subscription ID
+        const hasActiveSubscription = techProfile.stripe_subscription_id && 
                                     techProfile.stripe_subscription_id.trim() !== '';
 
         console.log('🔍 DASHBOARD: Subscription check result:', {
-          status: techProfile.subscription_status,
           stripeId: techProfile.stripe_subscription_id,
           hasActive: hasActiveSubscription
         });

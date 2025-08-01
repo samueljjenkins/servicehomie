@@ -53,12 +53,10 @@ export async function GET(request: NextRequest) {
     console.log('Debug: Technician profile found:', technicianProfile);
 
     // Check subscription status
-    const hasActiveSubscription = technicianProfile.subscription_status === 'active' && 
-                                technicianProfile.stripe_subscription_id && 
+    const hasActiveSubscription = technicianProfile.stripe_subscription_id && 
                                 technicianProfile.stripe_subscription_id.trim() !== '';
 
     console.log('Debug: Subscription check:', {
-      status: technicianProfile.subscription_status,
       stripeId: technicianProfile.stripe_subscription_id,
       hasActive: hasActiveSubscription
     });
@@ -68,7 +66,6 @@ export async function GET(request: NextRequest) {
       userProfile,
       technicianProfile,
       hasActiveSubscription,
-      subscriptionStatus: technicianProfile.subscription_status,
       stripeSubscriptionId: technicianProfile.stripe_subscription_id,
       stripeCustomerId: technicianProfile.stripe_customer_id
     });

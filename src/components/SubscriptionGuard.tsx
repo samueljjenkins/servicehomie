@@ -70,13 +70,11 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
         } : 'No profile');
         
         if (techProfile) {
-          // Check if user has an active subscription with real Stripe ID
-          const hasActiveSubscription = techProfile.subscription_status === 'active' && 
-                                      techProfile.stripe_subscription_id && 
+          // Check if user has a valid Stripe subscription ID
+          const hasActiveSubscription = techProfile.stripe_subscription_id && 
                                       techProfile.stripe_subscription_id.trim() !== '';
           
           console.log('SubscriptionGuard: Has active subscription?', hasActiveSubscription);
-          console.log('SubscriptionGuard: Status:', techProfile.subscription_status);
           console.log('SubscriptionGuard: Stripe ID:', techProfile.stripe_subscription_id);
           
           if (hasActiveSubscription) {
@@ -86,7 +84,6 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
             return true;
           } else {
             console.log('No active subscription found, redirecting to subscription page');
-            console.log('Status:', techProfile.subscription_status);
             console.log('Stripe ID:', techProfile.stripe_subscription_id);
             console.log('Redirecting to /subscription-required');
             router.push('/subscription-required');
