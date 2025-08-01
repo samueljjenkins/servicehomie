@@ -49,6 +49,8 @@ export default function TechnicianDashboard() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [customDomain, setCustomDomain] = useState('');
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: (
@@ -299,22 +301,73 @@ export default function TechnicianDashboard() {
     if (!userId) return;
     
     setSaving(true);
+    
     try {
       const { error } = await supabase
         .from('technician_profiles')
-        .update({ google_business_name: googleBusinessUrl })
+        .update({
+          google_business_name: googleBusinessUrl,
+          updated_at: new Date().toISOString()
+        })
         .eq('user_profile_id', userId);
 
-      if (error) throw error;
-      
-      // Update local state
-      setTechnicianProfile(prev => prev ? { ...prev, google_business_name: googleBusinessUrl } : null);
-      alert('Google Business URL updated successfully!');
+      if (error) {
+        console.error('Error updating Google Business URL:', error);
+        alert('Error saving Google Business URL. Please try again.');
+      } else {
+        alert('Google Business URL saved successfully!');
+        // Update local profile state
+        setTechnicianProfile(prev => prev ? {
+          ...prev,
+          google_business_name: googleBusinessUrl
+        } : null);
+      }
     } catch (error: any) {
-      console.error('Error updating Google Business URL:', error);
-      alert(`Error updating Google Business URL: ${error.message || 'Please try again.'}`);
+      console.error('Error:', error);
+      alert('Error saving Google Business URL. Please try again.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!userId) return;
+    
+    setCancelling(true);
+    
+    try {
+      // Call the cancel subscription API
+      const response = await fetch('/api/cancel-subscription', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: userId,
+          subscriptionId: technicianProfile?.stripe_subscription_id
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Update local profile state
+        setTechnicianProfile(prev => prev ? {
+          ...prev,
+          subscription_status: 'cancelled',
+          subscription_end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days from now
+        } : null);
+        
+        alert('Subscription cancelled successfully. You will have access until the end of your current billing period.');
+        setShowCancelModal(false);
+      } else {
+        alert(result.error || 'Error cancelling subscription. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error cancelling subscription:', error);
+      alert('Error cancelling subscription. Please try again.');
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -650,7 +703,33 @@ export default function TechnicianDashboard() {
                             ${technicianProfile?.monthly_fee || 19}/month
                           </p>
                         </div>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                          <span className="text-gray-600 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            Status:
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 ${technicianProfile?.subscription_status === 'active' ? 'bg-green-500' : 'bg-red-500'} rounded-full`}></div>
+                            <p className={`font-medium text-sm sm:text-base capitalize ${technicianProfile?.subscription_status === 'active' ? 'text-green-600' : 'text-red-600'}`} style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                              {technicianProfile?.subscription_status || 'Inactive'}
+                            </p>
+                          </div>
+                        </div>
                       </div>
+                      
+                      {technicianProfile?.subscription_status === 'active' && (
+                        <div className="mt-6 pt-6 border-t border-gray-200">
+                          <button
+                            onClick={() => setShowCancelModal(true)}
+                            className="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 font-medium"
+                            style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                          >
+                            Cancel Subscription
+                          </button>
+                          <p className="text-xs text-gray-500 mt-2 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            You'll have access until the end of your current billing period
+                          </p>
+                        </div>
+                      )}
                     </div>
 
                     <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6">
@@ -990,6 +1069,37 @@ export default function TechnicianDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Cancel Subscription Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+              Cancel Subscription
+            </h3>
+            <p className="text-gray-600 mb-6" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+              Are you sure you want to cancel your subscription? You will lose access to all features and your page will be removed.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
+                style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+              >
+                No, Keep Subscription
+              </button>
+              <button
+                onClick={handleCancelSubscription}
+                disabled={cancelling}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+              >
+                {cancelling ? 'Cancelling...' : 'Yes, Cancel Subscription'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </SubscriptionGuard>
   );
 }
