@@ -210,7 +210,7 @@ export default function TechnicianDashboard() {
           location: 'Your City, State',
           bio: 'Tell customers about your business and experience',
           email: user?.emailAddresses?.[0]?.emailAddress || '',
-          subscription_status: 'active',
+          subscription_status: 'inactive', // Changed from 'active' to 'inactive'
           monthly_fee: 19
         };
         
@@ -235,25 +235,30 @@ export default function TechnicianDashboard() {
         alert('Custom URL created successfully! Your page is now available at: servicehomie.com/' + formattedSlug);
       } else if (profileError) {
         console.error('Error checking profile:', profileError);
-        alert(`Error checking technician profile: ${profileError.message}`);
+        alert('Error checking profile. Please try again.');
         return;
       } else {
         // Profile exists, update it
         console.log('Updating existing profile...');
-        const { error } = await supabase
+        const { data: updatedProfile, error: updateError } = await supabase
           .from('technician_profiles')
-          .update({ url_slug: formattedSlug })
-          .eq('user_profile_id', userId);
+          .update({
+            url_slug: formattedSlug,
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_profile_id', userId)
+          .select()
+          .single();
 
-        console.log('Update result:', { error });
+        console.log('Profile update result:', { updatedProfile, updateError });
 
-        if (error) {
-          console.error('Error updating profile:', error);
-          throw error;
+        if (updateError) {
+          console.error('Error updating profile:', updateError);
+          alert(`Error updating technician profile: ${updateError.message}`);
+          return;
         }
-        
-        // Update local state
-        setTechnicianProfile(prev => prev ? { ...prev, url_slug: formattedSlug } : null);
+
+        setTechnicianProfile(updatedProfile);
         setCustomDomain(formattedSlug);
         alert('Custom URL updated successfully! Your page is now available at: servicehomie.com/' + formattedSlug);
       }
