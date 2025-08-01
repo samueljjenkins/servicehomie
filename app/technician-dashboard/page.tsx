@@ -225,7 +225,7 @@ export default function TechnicianDashboard() {
           location: 'Your City, State',
           bio: 'Tell customers about your business and experience',
           email: user?.emailAddresses?.[0]?.emailAddress || '',
-          subscription_status: 'inactive', // Changed from 'active' to 'inactive'
+          subscription_status: 'pending', // Changed from 'inactive' to 'pending'
           monthly_fee: 19
         };
         

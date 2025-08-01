@@ -53,7 +53,14 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
           console.log('SubscriptionGuard: Status check:', techProfile.subscription_status === 'active');
           console.log('SubscriptionGuard: Stripe ID check:', !!techProfile.stripe_subscription_id);
           
-          if (hasActiveSubscription) {
+          // Also check if status is 'pending' or 'inactive' - both require payment
+          const requiresPayment = techProfile.subscription_status === 'pending' || 
+                                techProfile.subscription_status === 'inactive' ||
+                                !techProfile.stripe_subscription_id;
+          
+          console.log('SubscriptionGuard: Requires payment?', requiresPayment);
+          
+          if (hasActiveSubscription && !requiresPayment) {
             console.log('Active subscription found, allowing access');
             setHasSubscription(true);
             setLoading(false);
