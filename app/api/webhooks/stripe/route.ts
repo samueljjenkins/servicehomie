@@ -42,36 +42,60 @@ export async function POST(request: NextRequest) {
         
         if (session.mode === 'subscription') {
           const technicianProfileId = session.metadata?.technicianProfileId;
+          const userId = session.metadata?.userId;
           const subscriptionId = session.subscription as string;
           
-          console.log('Updating technician profile:', {
+          console.log('Webhook processing:', {
             technicianProfileId,
+            userId,
             subscriptionId,
             customerId: session.customer
           });
           
-          if (technicianProfileId && subscriptionId) {
-            // First try to update by the provided technicianProfileId
-            let { data, error } = await supabase
-              .from('technician_profiles')
-              .update({
-                subscription_status: 'active',
-                subscription_start_date: new Date().toISOString(),
-                stripe_subscription_id: subscriptionId,
-                stripe_customer_id: session.customer as string,
-                monthly_fee: 19,
-                updated_at: new Date().toISOString()
-              })
-              .eq('id', technicianProfileId)
-              .select();
+          if (subscriptionId) {
+            let updateSuccess = false;
+            
+            // First try to update by technicianProfileId if available
+            if (technicianProfileId) {
+              console.log('Trying to update by technicianProfileId:', technicianProfileId);
+              const { data, error } = await supabase
+                .from('technician_profiles')
+                .update({
+                  subscription_status: 'active',
+                  subscription_start_date: new Date().toISOString(),
+                  stripe_subscription_id: subscriptionId,
+                  stripe_customer_id: session.customer as string,
+                  monthly_fee: 19,
+                  updated_at: new Date().toISOString()
+                })
+                .eq('id', technicianProfileId)
+                .select();
 
-            if (error) {
-              console.error('Error updating technician profile by ID:', error);
+              if (error) {
+                console.error('Error updating by technicianProfileId:', error);
+              } else {
+                console.log('Successfully updated by technicianProfileId:', data);
+                updateSuccess = true;
+              }
+            }
+            
+            // If that didn't work, try by userId
+            if (!updateSuccess && userId) {
+              console.log('Trying to update by userId:', userId);
               
-              // If that fails, try to find by user_profile_id if it's in metadata
-              const userId = session.metadata?.userId;
-              if (userId) {
-                console.log('Trying to update by user_profile_id:', userId);
+              // First get the user profile
+              const { data: userProfile, error: userError } = await supabase
+                .from('user_profiles')
+                .select('id')
+                .eq('clerk_user_id', userId)
+                .single();
+                
+              if (userError) {
+                console.error('Error finding user profile:', userError);
+              } else if (userProfile) {
+                console.log('Found user profile:', userProfile);
+                
+                // Then update the technician profile
                 const { data: profileData, error: profileError } = await supabase
                   .from('technician_profiles')
                   .update({
@@ -82,20 +106,48 @@ export async function POST(request: NextRequest) {
                     monthly_fee: 19,
                     updated_at: new Date().toISOString()
                   })
-                  .eq('user_profile_id', userId)
+                  .eq('user_profile_id', userProfile.id)
                   .select();
 
                 if (profileError) {
                   console.error('Error updating technician profile by user_profile_id:', profileError);
                 } else {
                   console.log('Successfully updated technician profile by user_profile_id:', profileData);
+                  updateSuccess = true;
                 }
               }
-            } else {
-              console.log('Successfully updated technician profile by ID:', data);
+            }
+            
+            if (!updateSuccess) {
+              console.error('Failed to update any technician profile for subscription:', subscriptionId);
+              
+              // Final fallback: try to find by customer email
+              if (session.customer_email) {
+                console.log('Trying fallback update by customer email:', session.customer_email);
+                
+                const { data: fallbackData, error: fallbackError } = await supabase
+                  .from('technician_profiles')
+                  .update({
+                    subscription_status: 'active',
+                    subscription_start_date: new Date().toISOString(),
+                    stripe_subscription_id: subscriptionId,
+                    stripe_customer_id: session.customer as string,
+                    monthly_fee: 19,
+                    updated_at: new Date().toISOString()
+                  })
+                  .eq('email', session.customer_email)
+                  .select();
+
+                if (fallbackError) {
+                  console.error('Fallback update by email failed:', fallbackError);
+                } else {
+                  console.log('Successfully updated by fallback email method:', fallbackData);
+                  updateSuccess = true;
+                }
+              }
             }
           } else {
-            console.error('Missing technicianProfileId or subscriptionId in session');
+            console.error('Missing subscriptionId in session');
           }
         }
         break;
