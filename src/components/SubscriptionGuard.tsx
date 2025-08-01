@@ -23,10 +23,25 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
         return;
       }
 
+      // Force fresh check by clearing any cached data
+      console.log('SubscriptionGuard: Starting fresh subscription check');
+      setLoading(true);
+      setHasSubscription(false);
+
       try {
+        console.log('SubscriptionGuard: Checking subscription for userId:', userId);
         const userProfile = await getUserProfile(userId);
+        console.log('SubscriptionGuard: User profile found:', !!userProfile);
+        
         if (userProfile) {
           const techProfile = await getTechnicianProfile(userProfile.id);
+          console.log('SubscriptionGuard: Technician profile found:', !!techProfile);
+          console.log('SubscriptionGuard: Tech profile data:', techProfile ? {
+            subscription_status: techProfile.subscription_status,
+            stripe_subscription_id: techProfile.stripe_subscription_id,
+            has_stripe_id: !!techProfile.stripe_subscription_id
+          } : 'No profile');
+          
           if (techProfile) {
             // Check if user has an active subscription
             if (techProfile.subscription_status === 'active' && techProfile.stripe_subscription_id) {
@@ -34,6 +49,8 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
               setHasSubscription(true);
             } else {
               console.log('No active subscription found, redirecting to subscription page');
+              console.log('Status:', techProfile.subscription_status);
+              console.log('Stripe ID:', techProfile.stripe_subscription_id);
               router.push('/subscription-required');
               return;
             }
