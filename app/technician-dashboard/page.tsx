@@ -404,7 +404,7 @@ export default function TechnicianDashboard() {
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
-                  href="/technician-page"
+                  href={technicianProfile?.url_slug ? `/${technicianProfile.url_slug}` : '/technician-page'}
                   target="_blank"
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-center font-medium"
                   style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
