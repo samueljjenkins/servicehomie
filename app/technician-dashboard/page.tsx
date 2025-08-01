@@ -76,13 +76,6 @@ export default function TechnicianDashboard() {
         return;
       }
       
-      // TEMPORARY: Allow access for debugging
-      console.log('🔍 DASHBOARD: TEMPORARY BYPASS - Allowing access for debugging');
-      setSubscriptionChecked(true);
-      return;
-      
-      // ORIGINAL CODE (commented out for debugging):
-      /*
       try {
         console.log('🔍 DASHBOARD: Checking subscription directly');
         const { data: userProfile, error: userError } = await supabase
@@ -103,8 +96,38 @@ export default function TechnicianDashboard() {
           .eq('user_profile_id', userProfile.id)
           .single();
 
-        if (techError) {
-          console.log('🔍 DASHBOARD: No tech profile, redirecting to subscription');
+        if (techError && techError.code === 'PGRST116') {
+          // No technician profile exists - create one automatically
+          console.log('🔍 DASHBOARD: No tech profile found, creating one automatically');
+          const newTechProfile = {
+            user_profile_id: userProfile.id,
+            name: 'Your Business Name',
+            location: 'Your City, State',
+            bio: 'Tell customers about your business and experience',
+            email: user?.emailAddresses?.[0]?.emailAddress || '',
+            subscription_status: 'pending',
+            monthly_fee: 19,
+            services: [],
+            url_slug: ''
+          };
+          
+          const { data: createdProfile, error: createError } = await supabase
+            .from('technician_profiles')
+            .insert(newTechProfile)
+            .select()
+            .single();
+            
+          if (createError) {
+            console.error('🔍 DASHBOARD: Error creating tech profile:', createError);
+            window.location.href = '/subscription-required';
+            return;
+          }
+          
+          console.log('🔍 DASHBOARD: Tech profile created successfully');
+          setSubscriptionChecked(true);
+          return;
+        } else if (techError) {
+          console.log('🔍 DASHBOARD: Error checking tech profile, redirecting to subscription');
           window.location.href = '/subscription-required';
           return;
         }
@@ -132,7 +155,6 @@ export default function TechnicianDashboard() {
         console.error('🔍 DASHBOARD: Error checking subscription:', error);
         window.location.href = '/subscription-required';
       }
-      */
     };
 
     checkSubscription();
@@ -583,7 +605,8 @@ export default function TechnicianDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
+    <SubscriptionGuard>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1283,6 +1306,6 @@ export default function TechnicianDashboard() {
           </div>
         </div>
       )}
-    </div>
+    </SubscriptionGuard>
   );
 }
