@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const { userId } = await auth();
     
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
     console.log('Debug: Checking subscription status for userId:', userId);
@@ -20,46 +20,57 @@ export async function GET(request: NextRequest) {
       .single();
 
     if (userError) {
-      console.error('Debug: Error getting user profile:', userError);
-      return NextResponse.json({ 
-        error: 'User profile not found',
-        userError: userError.message 
-      }, { status: 404 });
+      console.log('Debug: No user profile found:', userError);
+      return NextResponse.json({
+        userId,
+        userProfile: null,
+        technicianProfile: null,
+        hasActiveSubscription: false,
+        error: 'No user profile found'
+      });
     }
 
     console.log('Debug: User profile found:', userProfile);
 
     // Get technician profile
-    const { data: techProfile, error: techError } = await supabase
+    const { data: technicianProfile, error: techError } = await supabase
       .from('technician_profiles')
       .select('*')
       .eq('user_profile_id', userProfile.id)
       .single();
 
     if (techError) {
-      console.error('Debug: Error getting technician profile:', techError);
-      return NextResponse.json({ 
-        error: 'Technician profile not found',
-        techError: techError.message 
-      }, { status: 404 });
+      console.log('Debug: No technician profile found:', techError);
+      return NextResponse.json({
+        userId,
+        userProfile,
+        technicianProfile: null,
+        hasActiveSubscription: false,
+        error: 'No technician profile found'
+      });
     }
 
-    console.log('Debug: Technician profile found:', techProfile);
+    console.log('Debug: Technician profile found:', technicianProfile);
 
     // Check subscription status
-    const hasActiveSubscription = techProfile.subscription_status === 'active' && 
-                                techProfile.stripe_subscription_id && 
-                                techProfile.stripe_subscription_id.trim() !== '';
+    const hasActiveSubscription = technicianProfile.subscription_status === 'active' && 
+                                technicianProfile.stripe_subscription_id && 
+                                technicianProfile.stripe_subscription_id.trim() !== '';
+
+    console.log('Debug: Subscription check:', {
+      status: technicianProfile.subscription_status,
+      stripeId: technicianProfile.stripe_subscription_id,
+      hasActive: hasActiveSubscription
+    });
 
     return NextResponse.json({
       userId,
       userProfile,
-      techProfile,
+      technicianProfile,
       hasActiveSubscription,
-      subscriptionStatus: techProfile.subscription_status,
-      stripeSubscriptionId: techProfile.stripe_subscription_id,
-      subscriptionStartDate: techProfile.subscription_start_date,
-      subscriptionEndDate: techProfile.subscription_end_date
+      subscriptionStatus: technicianProfile.subscription_status,
+      stripeSubscriptionId: technicianProfile.stripe_subscription_id,
+      stripeCustomerId: technicianProfile.stripe_customer_id
     });
 
   } catch (error) {
