@@ -95,6 +95,7 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
     } catch (error) {
       console.error('Error checking subscription:', error);
       console.log('Error occurred, redirecting to subscription page');
+      // Even if there's an error, we should redirect to subscription required
       router.push('/subscription-required');
       setLoading(false);
       return false;
@@ -103,8 +104,26 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
 
   // Check subscription on mount and route changes
   useEffect(() => {
-    checkSubscription();
-  }, [checkSubscription]);
+    checkSubscription().catch(error => {
+      console.error('SubscriptionGuard: Error in checkSubscription:', error);
+      // Fallback: redirect to subscription required if there's any error
+      router.push('/subscription-required');
+      setLoading(false);
+    });
+  }, [checkSubscription, router]);
+
+  // Fallback: if loading takes too long, redirect to subscription
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (loading) {
+        console.log('SubscriptionGuard: Loading timeout, redirecting to subscription');
+        router.push('/subscription-required');
+        setLoading(false);
+      }
+    }, 5000); // 5 second timeout
+
+    return () => clearTimeout(timeout);
+  }, [loading, router]);
 
   // Check subscription when window gains focus (user comes back to tab)
   useEffect(() => {
