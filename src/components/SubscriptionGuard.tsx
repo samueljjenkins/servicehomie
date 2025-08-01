@@ -20,6 +20,7 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
   // TEMPORARY: Bypass for debugging - allow access for specific users
   const bypassUsers = [
     'user_2Rr0w3Fay87mpaeI6xP61ygp', // Add your Clerk user ID here
+    'user_30hbvkKatviYNSOwMHdWeH3tg7W', // Your actual user ID
     // Add more user IDs as needed
   ];
   
