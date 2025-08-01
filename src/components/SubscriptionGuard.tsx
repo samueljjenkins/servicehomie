@@ -19,12 +19,14 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
 
   const checkSubscription = useCallback(async () => {
     if (!isSignedIn || !userId) {
+      console.log('SubscriptionGuard: Not signed in or no userId');
       setLoading(false);
       return false;
     }
 
     // Force fresh check by clearing any cached data
     console.log('SubscriptionGuard: Starting fresh subscription check for path:', pathname);
+    console.log('SubscriptionGuard: Current userId:', userId);
     setLoading(true);
     setHasSubscription(false);
 
@@ -32,10 +34,12 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
       console.log('SubscriptionGuard: Checking subscription for userId:', userId);
       const userProfile = await getUserProfile(userId);
       console.log('SubscriptionGuard: User profile found:', !!userProfile);
+      console.log('SubscriptionGuard: User profile data:', userProfile);
       
       if (userProfile) {
         const techProfile = await getTechnicianProfile(userProfile.id);
         console.log('SubscriptionGuard: Technician profile found:', !!techProfile);
+        console.log('SubscriptionGuard: Full tech profile data:', techProfile);
         console.log('SubscriptionGuard: Tech profile data:', techProfile ? {
           subscription_status: techProfile.subscription_status,
           stripe_subscription_id: techProfile.stripe_subscription_id,
@@ -44,7 +48,12 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
         
         if (techProfile) {
           // Check if user has an active subscription
-          if (techProfile.subscription_status === 'active' && techProfile.stripe_subscription_id) {
+          const hasActiveSubscription = techProfile.subscription_status === 'active' && techProfile.stripe_subscription_id;
+          console.log('SubscriptionGuard: Has active subscription?', hasActiveSubscription);
+          console.log('SubscriptionGuard: Status check:', techProfile.subscription_status === 'active');
+          console.log('SubscriptionGuard: Stripe ID check:', !!techProfile.stripe_subscription_id);
+          
+          if (hasActiveSubscription) {
             console.log('Active subscription found, allowing access');
             setHasSubscription(true);
             setLoading(false);
@@ -53,6 +62,7 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
             console.log('No active subscription found, redirecting to subscription page');
             console.log('Status:', techProfile.subscription_status);
             console.log('Stripe ID:', techProfile.stripe_subscription_id);
+            console.log('Redirecting to /subscription-required');
             router.push('/subscription-required');
             setLoading(false);
             return false;
@@ -73,6 +83,7 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
       }
     } catch (error) {
       console.error('Error checking subscription:', error);
+      console.log('Error occurred, redirecting to subscription page');
       router.push('/subscription-required');
       setLoading(false);
       return false;
@@ -118,6 +129,22 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
     }
   }, [loading, isSignedIn, userId, hasSubscription, router]);
 
+  // Force redirect if no subscription - this runs on every render
+  useEffect(() => {
+    if (!loading && isSignedIn && userId) {
+      console.log('SubscriptionGuard: Force checking subscription status');
+      console.log('SubscriptionGuard: Loading:', loading);
+      console.log('SubscriptionGuard: IsSignedIn:', isSignedIn);
+      console.log('SubscriptionGuard: UserId:', userId);
+      console.log('SubscriptionGuard: HasSubscription:', hasSubscription);
+      
+      if (!hasSubscription) {
+        console.log('SubscriptionGuard: No subscription found, forcing redirect');
+        router.push('/subscription-required');
+      }
+    }
+  });
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
@@ -130,8 +157,10 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
   }
 
   if (!hasSubscription) {
+    console.log('SubscriptionGuard: No subscription, returning null');
     return null; // Will redirect to subscription page
   }
 
+  console.log('SubscriptionGuard: Subscription valid, rendering children');
   return <>{children}</>;
 } 
