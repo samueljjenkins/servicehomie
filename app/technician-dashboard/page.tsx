@@ -68,7 +68,7 @@ export default function TechnicianDashboard() {
     ) },
     { id: 'reviews', label: 'Reviews', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
       </svg>
     ) }
   ];
@@ -424,16 +424,16 @@ export default function TechnicianDashboard() {
         </div>
 
         {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
           {/* Tabs */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-6 sm:mb-8">
             <div className="border-b border-gray-100">
-              <nav className="flex flex-wrap">
+              <nav className="flex flex-wrap overflow-x-auto">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-all duration-200 ${
+                    className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                       activeTab === tab.id
                         ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
                         : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
@@ -441,30 +441,31 @@ export default function TechnicianDashboard() {
                     style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
                   >
                     {tab.icon}
-                    {tab.label}
+                    <span className="hidden sm:inline">{tab.label}</span>
+                    <span className="sm:hidden">{tab.label}</span>
                   </button>
                 ))}
               </nav>
             </div>
 
-            <div className="p-6 sm:p-8">
+            <div className="p-4 sm:p-6 lg:p-8">
               {/* Overview Tab */}
               {activeTab === 'overview' && (
-                <div className="space-y-8">
+                <div className="space-y-6 sm:space-y-8">
                   {/* Quick Stats */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg p-6 text-white">
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 text-white">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-blue-100 text-sm font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <p className="text-blue-100 text-xs sm:text-sm font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Landing Page Views
                           </p>
-                          <p className="text-3xl font-bold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                          <p className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                             0
                           </p>
                         </div>
-                        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center">
+                          <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
@@ -472,54 +473,54 @@ export default function TechnicianDashboard() {
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg p-6 text-white">
+                    <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 text-white">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-green-100 text-sm font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <p className="text-green-100 text-xs sm:text-sm font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Calendly Clicks
                           </p>
-                          <p className="text-3xl font-bold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                          <p className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                             0
                           </p>
                         </div>
-                        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center">
+                          <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
                         </div>
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-lg p-6 text-white">
+                    <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 text-white">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-purple-100 text-sm font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <p className="text-purple-100 text-xs sm:text-sm font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Email Clicks
                           </p>
-                          <p className="text-3xl font-bold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                          <p className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                             0
                           </p>
                         </div>
-                        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center">
+                          <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                           </svg>
                         </div>
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-lg p-6 text-white">
+                    <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 text-white">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-orange-100 text-sm font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <p className="text-orange-100 text-xs sm:text-sm font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Page Status
                           </p>
-                          <p className="text-3xl font-bold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                          <p className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                             Live
                           </p>
                         </div>
-                        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center">
+                          <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </div>
@@ -528,7 +529,7 @@ export default function TechnicianDashboard() {
                   </div>
 
                   {/* Custom URL Section */}
-                  <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+                  <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                       Custom URL
                     </h3>
@@ -537,7 +538,7 @@ export default function TechnicianDashboard() {
                         <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                           Your Landing Page URL
                         </label>
-                        <div className="flex gap-3">
+                        <div className="flex flex-col sm:flex-row gap-3">
                           <input
                             type="text"
                             value={customDomain}
@@ -549,7 +550,7 @@ export default function TechnicianDashboard() {
                           <button
                             onClick={handleCustomDomain}
                             disabled={saving}
-                            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-medium whitespace-nowrap"
                             style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
                           >
                             {saving ? 'Saving...' : 'Save URL'}
@@ -564,7 +565,7 @@ export default function TechnicianDashboard() {
                             <p className="text-sm text-blue-800 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                               Your current URL:
                             </p>
-                            <p className="font-mono text-blue-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                            <p className="font-mono text-blue-900 text-xs sm:text-sm break-all" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
                               servicehomie.com/{technicianProfile.url_slug}
                             </p>
                             <div className="mt-3">
@@ -599,14 +600,14 @@ export default function TechnicianDashboard() {
 
               {/* Subscription Tab */}
               {activeTab === 'subscription' && (
-                <div className="space-y-8">
-                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-xl p-8 text-white">
+                <div className="space-y-6 sm:space-y-8">
+                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl sm:rounded-2xl shadow-xl p-6 sm:p-8 text-white">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                       <div className="mb-6 lg:mb-0">
-                        <h3 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                        <h3 className="text-xl sm:text-2xl font-bold mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                           Starter Plan
                         </h3>
-                        <p className="text-blue-100 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        <p className="text-blue-100 mb-4 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                           Your subscription is {technicianProfile?.subscription_status === 'active' ? 'active' : 'inactive'} and you have access to all features.
                         </p>
                         <div className="flex items-center gap-2">
@@ -617,10 +618,10 @@ export default function TechnicianDashboard() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-4xl font-bold mb-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                        <div className="text-3xl sm:text-4xl font-bold mb-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                           $19
                         </div>
-                        <div className="text-blue-100" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        <div className="text-blue-100 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                           per month
                         </div>
                       </div>
@@ -628,72 +629,72 @@ export default function TechnicianDashboard() {
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+                    <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6">
                       <h4 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                         Plan Details
                       </h4>
                       <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                          <span className="text-gray-600 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Next billing date:
                           </span>
-                          <p className="text-gray-900 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                          <p className="text-gray-900 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
                             {technicianProfile?.subscription_end_date ? new Date(technicianProfile.subscription_end_date).toLocaleDateString() : 'N/A'}
                           </p>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                          <span className="text-gray-600 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Monthly fee:
                           </span>
-                          <p className="text-gray-900 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                          <p className="text-gray-900 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
                             ${technicianProfile?.monthly_fee || 19}/month
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+                    <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6">
                       <h4 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                         What's Included
                       </h4>
                       <div className="space-y-3">
                         <div className="flex items-center">
-                          <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
-                          <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <span className="text-gray-700 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Professional landing page
                           </span>
                         </div>
                         <div className="flex items-center">
-                          <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
-                          <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <span className="text-gray-700 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Custom URL
                           </span>
                         </div>
                         <div className="flex items-center">
-                          <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
-                          <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <span className="text-gray-700 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Calendly integration
                           </span>
                         </div>
                         <div className="flex items-center">
-                          <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
-                          <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <span className="text-gray-700 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Google Reviews integration
                           </span>
                         </div>
                         <div className="flex items-center">
-                          <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
-                          <span className="text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <span className="text-gray-700 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Mobile responsive design
                           </span>
                         </div>
@@ -712,9 +713,9 @@ export default function TechnicianDashboard() {
                       </h3>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
-                      <div className="flex items-start space-x-4">
-                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6">
+                      <div className="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-4">
+                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
                           <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
@@ -723,7 +724,7 @@ export default function TechnicianDashboard() {
                           <h4 className="text-lg font-semibold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                             Connect Your Calendly
                           </h4>
-                          <p className="text-gray-600 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <p className="text-gray-600 mb-4 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Link your Calendly account to allow customers to book appointments directly from your landing page.
                           </p>
                           
@@ -732,7 +733,7 @@ export default function TechnicianDashboard() {
                               <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                                 Calendly Link
                               </label>
-                              <div className="flex gap-3">
+                              <div className="flex flex-col sm:flex-row gap-3">
                                 <input
                                   type="url"
                                   value={calendlyLink}
@@ -744,7 +745,7 @@ export default function TechnicianDashboard() {
                                 <button
                                   onClick={handleCalendlySave}
                                   disabled={saving}
-                                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-medium whitespace-nowrap"
                                   style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
                                 >
                                   {saving ? 'Saving...' : 'Save'}
@@ -755,10 +756,10 @@ export default function TechnicianDashboard() {
                             {calendlyLink && (
                               <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                                 <div className="flex items-center">
-                                  <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                  <svg className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                   </svg>
-                                  <span className="text-green-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                                  <span className="text-green-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
                                     Calendly Connected
                                   </span>
                                 </div>
@@ -784,46 +785,46 @@ export default function TechnicianDashboard() {
                       </div>
                     </div>
 
-                    <div className="bg-blue-50 rounded-2xl border border-blue-200 p-6">
+                    <div className="bg-blue-50 rounded-xl sm:rounded-2xl border border-blue-200 p-4 sm:p-6">
                       <h4 className="text-lg font-semibold text-blue-900 mb-3" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                         How it works
                       </h4>
                       <div className="space-y-3">
                         <div className="flex items-start space-x-3">
-                          <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                          <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5 flex-shrink-0" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                             1
                           </div>
                           <div>
-                            <p className="text-blue-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                            <p className="text-blue-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
                               Connect your Calendly account
                             </p>
-                            <p className="text-blue-700 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            <p className="text-blue-700 text-xs sm:text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                               Add your Calendly link above to enable booking functionality
                             </p>
                           </div>
                         </div>
                         <div className="flex items-start space-x-3">
-                          <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                          <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5 flex-shrink-0" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                             2
                           </div>
                           <div>
-                            <p className="text-blue-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                            <p className="text-blue-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
                               Customers book through your landing page
                             </p>
-                            <p className="text-blue-700 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            <p className="text-blue-700 text-xs sm:text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                               Visitors can schedule appointments directly from your Service Homie page
                             </p>
                           </div>
                         </div>
                         <div className="flex items-start space-x-3">
-                          <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                          <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5 flex-shrink-0" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                             3
                           </div>
                           <div>
-                            <p className="text-blue-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                            <p className="text-blue-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
                               Manage everything in Calendly
                             </p>
-                            <p className="text-blue-700 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            <p className="text-blue-700 text-xs sm:text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                               All appointments, payments, and scheduling are handled through your Calendly dashboard
                             </p>
                           </div>
@@ -842,9 +843,9 @@ export default function TechnicianDashboard() {
                     </h3>
                   </div>
 
-                  <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                  <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-4">
+                      <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
                         <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                         </svg>
@@ -853,7 +854,7 @@ export default function TechnicianDashboard() {
                         <h4 className="text-lg font-semibold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                           Connect Your Google Business
                         </h4>
-                        <p className="text-gray-600 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                        <p className="text-gray-600 mb-4 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                           Link your Google Business profile to display your reviews on your landing page.
                         </p>
                         
@@ -862,7 +863,7 @@ export default function TechnicianDashboard() {
                             <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                               Google Business URL
                             </label>
-                            <div className="flex gap-3">
+                            <div className="flex flex-col sm:flex-row gap-3">
                               <input
                                 type="url"
                                 value={googleBusinessUrl}
@@ -874,7 +875,7 @@ export default function TechnicianDashboard() {
                               <button
                                 onClick={handleGoogleBusinessSave}
                                 disabled={saving}
-                                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-medium whitespace-nowrap"
                                 style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
                               >
                                 {saving ? 'Saving...' : 'Save'}
@@ -885,10 +886,10 @@ export default function TechnicianDashboard() {
                           {googleBusinessUrl && (
                             <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                               <div className="flex items-center">
-                                <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <svg className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                 </svg>
-                                <span className="text-green-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                                <span className="text-green-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
                                   Google Business Connected
                                 </span>
                               </div>
@@ -914,46 +915,46 @@ export default function TechnicianDashboard() {
                     </div>
                   </div>
 
-                  <div className="bg-green-50 rounded-2xl border border-green-200 p-6">
+                  <div className="bg-green-50 rounded-xl sm:rounded-2xl border border-green-200 p-4 sm:p-6">
                     <h4 className="text-lg font-semibold text-green-900 mb-3" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                       How to find your Google Business URL
                     </h4>
                     <div className="space-y-3">
                       <div className="flex items-start space-x-3">
-                        <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                        <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5 flex-shrink-0" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                           1
                         </div>
                         <div>
-                          <p className="text-green-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                          <p className="text-green-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
                             Go to Google Maps
                           </p>
-                          <p className="text-green-700 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <p className="text-green-700 text-xs sm:text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Search for your business name on Google Maps
                           </p>
                         </div>
                       </div>
                       <div className="flex items-start space-x-3">
-                        <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                        <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5 flex-shrink-0" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                           2
                         </div>
                         <div>
-                          <p className="text-green-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                          <p className="text-green-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
                             Click on your business listing
                           </p>
-                          <p className="text-green-700 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <p className="text-green-700 text-xs sm:text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Open your business profile from the search results
                           </p>
                         </div>
                       </div>
                       <div className="flex items-start space-x-3">
-                        <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                        <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5 flex-shrink-0" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                           3
                         </div>
                         <div>
-                          <p className="text-green-800 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                          <p className="text-green-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
                             Copy the URL
                           </p>
-                          <p className="text-green-700 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                          <p className="text-green-700 text-xs sm:text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                             Copy the URL from your browser's address bar and paste it above
                           </p>
                         </div>
@@ -962,7 +963,7 @@ export default function TechnicianDashboard() {
                   </div>
 
                   {/* Current Reviews Display */}
-                  <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+                  <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                       Current Reviews
                     </h4>
@@ -975,7 +976,7 @@ export default function TechnicianDashboard() {
                       <h5 className="text-lg font-semibold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                         {googleBusinessUrl ? 'Reviews Connected' : 'No Reviews Connected'}
                       </h5>
-                      <p className="text-gray-600" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                      <p className="text-gray-600 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                         {googleBusinessUrl 
                           ? 'Your Google reviews will appear on your landing page' 
                           : 'Connect your Google Business to display reviews'
