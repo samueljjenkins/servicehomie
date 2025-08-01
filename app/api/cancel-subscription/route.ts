@@ -8,8 +8,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export async function POST(request: NextRequest) {
   try {
     const { userId, subscriptionId } = await request.json();
+    
+    console.log('Cancel subscription API received:', { userId, subscriptionId });
 
     if (!userId || !subscriptionId) {
+      console.log('Missing required fields:', { userId: !!userId, subscriptionId: !!subscriptionId });
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }

@@ -333,22 +333,34 @@ export default function TechnicianDashboard() {
   const handleCancelSubscription = async () => {
     if (!userId) return;
     
+    // Check if we have a subscription ID
+    if (!technicianProfile?.stripe_subscription_id) {
+      alert('No active subscription found. Please contact support if you believe this is an error.');
+      setShowCancelModal(false);
+      return;
+    }
+    
     setCancelling(true);
     
     try {
       // Call the cancel subscription API
+      const requestData = {
+        userId: userId,
+        subscriptionId: technicianProfile.stripe_subscription_id
+      };
+      
+      console.log('Sending cancel subscription request:', requestData);
+      
       const response = await fetch('/api/cancel-subscription', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          userId: userId,
-          subscriptionId: technicianProfile?.stripe_subscription_id
-        }),
+        body: JSON.stringify(requestData),
       });
 
       const result = await response.json();
+      console.log('Cancel subscription response:', result);
 
       if (response.ok) {
         // Update local profile state
