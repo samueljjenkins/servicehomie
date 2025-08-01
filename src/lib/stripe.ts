@@ -21,7 +21,8 @@ export const STRIPE_CONFIG = {
 // Create a checkout session for subscription
 export async function createSubscriptionCheckoutSession(
   customerEmail: string,
-  technicianProfileId: string
+  technicianProfileId: string,
+  userId?: string
 ) {
   try {
     const session = await stripe.checkout.sessions.create({
@@ -38,6 +39,7 @@ export async function createSubscriptionCheckoutSession(
       cancel_url: STRIPE_CONFIG.cancelUrl,
       metadata: {
         technicianProfileId,
+        ...(userId && { userId }),
       },
     });
 

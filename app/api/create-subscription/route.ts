@@ -36,7 +36,8 @@ export async function POST(request: NextRequest) {
 
     const session = await createSubscriptionCheckoutSession(
       customerEmail,
-      technicianProfileId
+      technicianProfileId,
+      userId
     );
 
     return NextResponse.json({ url: session.url });

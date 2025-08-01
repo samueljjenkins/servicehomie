@@ -51,22 +51,51 @@ export async function POST(request: NextRequest) {
           });
           
           if (technicianProfileId && subscriptionId) {
-            const { data, error } = await supabase
+            // First try to update by the provided technicianProfileId
+            let { data, error } = await supabase
               .from('technician_profiles')
               .update({
                 subscription_status: 'active',
                 subscription_start_date: new Date().toISOString(),
                 stripe_subscription_id: subscriptionId,
                 stripe_customer_id: session.customer as string,
+                monthly_fee: 19,
+                updated_at: new Date().toISOString()
               })
               .eq('id', technicianProfileId)
               .select();
 
             if (error) {
-              console.error('Error updating technician profile:', error);
+              console.error('Error updating technician profile by ID:', error);
+              
+              // If that fails, try to find by user_profile_id if it's in metadata
+              const userId = session.metadata?.userId;
+              if (userId) {
+                console.log('Trying to update by user_profile_id:', userId);
+                const { data: profileData, error: profileError } = await supabase
+                  .from('technician_profiles')
+                  .update({
+                    subscription_status: 'active',
+                    subscription_start_date: new Date().toISOString(),
+                    stripe_subscription_id: subscriptionId,
+                    stripe_customer_id: session.customer as string,
+                    monthly_fee: 19,
+                    updated_at: new Date().toISOString()
+                  })
+                  .eq('user_profile_id', userId)
+                  .select();
+
+                if (profileError) {
+                  console.error('Error updating technician profile by user_profile_id:', profileError);
+                } else {
+                  console.log('Successfully updated technician profile by user_profile_id:', profileData);
+                }
+              }
             } else {
-              console.log('Successfully updated technician profile:', data);
+              console.log('Successfully updated technician profile by ID:', data);
             }
+          } else {
+            console.error('Missing technicianProfileId or subscriptionId in session');
           }
         }
         break;
