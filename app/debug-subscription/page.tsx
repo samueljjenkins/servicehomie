@@ -83,6 +83,16 @@ export default function DebugSubscription() {
         </ul>
       </div>
 
+      <div className="bg-green-100 p-4 rounded-lg mb-4">
+        <h2 className="text-lg font-semibold mb-2">Your Clerk User ID (for bypass):</h2>
+        <div className="bg-white p-3 rounded border">
+          <code className="text-sm break-all">{debugInfo?.userId || 'Not available'}</code>
+        </div>
+        <p className="text-sm text-gray-600 mt-2">
+          Copy this ID and I'll add it to the bypass list so you can access the dashboard.
+        </p>
+      </div>
+
       <div className="bg-yellow-100 p-4 rounded-lg">
         <h2 className="text-lg font-semibold mb-2">Actions:</h2>
         <button 

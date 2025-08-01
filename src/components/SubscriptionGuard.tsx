@@ -17,6 +17,17 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
   const [loading, setLoading] = useState(true);
   const [hasSubscription, setHasSubscription] = useState(false);
 
+  // TEMPORARY: Bypass for debugging - allow access for specific users
+  const bypassUsers = [
+    'user_2Rr0w3Fay87mpaeI6xP61ygp', // Add your Clerk user ID here
+    // Add more user IDs as needed
+  ];
+  
+  if (bypassUsers.includes(userId || '')) {
+    console.log('🔒 TEMPORARY BYPASS: Allowing access for debugging user:', userId);
+    return <>{children}</>;
+  }
+
   // Immediate debugging
   console.log('🔒 SUBSCRIPTION GUARD RENDERED');
   console.log('🔒 IsSignedIn:', isSignedIn);
