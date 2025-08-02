@@ -17,6 +17,11 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
   const [loading, setLoading] = useState(true);
   const [hasSubscription, setHasSubscription] = useState(false);
 
+  // TEMPORARY: Completely disable subscription guard for debugging
+  console.log('🔒 TEMPORARY: Subscription guard completely disabled for debugging');
+  return <>{children}</>;
+
+  /*
   // TEMPORARY: Disable subscription guard completely for debugging
   console.log('🔒 TEMPORARY: Subscription guard disabled for debugging');
   return <>{children}</>;
@@ -39,8 +44,16 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
   console.log('🔒 Pathname:', pathname);
   console.log('🔒 Loading:', loading);
   console.log('🔒 HasSubscription:', hasSubscription);
+  */
 
   const checkSubscription = useCallback(async () => {
+    // TEMPORARY: Disable all subscription checking
+    console.log('🔒 TEMPORARY: Subscription checking disabled');
+    setLoading(false);
+    setHasSubscription(true);
+    return true;
+
+    /*
     if (!isSignedIn || !userId) {
       console.log('SubscriptionGuard: Not signed in or no userId');
       setLoading(false);
@@ -116,8 +129,11 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
       setLoading(false);
       return false;
     }
+    */
   }, [isSignedIn, userId, router, pathname, loading, hasSubscription]);
 
+  // TEMPORARY: Disable all useEffect hooks for debugging
+  /*
   // Check subscription on mount and route changes
   useEffect(() => {
     checkSubscription().catch(error => {
@@ -166,7 +182,10 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [checkSubscription, loading, isSignedIn, userId, hasSubscription]);
+  */
 
+  // TEMPORARY: Skip loading check
+  /*
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
@@ -182,6 +201,7 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
     console.log('SubscriptionGuard: No subscription, returning null');
     return null; // Will redirect to subscription page
   }
+  */
 
   console.log('SubscriptionGuard: Subscription valid, rendering children');
   return <>{children}</>;
