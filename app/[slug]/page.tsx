@@ -103,13 +103,10 @@ export default function TechnicianPage() {
           setEmail(data.email || "");
           setCalendlyLink(data.calendly_link || '');
           setGoogleBusinessUrl(data.google_business_name || '');
-        } else {
-          console.log('No data returned from Supabase');
-          setError("Technician profile not found");
         }
       } catch (error) {
-        console.error('Error loading technician data:', error);
-        setError("Failed to load technician profile");
+        console.error('Error loading technician:', error);
+        setError("Failed to load technician data");
       } finally {
         setLoading(false);
       }
@@ -117,6 +114,19 @@ export default function TechnicianPage() {
 
     loadTechnicianBySlug();
   }, [slug, userId]);
+
+  // Load Calendly script when calendlyLink is available
+  useEffect(() => {
+    if (calendlyLink) {
+      // Check if Calendly script is already loaded
+      if (!(window as any).Calendly) {
+        const script = document.createElement('script');
+        script.src = 'https://assets.calendly.com/assets/external/widget.js';
+        script.async = true;
+        document.head.appendChild(script);
+      }
+    }
+  }, [calendlyLink]);
 
   if (loading) {
     return (
@@ -309,91 +319,112 @@ export default function TechnicianPage() {
             Schedule your service today
           </p>
           
-          {/* Mock Calendly Calendar */}
-          <div className="bg-white rounded-lg border border-gray-200 p-4 mb-3">
-            <div className="text-center mb-4">
-              <h4 className="font-semibold text-gray-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                Select a Date & Time
-              </h4>
-              <p className="text-gray-500 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                Available times for {businessName}
-              </p>
-            </div>
-            
-            {/* Mock Calendar Grid */}
-            <div className="grid grid-cols-7 gap-1 mb-4">
-              {/* Calendar Header */}
-              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>S</div>
-              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>M</div>
-              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>T</div>
-              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>W</div>
-              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>T</div>
-              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>F</div>
-              <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>S</div>
-              
-              {/* Calendar Days */}
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>28</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>29</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>30</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>1</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>2</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>3</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>4</div>
-              
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>5</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>6</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>7</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>8</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>9</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>10</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>11</div>
-              
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>12</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>13</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>14</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>15</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>16</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>17</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>18</div>
-              
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>19</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>20</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>21</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>22</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>23</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>24</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>25</div>
-              
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>26</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>27</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>28</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>29</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>30</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>31</div>
-              <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>1</div>
-            </div>
-            
-            {/* Mock Time Slots */}
-            <div className="space-y-2">
-              <div className="text-xs font-semibold text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                Available Times
+          {calendlyLink ? (
+            /* Real Calendly Embed */
+            <div className="bg-white rounded-lg border border-gray-200 p-4 mb-3">
+              <div className="text-center mb-4">
+                <h4 className="font-semibold text-gray-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                  Select a Date & Time
+                </h4>
+                <p className="text-gray-500 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                  Available times for {businessName}
+                </p>
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                <button className="bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs text-blue-700 hover:bg-blue-100 transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                  9:00 AM
-                </button>
-                <button className="bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs text-blue-700 hover:bg-blue-100 transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                  10:30 AM
-                </button>
-                <button className="bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs text-blue-700 hover:bg-blue-100 transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                  1:00 PM
-                </button>
-                <button className="bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs text-blue-700 hover:bg-blue-100 transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                  2:30 PM
-                </button>
+              
+              {/* Calendly Inline Widget */}
+              <div 
+                className="calendly-inline-widget" 
+                data-url={calendlyLink}
+                style={{ minWidth: '320px', height: '630px' }}
+              />
+            </div>
+          ) : (
+            /* Mock Calendly Calendar - Fallback */
+            <div className="bg-white rounded-lg border border-gray-200 p-4 mb-3">
+              <div className="text-center mb-4">
+                <h4 className="font-semibold text-gray-900 text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                  Select a Date & Time
+                </h4>
+                <p className="text-gray-500 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                  Available times for {businessName}
+                </p>
+              </div>
+              
+              {/* Mock Calendar Grid */}
+              <div className="grid grid-cols-7 gap-1 mb-4">
+                {/* Calendar Header */}
+                <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>S</div>
+                <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>M</div>
+                <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>T</div>
+                <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>W</div>
+                <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>T</div>
+                <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>F</div>
+                <div className="text-center text-xs font-semibold text-gray-500 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>S</div>
+                
+                {/* Calendar Days */}
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>28</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>29</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>30</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>1</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>2</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>3</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>4</div>
+                
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>5</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>6</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>7</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>8</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>9</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>10</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>11</div>
+                
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>12</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>13</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>14</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>15</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>16</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>17</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>18</div>
+                
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>19</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>20</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>21</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>22</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>23</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>24</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>25</div>
+                
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>26</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>27</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>28</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>29</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>30</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>31</div>
+                <div className="text-center text-xs text-gray-400 p-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>1</div>
+              </div>
+              
+              {/* Mock Time Slots */}
+              <div className="space-y-2">
+                <div className="text-xs font-semibold text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                  Available Times
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button className="bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs text-blue-700 hover:bg-blue-100 transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                    9:00 AM
+                  </button>
+                  <button className="bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs text-blue-700 hover:bg-blue-100 transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                    10:30 AM
+                  </button>
+                  <button className="bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs text-blue-700 hover:bg-blue-100 transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                    1:00 PM
+                  </button>
+                  <button className="bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs text-blue-700 hover:bg-blue-100 transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                    2:30 PM
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
           
           {calendlyLink ? (
             <a
