@@ -357,7 +357,7 @@ export default function AdminPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {technician.url_slug ? (
                           <a 
-                            href={`/preview/${technician.url_slug}`} 
+                            href={`/${technician.url_slug}`} 
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:text-blue-900"
