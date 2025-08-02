@@ -82,7 +82,6 @@ export default function AdminPage() {
       // Calculate stats for subscription-based business model
       const totalTechnicians = techProfiles?.length || 0;
       const activeSubscriptions = techProfiles?.filter(t => t.subscription_status === 'active').length || 0;
-      const pendingSubscriptions = techProfiles?.filter(t => t.subscription_status === 'pending').length || 0;
       const cancelledSubscriptions = techProfiles?.filter(t => t.subscription_status === 'cancelled').length || 0;
       
       // Calculate revenue (only from active subscriptions)
@@ -90,7 +89,7 @@ export default function AdminPage() {
       const monthlyRevenue = activeTechnicians.reduce((sum, t) => sum + (t.monthly_fee || 19), 0);
       const annualRevenue = monthlyRevenue * 12;
       
-      // Calculate conversion rate
+      // Calculate conversion rate (signup to paid)
       const conversionRate = totalTechnicians > 0 ? ((activeSubscriptions / totalTechnicians) * 100).toFixed(1) : 0;
       const conversionRateNumber = parseFloat(conversionRate as string);
       
@@ -122,13 +121,6 @@ export default function AdminPage() {
           description: 'From active subscriptions'
         },
         { 
-          label: 'Pending Approvals', 
-          value: pendingSubscriptions,
-          change: pendingSubscriptions > 0 ? `${pendingSubscriptions} need review` : 'All caught up',
-          changeType: pendingSubscriptions > 0 ? 'negative' : 'positive',
-          description: 'Awaiting activation'
-        },
-        { 
           label: 'Cancelled Subscriptions', 
           value: cancelledSubscriptions,
           change: cancelledSubscriptions > 0 ? `${cancelledSubscriptions} churned` : 'No churn',
@@ -151,37 +143,8 @@ export default function AdminPage() {
     }
   };
 
-  const handleOnboardTechnician = () => {
-    router.push('/admin/onboard');
-  };
-
-  const handleReviewApplications = () => {
-    router.push('/admin/applications');
-  };
-
   const handleViewTechnician = (technicianId: string) => {
     router.push(`/admin/technicians/${technicianId}`);
-  };
-
-  const handleActivateSubscription = async (technicianId: string) => {
-    try {
-      const { error } = await supabase
-        .from('technician_profiles')
-        .update({ 
-          subscription_status: 'active',
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', technicianId);
-
-      if (error) {
-        alert('Error activating subscription: ' + error.message);
-      } else {
-        alert('Subscription activated successfully!');
-        fetchAdminData(); // Refresh data
-      }
-    } catch (error) {
-      alert('Error activating subscription');
-    }
   };
 
   if (!isLoaded) {
@@ -220,26 +183,6 @@ export default function AdminPage() {
               <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
               <p className="text-gray-600">Subscription-based landing page platform management</p>
             </div>
-            <div className="flex gap-3">
-              <button
-                onClick={handleOnboardTechnician}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Onboard Technician
-              </button>
-              <button
-                onClick={handleReviewApplications}
-                className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center gap-2"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Review Applications
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -248,7 +191,7 @@ export default function AdminPage() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {loading ? (
-            Array.from({ length: 6 }).map((_, idx) => (
+            Array.from({ length: 5 }).map((_, idx) => (
               <div key={idx} className="bg-white rounded-lg shadow p-6 animate-pulse">
                 <div className="h-8 bg-gray-200 rounded-md mb-2"></div>
                 <div className="h-6 bg-gray-200 rounded-md mb-2"></div>
@@ -396,14 +339,6 @@ export default function AdminPage() {
                           >
                             View
                           </button>
-                          {technician.subscription_status === 'pending' && (
-                            <button
-                              onClick={() => handleActivateSubscription(technician.id)}
-                              className="text-green-600 hover:text-green-900"
-                            >
-                              Activate
-                            </button>
-                          )}
                         </div>
                       </td>
                     </tr>
