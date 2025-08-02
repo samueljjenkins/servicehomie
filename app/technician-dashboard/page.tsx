@@ -54,6 +54,7 @@ export default function TechnicianDashboard() {
   const [customDomain, setCustomDomain] = useState('');
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   // TEMPORARY: Disable all subscription checking and useEffect
   console.log('🔍 DASHBOARD: TEMPORARY - All checks disabled, rendering dashboard directly');
@@ -357,55 +358,66 @@ export default function TechnicianDashboard() {
   };
 
   const handleCancelSubscription = async () => {
-    if (!userId) return;
-    
-    // Check if we have a subscription ID
     if (!technicianProfile?.stripe_subscription_id) {
-      alert('No active subscription found. Please contact support if you believe this is an error.');
-      setShowCancelModal(false);
+      alert('No active subscription found.');
       return;
     }
-    
+
     setCancelling(true);
-    
     try {
-      // Call the cancel subscription API
-      const requestData = {
-        userId: userId,
-        subscriptionId: technicianProfile.stripe_subscription_id
-      };
-      
-      console.log('Sending cancel subscription request:', requestData);
-      
       const response = await fetch('/api/cancel-subscription', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: technicianProfile.user_profile_id,
+          subscriptionId: technicianProfile.stripe_subscription_id
+        })
       });
 
       const result = await response.json();
-      console.log('Cancel subscription response:', result);
-
-      if (response.ok) {
-        // Update local profile state
-        setTechnicianProfile(prev => prev ? {
-          ...prev,
-          subscription_status: 'cancelled',
-          subscription_end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days from now
-        } : null);
-        
-        alert('Subscription cancelled successfully. You will have access until the end of your current billing period.');
+      
+      if (result.success) {
+        alert('Subscription cancelled successfully!');
         setShowCancelModal(false);
+        // Refresh profile data
+        fetchTechnicianProfile();
       } else {
-        alert(result.error || 'Error cancelling subscription. Please try again.');
+        alert('Error cancelling subscription: ' + result.error);
       }
     } catch (error) {
       console.error('Error cancelling subscription:', error);
-      alert('Error cancelling subscription. Please try again.');
+      alert('Error cancelling subscription');
     } finally {
       setCancelling(false);
+    }
+  };
+
+  const handleDeleteTestAccount = async () => {
+    if (!confirm('Are you sure you want to delete this test account? This cannot be undone.')) {
+      return;
+    }
+
+    setDeleting(true);
+    try {
+      const response = await fetch('/api/delete-test-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        alert('Test account deleted from Supabase! Please also delete from Clerk dashboard.');
+        // Redirect to home page
+        window.location.href = '/';
+      } else {
+        alert('Error deleting test account: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Error deleting test account:', error);
+      alert('Error deleting test account');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -769,45 +781,63 @@ export default function TechnicianDashboard() {
                         </div>
                       )}
 
-                      {/* Debug Section - Remove in production */}
-                      <div className="mt-6 pt-6 border-t border-gray-200">
-                        <h5 className="text-sm font-semibold text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                          Debug Info (Remove in production):
-                        </h5>
-                        <div className="text-xs text-gray-600 space-y-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                          <p>Status: {technicianProfile?.subscription_status || 'Not set'}</p>
-                          <p>Stripe ID: {technicianProfile?.stripe_subscription_id || 'Not set'}</p>
-                          <p>User ID: {userId}</p>
-                        </div>
-                        
-                        {!technicianProfile?.stripe_subscription_id && (
-                          <div className="mt-3">
-                            <button
-                              onClick={async () => {
-                                try {
-                                  const response = await fetch('/api/activate-subscription', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ userId })
-                                  });
-                                  if (response.ok) {
-                                    alert('Subscription activated for testing!');
-                                    window.location.reload();
-                                  } else {
-                                    alert('Failed to activate subscription');
-                                  }
-                                } catch (error) {
-                                  alert('Error activating subscription');
-                                }
-                              }}
-                              className="w-full bg-green-600 text-white px-3 py-1 rounded text-xs font-medium"
-                              style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
-                            >
-                              Activate Test Subscription
-                            </button>
+                                              {/* Debug Section - Remove in production */}
+                        <div className="mt-6 pt-6 border-t border-gray-200">
+                          <h5 className="text-sm font-semibold text-gray-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                            Debug Info (Remove in production):
+                          </h5>
+                          <div className="text-xs text-gray-600 space-y-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            <p>Status: {technicianProfile?.subscription_status || 'Not set'}</p>
+                            <p>Stripe ID: {technicianProfile?.stripe_subscription_id || 'Not set'}</p>
+                            <p>User ID: {userId}</p>
                           </div>
-                        )}
-                      </div>
+                          
+                          {!technicianProfile?.stripe_subscription_id && (
+                            <div className="mt-3">
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    const response = await fetch('/api/activate-subscription', {
+                                      method: 'POST',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ userId })
+                                    });
+                                    if (response.ok) {
+                                      alert('Subscription activated for testing!');
+                                      window.location.reload();
+                                    } else {
+                                      alert('Failed to activate subscription');
+                                    }
+                                  } catch (error) {
+                                    alert('Error activating subscription');
+                                  }
+                                }}
+                                className="w-full bg-green-600 text-white px-3 py-1 rounded text-xs font-medium"
+                                style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                              >
+                                Activate Test Subscription
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* TESTING: Delete Test Account Button */}
+                        <div className="mt-6 pt-6 border-t border-gray-200">
+                          <h5 className="text-sm font-semibold text-yellow-700 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                            🧪 Testing Tools:
+                          </h5>
+                          <p className="text-xs text-yellow-600 mb-3" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            Delete your test account so you can re-sign up with the same email.
+                          </p>
+                          <button
+                            onClick={handleDeleteTestAccount}
+                            disabled={deleting}
+                            className="w-full bg-yellow-600 hover:bg-yellow-700 disabled:bg-yellow-400 text-white px-3 py-2 rounded text-xs font-medium transition-colors"
+                            style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                          >
+                            {deleting ? 'Deleting...' : 'Delete Test Account'}
+                          </button>
+                        </div>
                     </div>
 
                     <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6">
