@@ -59,6 +59,11 @@ export default function TechnicianDashboard() {
   // Direct subscription check - runs immediately
   useEffect(() => {
     const checkSubscription = async () => {
+      // TEMPORARY: Disable subscription check for debugging
+      console.log('🔍 DASHBOARD: TEMPORARY - Subscription check disabled for debugging');
+      setSubscriptionChecked(true);
+      return;
+
       // If not signed in, redirect to sign in
       if (!isSignedIn) {
         console.log('🔍 DASHBOARD: Not signed in, redirecting to sign in');
@@ -86,7 +91,9 @@ export default function TechnicianDashboard() {
 
         if (userError) {
           console.log('🔍 DASHBOARD: No user profile, redirecting to subscription');
-          window.location.href = '/subscription-required';
+          // TEMPORARY: Disable redirect for debugging
+          // window.location.href = '/subscription-required';
+          setSubscriptionChecked(true);
           return;
         }
 
@@ -119,7 +126,9 @@ export default function TechnicianDashboard() {
             
           if (createError) {
             console.error('🔍 DASHBOARD: Error creating tech profile:', createError);
-            window.location.href = '/subscription-required';
+            // TEMPORARY: Disable redirect for debugging
+            // window.location.href = '/subscription-required';
+            setSubscriptionChecked(true);
             return;
           }
           
@@ -128,7 +137,9 @@ export default function TechnicianDashboard() {
           return;
         } else if (techError) {
           console.log('🔍 DASHBOARD: Error checking tech profile, redirecting to subscription');
-          window.location.href = '/subscription-required';
+          // TEMPORARY: Disable redirect for debugging
+          // window.location.href = '/subscription-required';
+          setSubscriptionChecked(true);
           return;
         }
 
@@ -143,7 +154,9 @@ export default function TechnicianDashboard() {
 
         if (!hasActiveSubscription) {
           console.log('🔍 DASHBOARD: No active subscription, redirecting');
-          window.location.href = '/subscription-required';
+          // TEMPORARY: Disable redirect for debugging
+          // window.location.href = '/subscription-required';
+          setSubscriptionChecked(true);
           return;
         }
 
@@ -151,7 +164,9 @@ export default function TechnicianDashboard() {
         setSubscriptionChecked(true);
       } catch (error) {
         console.error('🔍 DASHBOARD: Error checking subscription:', error);
-        window.location.href = '/subscription-required';
+        // TEMPORARY: Disable redirect for debugging
+        // window.location.href = '/subscription-required';
+        setSubscriptionChecked(true);
       }
     };
 
