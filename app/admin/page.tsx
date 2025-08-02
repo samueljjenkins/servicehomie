@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 
 interface Stat {
@@ -10,9 +10,24 @@ interface Stat {
 
 export default function AdminPage() {
   const { isSignedIn, isLoaded } = useAuth();
+  const { user } = useUser();
   const router = useRouter();
   const [stats, setStats] = useState<Stat[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Check if user is admin
+  useEffect(() => {
+    if (user && user.emailAddresses) {
+      const userEmail = user.emailAddresses[0]?.emailAddress;
+      if (userEmail === 'samuel@servicehomie.com') {
+        setIsAdmin(true);
+      } else {
+        // Redirect non-admin users to technician dashboard
+        router.push('/technician-dashboard');
+      }
+    }
+  }, [user, router]);
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
@@ -21,7 +36,7 @@ export default function AdminPage() {
   }, [isLoaded, isSignedIn, router]);
 
   useEffect(() => {
-    if (isSignedIn) {
+    if (isSignedIn && isAdmin) {
       // Simulate loading time for real data
       setTimeout(() => {
         setStats([
@@ -33,7 +48,7 @@ export default function AdminPage() {
         setLoading(false);
       }, 1000);
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, isAdmin]);
 
   if (!isLoaded) {
     return (
@@ -48,6 +63,17 @@ export default function AdminPage() {
 
   if (!isSignedIn) {
     return null; // Will redirect to login
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+        <div className="text-center">
+          <div className="text-red-600 text-xl font-bold mb-4">Access Denied</div>
+          <p className="text-gray-600">You don't have permission to access the admin dashboard.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
