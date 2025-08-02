@@ -103,7 +103,9 @@ export default function TechnicianDashboard() {
           .eq('user_profile_id', userProfile.id)
           .single();
 
-        if (techError && techError.code === 'PGRST116') {
+        // TEMPORARY: Disable profile creation for debugging
+        /*
+        if (techError !== null && techError !== undefined && 'code' in techError && techError.code === 'PGRST116') {
           // No technician profile exists - create one automatically
           console.log('🔍 DASHBOARD: No tech profile found, creating one automatically');
           const newTechProfile = {
@@ -142,6 +144,12 @@ export default function TechnicianDashboard() {
           setSubscriptionChecked(true);
           return;
         }
+        */
+        
+        // TEMPORARY: Skip all profile checks for debugging
+        console.log('🔍 DASHBOARD: TEMPORARY - Skipping profile checks for debugging');
+        setSubscriptionChecked(true);
+        return;
 
         // Check if user has a valid Stripe subscription ID
         const hasActiveSubscription = techProfile.stripe_subscription_id && 
