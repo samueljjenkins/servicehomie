@@ -461,6 +461,13 @@ export default function TechnicianPage() {
             </a>
           </div>
         )}
+        
+        {/* Powered by Service Homie */}
+        <div className="text-center mt-8 pt-6 border-t border-gray-200">
+          <p className="text-gray-500 text-xs" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+            Powered by Service Homie
+          </p>
+        </div>
       </div>
     </div>
   );
