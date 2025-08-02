@@ -36,7 +36,6 @@ export default function TechnicianSignUp() {
               }
             }}
             afterSignUpUrl="/subscription-required"
-            allowDuplicateEmails={true}
           />
         </div>
       </div>
