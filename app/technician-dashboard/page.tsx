@@ -49,149 +49,21 @@ export default function TechnicianDashboard() {
   const [calendlyLink, setCalendlyLink] = useState('');
   const [googleBusinessUrl, setGoogleBusinessUrl] = useState('');
   const [services, setServices] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Changed to false
   const [saving, setSaving] = useState(false);
   const [customDomain, setCustomDomain] = useState('');
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelling, setCancelling] = useState(false);
-  const [subscriptionChecked, setSubscriptionChecked] = useState(false);
 
-  // Direct subscription check - runs immediately
+  // TEMPORARY: Disable all subscription checking and useEffect
+  console.log('🔍 DASHBOARD: TEMPORARY - All checks disabled, rendering dashboard directly');
+
+  // Simple useEffect to fetch profile data without subscription checks
   useEffect(() => {
-    const checkSubscription = async () => {
-      // TEMPORARY: Disable subscription check for debugging
-      console.log('🔍 DASHBOARD: TEMPORARY - Subscription check disabled for debugging');
-      setSubscriptionChecked(true);
-      return;
-
-      // If not signed in, redirect to sign in
-      if (!isSignedIn) {
-        console.log('🔍 DASHBOARD: Not signed in, redirecting to sign in');
-        window.location.href = '/sign-in?redirect=/technician-dashboard';
-        return;
-      }
-
-      if (!userId) {
-        console.log('🔍 DASHBOARD: No userId, waiting...');
-        return;
-      }
-      
-      // Prevent multiple checks
-      if (subscriptionChecked) {
-        return;
-      }
-      
-      try {
-        console.log('🔍 DASHBOARD: Checking subscription directly');
-        const { data: userProfile, error: userError } = await supabase
-          .from('user_profiles')
-          .select('*')
-          .eq('clerk_user_id', userId)
-          .single();
-
-        if (userError) {
-          console.log('🔍 DASHBOARD: No user profile, redirecting to subscription');
-          // TEMPORARY: Disable redirect for debugging
-          // window.location.href = '/subscription-required';
-          setSubscriptionChecked(true);
-          return;
-        }
-
-        const { data: techProfile, error: techError } = await supabase
-          .from('technician_profiles')
-          .select('*')
-          .eq('user_profile_id', userProfile.id)
-          .single();
-
-        // TEMPORARY: Disable profile creation for debugging
-        /*
-        if (techError !== null && techError !== undefined && 'code' in techError && techError.code === 'PGRST116') {
-          // No technician profile exists - create one automatically
-          console.log('🔍 DASHBOARD: No tech profile found, creating one automatically');
-          const newTechProfile = {
-            user_profile_id: userProfile.id,
-            name: 'Your Business Name',
-            location: 'Your City, State',
-            bio: 'Tell customers about your business and experience',
-            email: user?.emailAddresses?.[0]?.emailAddress || '',
-            subscription_status: 'pending',
-            monthly_fee: 19,
-            services: [],
-            url_slug: ''
-          };
-          
-          const { data: createdProfile, error: createError } = await supabase
-            .from('technician_profiles')
-            .insert(newTechProfile)
-            .select()
-            .single();
-            
-          if (createError) {
-            console.error('🔍 DASHBOARD: Error creating tech profile:', createError);
-            // TEMPORARY: Disable redirect for debugging
-            // window.location.href = '/subscription-required';
-            setSubscriptionChecked(true);
-            return;
-          }
-          
-          console.log('🔍 DASHBOARD: Tech profile created successfully');
-          setSubscriptionChecked(true);
-          return;
-        } else if (techError) {
-          console.log('🔍 DASHBOARD: Error checking tech profile, redirecting to subscription');
-          // TEMPORARY: Disable redirect for debugging
-          // window.location.href = '/subscription-required';
-          setSubscriptionChecked(true);
-          return;
-        }
-        */
-        
-        // TEMPORARY: Skip all profile checks for debugging
-        console.log('🔍 DASHBOARD: TEMPORARY - Skipping profile checks for debugging');
-        setSubscriptionChecked(true);
-        return;
-
-        // Check if user has a valid Stripe subscription ID
-        const hasActiveSubscription = techProfile.stripe_subscription_id && 
-                                    techProfile.stripe_subscription_id.trim() !== '';
-
-        console.log('🔍 DASHBOARD: Subscription check result:', {
-          stripeId: techProfile.stripe_subscription_id,
-          hasActive: hasActiveSubscription
-        });
-
-        if (!hasActiveSubscription) {
-          console.log('🔍 DASHBOARD: No active subscription, redirecting');
-          // TEMPORARY: Disable redirect for debugging
-          // window.location.href = '/subscription-required';
-          setSubscriptionChecked(true);
-          return;
-        }
-
-        console.log('🔍 DASHBOARD: Active subscription found, allowing access');
-        setSubscriptionChecked(true);
-      } catch (error) {
-        console.error('🔍 DASHBOARD: Error checking subscription:', error);
-        // TEMPORARY: Disable redirect for debugging
-        // window.location.href = '/subscription-required';
-        setSubscriptionChecked(true);
-      }
-    };
-
-    checkSubscription();
-  }, [userId, isSignedIn, subscriptionChecked]);
-
-  // Show loading while checking subscription
-  if (!subscriptionChecked || !isSignedIn) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Checking subscription status...</p>
-        </div>
-      </div>
-    );
-  }
+    if (userId && isSignedIn) {
+      fetchTechnicianProfile();
+    }
+  }, [userId, isSignedIn]);
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: (
@@ -215,27 +87,6 @@ export default function TechnicianDashboard() {
       </svg>
     ) }
   ];
-
-  // Helper function to check if profile exists
-  const checkProfileExists = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('technician_profiles')
-        .select('id')
-        .eq('user_profile_id', userId)
-        .single();
-      
-      return { exists: !!data, error };
-    } catch (error) {
-      return { exists: false, error };
-    }
-  };
-
-  useEffect(() => {
-    if (userId) {
-      fetchTechnicianProfile();
-    }
-  }, [userId]);
 
   const fetchTechnicianProfile = async () => {
     try {
