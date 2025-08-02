@@ -66,6 +66,7 @@ export default function AdminPage() {
   const fetchAdminData = async () => {
     try {
       setLoading(true);
+      console.log('🔍 ADMIN: Fetching real data from Supabase...');
 
       // Fetch all technician profiles
       const { data: techProfiles, error: techError } = await supabase
@@ -73,9 +74,14 @@ export default function AdminPage() {
         .select('*')
         .order('created_at', { ascending: false });
 
+      console.log('🔍 ADMIN: Supabase response:', { techProfiles, techError });
+
       if (techError) {
         console.error('Error fetching technicians:', techError);
+        alert('Error fetching data: ' + techError.message);
+        return;
       } else {
+        console.log('🔍 ADMIN: Setting technicians:', techProfiles);
         setTechnicians(techProfiles || []);
       }
 
@@ -83,6 +89,18 @@ export default function AdminPage() {
       const totalTechnicians = techProfiles?.length || 0;
       const activeSubscriptions = techProfiles?.filter(t => t.subscription_status === 'active').length || 0;
       const cancelledSubscriptions = techProfiles?.filter(t => t.subscription_status === 'cancelled').length || 0;
+      
+      console.log('🔍 ADMIN: Calculated stats:', {
+        totalTechnicians,
+        activeSubscriptions,
+        cancelledSubscriptions,
+        techProfiles: techProfiles?.map(t => ({ 
+          name: t.name, 
+          email: t.email, 
+          status: t.subscription_status,
+          fee: t.monthly_fee 
+        }))
+      });
       
       // Calculate revenue (only from active subscriptions)
       const activeTechnicians = techProfiles?.filter(t => t.subscription_status === 'active') || [];
@@ -97,6 +115,13 @@ export default function AdminPage() {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       const recentSignups = techProfiles?.filter(t => new Date(t.created_at) > thirtyDaysAgo).length || 0;
+
+      console.log('🔍 ADMIN: Final calculations:', {
+        monthlyRevenue,
+        annualRevenue,
+        conversionRate,
+        recentSignups
+      });
 
       setStats([
         { 
@@ -136,8 +161,11 @@ export default function AdminPage() {
         }
       ]);
 
+      console.log('🔍 ADMIN: Data fetch complete!');
+
     } catch (error) {
       console.error('Error fetching admin data:', error);
+      alert('Error fetching admin data: ' + (error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -182,6 +210,18 @@ export default function AdminPage() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
               <p className="text-gray-600">Subscription-based landing page platform management</p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={fetchAdminData}
+                disabled={loading}
+                className="bg-gray-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                {loading ? 'Refreshing...' : 'Refresh Data'}
+              </button>
             </div>
           </div>
         </div>
