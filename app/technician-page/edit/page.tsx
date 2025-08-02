@@ -468,7 +468,7 @@ export default function EditTechnicianPage() {
         </div>
 
         {/* Booking Section - Editable Calendly Link */}
-        <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4 text-center">
+        <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4 text-center mb-6">
           <h3 className="font-bold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
             Book Your Service
           </h3>
@@ -508,7 +508,7 @@ export default function EditTechnicianPage() {
         </div>
 
         {/* Instagram Section */}
-        <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4 text-center mb-6">
+        <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-lg border border-blue-100 p-4 text-center">
           <h3 className="font-bold text-gray-900 mb-2" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
             Connect Instagram
           </h3>
