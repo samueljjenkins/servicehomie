@@ -17,6 +17,10 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
   const [loading, setLoading] = useState(true);
   const [hasSubscription, setHasSubscription] = useState(false);
 
+  // TEMPORARY: Disable subscription guard completely for debugging
+  console.log('🔒 TEMPORARY: Subscription guard disabled for debugging');
+  return <>{children}</>;
+
   // TEMPORARY: Bypass for debugging - allow access for specific users
   const bypassUsers = [
     'user_30hbvkKatviYNSOwMHdWeH3tg7W', // Your actual user ID
