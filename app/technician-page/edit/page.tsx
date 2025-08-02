@@ -56,6 +56,7 @@ export default function EditTechnicianPage() {
   const [description, setDescription] = useState('');
   const [email, setEmail] = useState('');
   const [calendlyLink, setCalendlyLink] = useState('');
+  const [instagramLink, setInstagramLink] = useState('');
   const [services, setServices] = useState<Service[]>([
     {
       id: '1',
@@ -100,6 +101,7 @@ export default function EditTechnicianPage() {
         setDescription(data.bio || '');
         setEmail(data.email || '');
         setCalendlyLink(data.calendly_link || '');
+        setInstagramLink(data.social_links?.find((link: any) => link.platform === 'instagram')?.url || '');
         
         // Load services from database or use defaults
         if (data.services && data.services.length > 0) {
@@ -120,6 +122,15 @@ export default function EditTechnicianPage() {
     setSuccess(false);
     
     try {
+      // Prepare social links array
+      const socialLinks: Array<{platform: string, url: string}> = [];
+      if (instagramLink) {
+        socialLinks.push({
+          platform: 'instagram',
+          url: instagramLink
+        });
+      }
+
       const { error } = await supabase
         .from('technician_profiles')
         .update({
@@ -128,6 +139,7 @@ export default function EditTechnicianPage() {
           bio: description,
           email: email,
           calendly_link: calendlyLink,
+          social_links: socialLinks,
           services: services,
           updated_at: new Date().toISOString()
         })
@@ -146,6 +158,7 @@ export default function EditTechnicianPage() {
           bio: description,
           email: email,
           calendly_link: calendlyLink,
+          social_links: socialLinks,
           services: services
         } : null);
         
@@ -475,6 +488,21 @@ export default function EditTechnicianPage() {
             />
             <p className="text-xs text-gray-500 mt-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
               Enter your Calendly link to enable booking
+            </p>
+          </div>
+          
+          {/* Editable Instagram Link */}
+          <div className="mb-3">
+            <input
+              type="url"
+              value={instagramLink}
+              onChange={(e) => setInstagramLink(e.target.value)}
+              placeholder="https://instagram.com/your-username"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
+            />
+            <p className="text-xs text-gray-500 mt-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+              Enter your Instagram profile link
             </p>
           </div>
           

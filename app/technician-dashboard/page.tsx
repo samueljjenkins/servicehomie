@@ -1100,54 +1100,56 @@ export default function TechnicianDashboard() {
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="bg-green-50 rounded-xl sm:rounded-2xl border border-green-200 p-4 sm:p-6">
-                    <h4 className="text-lg font-semibold text-green-900 mb-3" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
-                      How to find your Google Business URL
-                    </h4>
-                    <div className="space-y-3">
-                      <div className="flex items-start space-x-3">
-                        <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5 flex-shrink-0" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                          1
+                    <div className="bg-green-50 rounded-xl sm:rounded-2xl border border-green-200 p-4 sm:p-6">
+                      <h4 className="text-lg font-semibold text-green-900 mb-3" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                        How to find your Google Business URL
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="flex items-start space-x-3">
+                          <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5 flex-shrink-0" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                            1
+                          </div>
+                          <div>
+                            <p className="text-green-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                              Go to Google Maps
+                            </p>
+                            <p className="text-green-700 text-xs sm:text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                              Search for your business name on Google Maps
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-green-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                            Go to Google Maps
-                          </p>
-                          <p className="text-green-700 text-xs sm:text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            Search for your business name on Google Maps
-                          </p>
+                        <div className="flex items-start space-x-3">
+                          <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5 flex-shrink-0" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                            2
+                          </div>
+                          <div>
+                            <p className="text-green-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                              Click on your business listing
+                            </p>
+                            <p className="text-green-700 text-xs sm:text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                              Open your business profile from the search results
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex items-start space-x-3">
-                        <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5 flex-shrink-0" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                          2
-                        </div>
-                        <div>
-                          <p className="text-green-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                            Click on your business listing
-                          </p>
-                          <p className="text-green-700 text-xs sm:text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            Open your business profile from the search results
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-start space-x-3">
-                        <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5 flex-shrink-0" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
-                          3
-                        </div>
-                        <div>
-                          <p className="text-green-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                            Copy the URL
-                          </p>
-                          <p className="text-green-700 text-xs sm:text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                            Copy the URL from your browser's address bar and paste it above
-                          </p>
+                        <div className="flex items-start space-x-3">
+                          <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5 flex-shrink-0" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                            3
+                          </div>
+                          <div>
+                            <p className="text-green-800 font-medium text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                              Copy the URL
+                            </p>
+                            <p className="text-green-700 text-xs sm:text-sm" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                              Copy the URL from your browser's address bar
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
+
 
                   {/* Current Reviews Display */}
                   <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6">
