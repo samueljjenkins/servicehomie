@@ -4,6 +4,7 @@
 @import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css" layer(utilities);
 @import "@whop/react/styles.css" layer(frosted_ui);
+@import "frosted-ui/styles.css" layer(frosted_ui);
 
 @config '../tailwind.config.ts';
 
