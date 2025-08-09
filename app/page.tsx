@@ -1,6 +1,6 @@
 export default function Page() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-white dark:bg-[#111111]">
+    <div className="relative min-h-screen overflow-hidden bg-white dark:bg-[#111111] bg-tech-splash">
       {/* dotted background + soft brand tints */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-grid-dots" />
@@ -21,7 +21,7 @@ export default function Page() {
             type="button"
             disabled
             aria-disabled="true"
-            className="inline-flex cursor-not-allowed items-center justify-center rounded-lg bg-whop-pomegranate/60 px-6 py-3 text-sm font-semibold text-white"
+            className="inline-flex cursor-not-allowed items-center justify-center rounded-lg bg-whop-pomegranate px-6 py-3 text-sm font-semibold text-white"
           >
             View on Whop App Store
           </button>
