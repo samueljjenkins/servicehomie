@@ -16,12 +16,13 @@ body {
 
 /* Design utilities */
 @layer utilities {
+  /* (optional) dot texture - not used by default now */
   .bg-grid-dots {
     background-image: radial-gradient(currentColor 1px, transparent 1px);
-    color: rgba(20, 18, 18, 0.06);
+    color: rgba(20, 18, 18, 0.04);
     background-size: 16px 16px;
   }
-  .dark .bg-grid-dots { color: rgba(255, 255, 255, 0.08); }
+  .dark .bg-grid-dots { color: rgba(255, 255, 255, 0.06); }
 
   .border-conic { position: relative; border-radius: 1rem; padding: 2px; background:
     conic-gradient(from 180deg at 50% 50%, #1754D8, #DBF505, #FA4616, #1754D8); }
@@ -35,32 +36,30 @@ body {
     padding-bottom: 6px;
   }
 
-  /* Tech gradient splash similar to example, with subtle grain */
+  /* Tech gradient splash: only blue/orange + white (light) or black (dark) */
   .bg-tech-splash {
+    /* base diagonal sweep */
     background-image:
-      radial-gradient(70rem 36rem at 15% -10%, rgba(23,84,216,0.38), transparent 60%),
-      radial-gradient(60rem 34rem at 85% -12%, rgba(250,70,22,0.34), transparent 60%),
-      radial-gradient(70rem 48rem at 5% 110%, rgba(23,84,216,0.22), transparent 60%),
-      radial-gradient(70rem 48rem at 95% 120%, rgba(250,70,22,0.22), transparent 60%),
-      radial-gradient(90rem 52rem at 50% 45%, rgba(250,70,22,0.18), transparent 60%),
-      radial-gradient(90rem 52rem at 50% 120%, rgba(219,245,5,0.18), transparent 60%),
-      linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.95));
+      linear-gradient(115deg, rgba(23,84,216,0.70) 0%, rgba(23,84,216,0.50) 35%, rgba(255,255,255,0.85) 50%, rgba(250,70,22,0.55) 70%, rgba(250,70,22,0.70) 100%),
+      /* glows */
+      radial-gradient(70rem 36rem at 12% -10%, rgba(250,70,22,0.35), transparent 60%),
+      radial-gradient(70rem 36rem at 88% -10%, rgba(23,84,216,0.35), transparent 60%),
+      radial-gradient(80rem 50rem at 7% 115%, rgba(23,84,216,0.28), transparent 60%),
+      radial-gradient(80rem 50rem at 93% 120%, rgba(250,70,22,0.28), transparent 60%);
     position: relative;
   }
   .dark .bg-tech-splash {
     background-image:
-      radial-gradient(70rem 36rem at 15% -10%, rgba(23,84,216,0.48), transparent 60%),
-      radial-gradient(60rem 34rem at 85% -12%, rgba(250,70,22,0.42), transparent 60%),
-      radial-gradient(70rem 48rem at 5% 110%, rgba(23,84,216,0.32), transparent 60%),
-      radial-gradient(70rem 48rem at 95% 120%, rgba(250,70,22,0.32), transparent 60%),
-      radial-gradient(90rem 52rem at 50% 45%, rgba(250,70,22,0.22), transparent 60%),
-      radial-gradient(90rem 52rem at 50% 120%, rgba(219,245,5,0.26), transparent 60%),
-      linear-gradient(180deg, #111111, #111111);
+      linear-gradient(115deg, rgba(23,84,216,0.70) 0%, rgba(23,84,216,0.55) 35%, rgba(17,17,17,1) 50%, rgba(250,70,22,0.60) 70%, rgba(250,70,22,0.75) 100%),
+      radial-gradient(70rem 36rem at 12% -10%, rgba(250,70,22,0.45), transparent 60%),
+      radial-gradient(70rem 36rem at 88% -10%, rgba(23,84,216,0.45), transparent 60%),
+      radial-gradient(80rem 50rem at 7% 115%, rgba(23,84,216,0.36), transparent 60%),
+      radial-gradient(80rem 50rem at 93% 120%, rgba(250,70,22,0.36), transparent 60%);
   }
   .bg-tech-splash:before {
     content: "";
     position: absolute; inset: 0; pointer-events: none;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="128" height="128" filter="url(%23n)" opacity="0.05"/></svg>');
-    background-size: 256px 256px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="128" height="128" filter="url(%23n)" opacity="0.12"/></svg>');
+    background-size: 220px 220px;
   }
 }

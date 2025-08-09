@@ -1,8 +1,6 @@
 export default function Page() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-white dark:bg-[#111111] bg-tech-splash">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-grid-dots" />
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-grain" />
       {/* dotted background + soft brand tints */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-grid-dots" />
