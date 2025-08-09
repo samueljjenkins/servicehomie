@@ -25,67 +25,31 @@ export default function Page() {
         <div className="absolute -bottom-10 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-whop-chartreuse/60 blur-2xl" />
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        {/* Hero */}
-        <section className="relative mb-20 overflow-hidden rounded-b-3xl">
-          {/* Hero background image confined to the top section */}
-          <div className="absolute inset-0 -z-10">
-            <div className="absolute inset-0 bg-[url('/backgroundimage.png')] bg-cover bg-center opacity-30" />
-            <div className="absolute inset-0 bg-white/70 dark:bg-slate-950/60" />
+      {/* Full‑bleed hero */}
+      <section className="relative -mx-4 mb-16 min-h-[60vh] overflow-hidden sm:-mx-6 lg:-mx-8">
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute inset-0 bg-[url('/backgroundimage.png')] bg-cover bg-center" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/10" />
+        </div>
+        <div className="mx-auto flex max-w-7xl flex-col items-center px-4 py-24 text-center sm:px-6 md:py-32 lg:px-8">
+          <h1 className="text-balance text-5xl font-extrabold tracking-tight text-white drop-shadow sm:text-6xl md:text-7xl">
+            Service Homie
+          </h1>
+          <p className="mt-4 text-pretty text-lg text-white/85 md:text-xl">
+            your all‑in‑one Whop booking platform
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <a href="/t/demo/book" className="inline-flex items-center justify-center rounded-xl bg-whop-blue px-6 py-3 text-sm font-semibold text-white shadow-sm ring-1 ring-white/20 transition-colors hover:bg-whop-blue/90">
+              Get started
+            </a>
+            <a href="/t/demo/dashboard" className="inline-flex items-center justify-center rounded-xl border border-white/60 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur hover:bg-white/20">
+              Creator dashboard
+            </a>
           </div>
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-whop-pomegranate/40 bg-white/70 px-3 py-1 text-xs font-medium text-whop-pomegranate shadow-sm backdrop-blur-sm dark:border-whop-pomegranate/30 dark:bg-slate-900/60 dark:text-whop-pomegranate">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-whop-pomegranate"><path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2"/></svg>
-              All‑in‑one Whop booking platform
-            </span>
-            <h1 className="mt-5 text-balance text-5xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-6xl">
-              The all‑in‑one booking system for Whop
-            </h1>
-            <p className="mt-5 text-pretty text-lg text-gray-700 dark:text-gray-300">
-              Service Homie helps you sell time, manage availability, take payments, and automate confirmations — tightly integrated with your Whop communities.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <a href="/t/demo/book" className="inline-flex items-center justify-center rounded-xl bg-whop-blue px-6 py-3 text-sm font-semibold text-white shadow-sm ring-1 ring-whop-blue/30 transition-colors hover:bg-whop-blue/90">
-                Get started
-              </a>
-              <a href="/t/demo/dashboard" className="inline-flex items-center justify-center rounded-xl border border-whop-pomegranate bg-white px-6 py-3 text-sm font-semibold text-whop-pomegranate hover:bg-whop-fantasy dark:border-whop-pomegranate dark:bg-slate-900 dark:text-whop-pomegranate dark:hover:bg-slate-800">
-                Creator dashboard
-              </a>
-            </div>
-            <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">No code required. Works with your existing Whop setup.</p>
-          </div>
+        </div>
+      </section>
 
-          {/* Hero Preview Card */}
-          <div className="mx-auto mt-12 max-w-5xl">
-            <div className="border-conic rounded-2xl">
-              <div className="inner rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-xl backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/60">
-              <div className="grid gap-4 md:grid-cols-3">
-                <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-whop-blue/10 text-whop-blue">1</span>
-                    Accept bookings
-                  </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">Share a link and let clients pick a time. Instant confirmations, reschedules, and reminders built‑in.</p>
-                </div>
-                <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-whop-chartreuse text-whop-cod">2</span>
-                    Get paid automatically
-                  </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">Charge per session or offer packages. Invoices and receipts are generated for you.</p>
-                </div>
-                <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-whop-pomegranate/10 text-whop-pomegranate">3</span>
-                    Sync with Whop
-                  </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">Gate bookings to members, reward affiliates, and keep access in sync with your Whop roles.</p>
-                </div>
-              </div>
-              </div>
-            </div>
-          </div>
-        </section>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
 
         {/* Feature Grid */}
         <section className="mb-20">
