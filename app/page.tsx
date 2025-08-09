@@ -19,7 +19,6 @@ export default function Page() {
       {/* Background */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-white via-whop-fantasy to-white dark:from-slate-950 dark:via-slate-950 dark:to-slate-950" />
-        <div className="absolute inset-0 bg-[url('/backgroundimage.png')] bg-cover bg-center opacity-15 dark:opacity-10" />
         <div className="absolute inset-0 bg-grid-dots" />
         <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-whop-pomegranate/25 blur-3xl" />
         <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-whop-blue/25 blur-3xl" />
@@ -28,7 +27,12 @@ export default function Page() {
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
         {/* Hero */}
-        <section className="relative mb-20">
+        <section className="relative mb-20 overflow-hidden rounded-b-3xl">
+          {/* Hero background image confined to the top section */}
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute inset-0 bg-[url('/backgroundimage.png')] bg-cover bg-center opacity-30" />
+            <div className="absolute inset-0 bg-white/70 dark:bg-slate-950/60" />
+          </div>
           <div className="mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-whop-pomegranate/40 bg-white/70 px-3 py-1 text-xs font-medium text-whop-pomegranate shadow-sm backdrop-blur-sm dark:border-whop-pomegranate/30 dark:bg-slate-900/60 dark:text-whop-pomegranate">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-whop-pomegranate"><path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2"/></svg>
