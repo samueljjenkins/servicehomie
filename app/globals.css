@@ -36,30 +36,37 @@ body {
     padding-bottom: 6px;
   }
 
-  /* Tech gradient splash: only blue/orange + white (light) or black (dark) */
+  /* Tech gradient splash: blue/orange with mostly white (light) or black (dark),
+     randomized soft blobs and smooth transitions */
   .bg-tech-splash {
-    /* base diagonal sweep */
     background-image:
-      linear-gradient(115deg, rgba(23,84,216,0.70) 0%, rgba(23,84,216,0.50) 35%, rgba(255,255,255,0.85) 50%, rgba(250,70,22,0.55) 70%, rgba(250,70,22,0.70) 100%),
-      /* glows */
-      radial-gradient(70rem 36rem at 12% -10%, rgba(250,70,22,0.35), transparent 60%),
-      radial-gradient(70rem 36rem at 88% -10%, rgba(23,84,216,0.35), transparent 60%),
-      radial-gradient(80rem 50rem at 7% 115%, rgba(23,84,216,0.28), transparent 60%),
-      radial-gradient(80rem 50rem at 93% 120%, rgba(250,70,22,0.28), transparent 60%);
+      /* soft diagonal white band */
+      linear-gradient(115deg, rgba(23,84,216,0.15) 0%, rgba(255,255,255,1) 38%, rgba(255,255,255,1) 62%, rgba(250,70,22,0.15) 100%),
+      /* randomized large glows */
+      radial-gradient(80rem 42rem at 10% -12%, rgba(250,70,22,0.22), transparent 60%),
+      radial-gradient(78rem 40rem at 88% -8%, rgba(23,84,216,0.24), transparent 60%),
+      radial-gradient(90rem 56rem at 15% 118%, rgba(23,84,216,0.18), transparent 65%),
+      radial-gradient(90rem 56rem at 92% 120%, rgba(250,70,22,0.18), transparent 65%),
+      radial-gradient(100rem 60rem at 50% 40%, rgba(250,70,22,0.12), transparent 60%),
+      radial-gradient(120rem 70rem at 50% 120%, rgba(23,84,216,0.12), transparent 60%);
     position: relative;
   }
   .dark .bg-tech-splash {
     background-image:
-      linear-gradient(115deg, rgba(23,84,216,0.70) 0%, rgba(23,84,216,0.55) 35%, rgba(17,17,17,1) 50%, rgba(250,70,22,0.60) 70%, rgba(250,70,22,0.75) 100%),
-      radial-gradient(70rem 36rem at 12% -10%, rgba(250,70,22,0.45), transparent 60%),
-      radial-gradient(70rem 36rem at 88% -10%, rgba(23,84,216,0.45), transparent 60%),
-      radial-gradient(80rem 50rem at 7% 115%, rgba(23,84,216,0.36), transparent 60%),
-      radial-gradient(80rem 50rem at 93% 120%, rgba(250,70,22,0.36), transparent 60%);
+      /* soft diagonal black band */
+      linear-gradient(115deg, rgba(23,84,216,0.18) 0%, rgba(17,17,17,1) 38%, rgba(17,17,17,1) 62%, rgba(250,70,22,0.20) 100%),
+      radial-gradient(80rem 42rem at 10% -12%, rgba(250,70,22,0.30), transparent 60%),
+      radial-gradient(78rem 40rem at 88% -8%, rgba(23,84,216,0.32), transparent 60%),
+      radial-gradient(90rem 56rem at 15% 118%, rgba(23,84,216,0.26), transparent 65%),
+      radial-gradient(90rem 56rem at 92% 120%, rgba(250,70,22,0.26), transparent 65%),
+      radial-gradient(100rem 60rem at 50% 40%, rgba(250,70,22,0.18), transparent 60%),
+      radial-gradient(120rem 70rem at 50% 120%, rgba(23,84,216,0.18), transparent 60%);
   }
   .bg-tech-splash:before {
     content: "";
     position: absolute; inset: 0; pointer-events: none;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="128" height="128" filter="url(%23n)" opacity="0.12"/></svg>');
-    background-size: 220px 220px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="128" height="128" filter="url(%23n)" opacity="0.22"/></svg>');
+    background-size: 200px 200px;
+    mix-blend-mode: multiply;
   }
 }
