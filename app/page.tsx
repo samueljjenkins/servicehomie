@@ -1,11 +1,18 @@
 export default function Page() {
   return (
-    <div className="min-h-screen bg-white dark:bg-[#111111]">
+    <div className="relative min-h-screen overflow-hidden bg-white dark:bg-[#111111]">
+      {/* dotted background + soft brand tints */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-grid-dots" />
+        <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-whop-pomegranate/15 blur-3xl" />
+        <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-whop-blue/15 blur-3xl" />
+      </div>
+
       <main className="mx-auto flex min-h-screen max-w-none flex-col items-center justify-center px-6 text-center">
-        <h1 className="w-full max-w-[50vw] text-balance text-[16vw] sm:text-[14vw] md:text-[12vw] lg:text-[10vw] font-extrabold leading-[0.9] tracking-tight text-slate-900 dark:text-white">
+        <h1 className="whitespace-nowrap text-[clamp(48px,10vw,160px)] font-extrabold leading-[0.95] tracking-tight text-slate-900 dark:text-white">
           Service Homie
         </h1>
-        <p className="mt-4 text-[5vw] sm:text-[4vw] md:text-[3vw] lg:text-[2.5vw] font-semibold text-slate-700 dark:text-slate-300">
+        <p className="mt-4 whitespace-nowrap text-[clamp(22px,4.5vw,56px)] font-semibold text-slate-700 dark:text-slate-300">
           Your All‑In‑One Whop Booking Platform
         </p>
         
