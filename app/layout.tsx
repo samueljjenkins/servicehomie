@@ -1,5 +1,6 @@
 import { WhopApp } from "@whop/react/components";
 import { Theme } from 'frosted-ui';
+import Script from "next/script";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -29,6 +30,23 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
+				<Script id="set-dark-mode" strategy="beforeInteractive">
+					{`
+					(function() {
+					  try {
+					    var storedTheme = localStorage.getItem('theme');
+					    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+					    var shouldUseDark = storedTheme ? storedTheme === 'dark' : prefersDark;
+					    var root = document.documentElement;
+					    if (shouldUseDark) {
+					      root.classList.add('dark');
+					    } else {
+					      root.classList.remove('dark');
+					    }
+					  } catch (e) {}
+					})();
+					`}
+				</Script>
 				<Theme>
 					<WhopApp>{children}</WhopApp>
 				</Theme>
