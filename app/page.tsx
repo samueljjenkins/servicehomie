@@ -19,6 +19,7 @@ export default function Page() {
       {/* Background */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-white via-whop-fantasy to-white dark:from-slate-950 dark:via-slate-950 dark:to-slate-950" />
+        <div className="absolute inset-0 bg-[url('/backgroundimage.png')] bg-cover bg-center opacity-15 dark:opacity-10" />
         <div className="absolute inset-0 bg-grid-dots" />
         <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-whop-pomegranate/25 blur-3xl" />
         <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-whop-blue/25 blur-3xl" />
