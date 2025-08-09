@@ -13,3 +13,17 @@ body {
 	color: var(--foreground);
 	font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Design utilities */
+@layer utilities {
+  .bg-grid-dots {
+    background-image: radial-gradient(currentColor 1px, transparent 1px);
+    color: rgba(20, 18, 18, 0.06);
+    background-size: 16px 16px;
+  }
+  .dark .bg-grid-dots { color: rgba(255, 255, 255, 0.08); }
+
+  .border-conic { position: relative; border-radius: 1rem; padding: 2px; background:
+    conic-gradient(from 180deg at 50% 50%, #1754D8, #DBF505, #FA4616, #1754D8); }
+  .border-conic > .inner { border-radius: calc(1rem - 2px); }
+}

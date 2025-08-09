@@ -18,9 +18,11 @@ export default function Page() {
     <div className="relative min-h-screen overflow-hidden">
       {/* Background */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-sky-50 via-indigo-50 to-violet-100 dark:from-slate-950 dark:via-slate-950 dark:to-indigo-950" />
-        <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl dark:bg-sky-500/15" />
-        <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-indigo-400/20 blur-3xl dark:bg-indigo-500/15" />
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-whop-fantasy to-white dark:from-slate-950 dark:via-slate-950 dark:to-slate-950" />
+        <div className="absolute inset-0 bg-grid-dots" />
+        <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-whop-pomegranate/25 blur-3xl" />
+        <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-whop-blue/25 blur-3xl" />
+        <div className="absolute -bottom-10 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-whop-chartreuse/60 blur-2xl" />
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
@@ -50,7 +52,8 @@ export default function Page() {
 
           {/* Hero Preview Card */}
           <div className="mx-auto mt-12 max-w-5xl">
-            <div className="rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-xl backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/60">
+            <div className="border-conic rounded-2xl">
+              <div className="inner rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-xl backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/60">
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
                   <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
@@ -73,6 +76,7 @@ export default function Page() {
                   </div>
                   <p className="text-sm text-slate-600 dark:text-slate-300">Gate bookings to members, reward affiliates, and keep access in sync with your Whop roles.</p>
                 </div>
+              </div>
               </div>
             </div>
           </div>
