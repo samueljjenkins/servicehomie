@@ -38,19 +38,23 @@ body {
   /* Tech gradient splash similar to example, with subtle grain */
   .bg-tech-splash {
     background-image:
-      radial-gradient(70rem 36rem at 15% -10%, rgba(23,84,216,0.30), transparent 60%),
-      radial-gradient(60rem 34rem at 85% -12%, rgba(250,70,22,0.26), transparent 60%),
-      radial-gradient(80rem 50rem at 50% 38%, rgba(250,70,22,0.14), transparent 60%),
-      radial-gradient(90rem 52rem at 50% 120%, rgba(219,245,5,0.16), transparent 60%),
+      radial-gradient(70rem 36rem at 15% -10%, rgba(23,84,216,0.38), transparent 60%),
+      radial-gradient(60rem 34rem at 85% -12%, rgba(250,70,22,0.34), transparent 60%),
+      radial-gradient(70rem 48rem at 5% 110%, rgba(23,84,216,0.22), transparent 60%),
+      radial-gradient(70rem 48rem at 95% 120%, rgba(250,70,22,0.22), transparent 60%),
+      radial-gradient(90rem 52rem at 50% 45%, rgba(250,70,22,0.18), transparent 60%),
+      radial-gradient(90rem 52rem at 50% 120%, rgba(219,245,5,0.18), transparent 60%),
       linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.95));
     position: relative;
   }
   .dark .bg-tech-splash {
     background-image:
-      radial-gradient(70rem 36rem at 15% -10%, rgba(23,84,216,0.40), transparent 60%),
-      radial-gradient(60rem 34rem at 85% -12%, rgba(250,70,22,0.34), transparent 60%),
-      radial-gradient(80rem 50rem at 50% 38%, rgba(250,70,22,0.18), transparent 60%),
-      radial-gradient(90rem 52rem at 50% 120%, rgba(219,245,5,0.22), transparent 60%),
+      radial-gradient(70rem 36rem at 15% -10%, rgba(23,84,216,0.48), transparent 60%),
+      radial-gradient(60rem 34rem at 85% -12%, rgba(250,70,22,0.42), transparent 60%),
+      radial-gradient(70rem 48rem at 5% 110%, rgba(23,84,216,0.32), transparent 60%),
+      radial-gradient(70rem 48rem at 95% 120%, rgba(250,70,22,0.32), transparent 60%),
+      radial-gradient(90rem 52rem at 50% 45%, rgba(250,70,22,0.22), transparent 60%),
+      radial-gradient(90rem 52rem at 50% 120%, rgba(219,245,5,0.26), transparent 60%),
       linear-gradient(180deg, #111111, #111111);
   }
   .bg-tech-splash:before {
