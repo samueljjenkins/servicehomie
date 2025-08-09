@@ -15,3 +15,8 @@ NEXT_PUBLIC_WHOP_APP_ID="your_app_id_here"
 
 # Company ID (use the corresponding company ID to the secret API key)
 NEXT_PUBLIC_WHOP_COMPANY_ID="your_company_id_here"
+
+# Optional: If you want the booking flow to redirect customers to a specific
+# Whop product checkout page after selecting a time, set this to your product
+# URL (e.g. https://whop.com/your-company/your-product/checkout).
+NEXT_PUBLIC_WHOP_CHECKOUT_URL="https://whop.com/your-product/checkout"
