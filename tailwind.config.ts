@@ -9,7 +9,17 @@ export default {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        whop: {
+          blue: '#1754D8',
+          pomegranate: '#FA4616',
+          chartreuse: '#DBF505',
+          cod: '#141212',
+          fantasy: '#FCF6F5',
+        },
+      },
+    },
   },
   plugins: [whopFrostedPlugin(), frostedThemePlugin()],
 };

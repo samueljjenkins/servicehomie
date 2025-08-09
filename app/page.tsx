@@ -30,7 +30,7 @@ export default function Page() {
         {/* Hero */}
         <section className="relative mb-20">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/60 px-3 py-1 text-xs font-medium text-blue-700 shadow-sm backdrop-blur-sm dark:border-blue-900/40 dark:bg-slate-900/60 dark:text-blue-300">
+            <span className="inline-flex items-center gap-2 rounded-full border border-whop-blue/30 bg-white/60 px-3 py-1 text-xs font-medium text-whop-blue shadow-sm backdrop-blur-sm dark:border-whop-blue/30 dark:bg-slate-900/60 dark:text-whop-blue">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-blue-600 dark:text-blue-400"><path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2"/></svg>
               Built for Whop creators
             </span>
@@ -41,10 +41,10 @@ export default function Page() {
               Service Homie helps you sell time, manage availability, take payments, and automate confirmations — tightly integrated with your Whop communities.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <a href="/discover" className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm ring-1 ring-blue-600/30 transition-colors hover:bg-blue-700">
+              <a href="/discover" className="inline-flex items-center justify-center rounded-xl bg-whop-blue px-6 py-3 text-sm font-semibold text-white shadow-sm ring-1 ring-whop-blue/30 transition-colors hover:bg-whop-blue/90">
                 Get started
               </a>
-              <a href="/experiences/demo" className="inline-flex items-center justify-center rounded-xl border border-blue-600 bg-white px-6 py-3 text-sm font-semibold text-blue-700 hover:bg-blue-50 dark:border-blue-500 dark:bg-slate-900 dark:text-blue-300 dark:hover:bg-slate-800">
+              <a href="/experiences/demo" className="inline-flex items-center justify-center rounded-xl border border-whop-blue bg-white px-6 py-3 text-sm font-semibold text-whop-blue hover:bg-blue-50 dark:border-whop-blue dark:bg-slate-900 dark:text-whop-blue dark:hover:bg-slate-800">
                 View demo
               </a>
             </div>
@@ -57,7 +57,7 @@ export default function Page() {
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
                   <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">1</span>
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-whop-blue/10 text-whop-blue">1</span>
                     Accept bookings
                   </div>
                   <p className="text-sm text-slate-600 dark:text-slate-300">Share a link and let clients pick a time. Instant confirmations, reschedules, and reminders built‑in.</p>
@@ -110,12 +110,12 @@ export default function Page() {
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Deep Whop integration</h2>
                 <p className="mt-3 text-slate-600 dark:text-slate-300">Connect your Whop community to control who can book, sync access after purchase, and track affiliate revenue.</p>
                 <ul className="mt-4 space-y-2 text-sm text-slate-700 dark:text-slate-300">
-                  <li className="flex items-start gap-2"><span className="mt-1 inline-block h-2 w-2 rounded-full bg-blue-500" /> Gate bookings by role or product</li>
-                  <li className="flex items-start gap-2"><span className="mt-1 inline-block h-2 w-2 rounded-full bg-blue-500" /> Auto‑grant access after checkout</li>
-                  <li className="flex items-start gap-2"><span className="mt-1 inline-block h-2 w-2 rounded-full bg-blue-500" /> Attribute and reward affiliates</li>
+                  <li className="flex items-start gap-2"><span className="mt-1 inline-block h-2 w-2 rounded-full bg-whop-blue" /> Gate bookings by role or product</li>
+                  <li className="flex items-start gap-2"><span className="mt-1 inline-block h-2 w-2 rounded-full bg-whop-blue" /> Auto‑grant access after checkout</li>
+                  <li className="flex items-start gap-2"><span className="mt-1 inline-block h-2 w-2 rounded-full bg-whop-blue" /> Attribute and reward affiliates</li>
                 </ul>
                 <div className="mt-6 flex gap-3">
-                  <a href="/discover" className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Connect Whop</a>
+                  <a href="/discover" className="inline-flex items-center justify-center rounded-xl bg-whop-blue px-5 py-2.5 text-sm font-semibold text-white hover:bg-whop-blue/90">Connect Whop</a>
                   <a href="/experiences/demo" className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">See it in action</a>
                 </div>
               </div>
@@ -145,12 +145,12 @@ export default function Page() {
 
         {/* CTA */}
         <section>
-          <div className="rounded-2xl bg-blue-600 px-8 py-10 text-center text-white shadow-lg">
+          <div className="rounded-2xl bg-whop-blue px-8 py-10 text-center text-white shadow-lg">
             <h2 className="text-3xl font-bold">Launch your booking flow today</h2>
             <p className="mt-2 text-white/90">Create your first service in minutes — connect Whop, set availability, share your link.</p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <a href="/discover" className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3 text-sm font-semibold text-blue-700 hover:bg-blue-50">Get started</a>
-              <a href="/experiences/demo" className="inline-flex items-center justify-center rounded-xl bg-blue-700/30 px-6 py-3 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 hover:bg-blue-700/40">View demo</a>
+              <a href="/discover" className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3 text-sm font-semibold text-whop-blue hover:bg-blue-50">Get started</a>
+              <a href="/experiences/demo" className="inline-flex items-center justify-center rounded-xl bg-white/10 px-6 py-3 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 hover:bg-white/15">View demo</a>
             </div>
           </div>
         </section>
