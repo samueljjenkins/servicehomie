@@ -16,43 +16,62 @@ export default function Page() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Background */}
+      {/* Canvas background */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-white via-whop-fantasy to-white dark:from-slate-950 dark:via-slate-950 dark:to-slate-950" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-whop-fantasy to-white dark:from-slate-950 dark:via-slate-950 dark:to-slate-950" />
         <div className="absolute inset-0 bg-grid-dots" />
         <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-whop-pomegranate/25 blur-3xl" />
         <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-whop-blue/25 blur-3xl" />
         <div className="absolute -bottom-10 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-whop-chartreuse/60 blur-2xl" />
       </div>
 
-      {/* Full‑bleed hero */}
-      <section className="relative -mx-4 mb-16 min-h-[60vh] overflow-hidden sm:-mx-6 lg:-mx-8">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-[url('/backgroundimage.png')] bg-cover bg-center" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/10" />
-        </div>
-        <div className="mx-auto flex max-w-7xl flex-col items-center px-4 py-24 text-center sm:px-6 md:py-32 lg:px-8">
-          <h1 className="text-balance text-5xl font-extrabold tracking-tight text-white drop-shadow sm:text-6xl md:text-7xl">
+      {/* Hero */}
+      <section className="relative -mx-4 mb-16 overflow-hidden bg-gradient-to-br from-whop-pomegranate via-transparent to-whop-blue sm:-mx-6 lg:-mx-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-center px-4 py-24 text-center sm:px-6 md:py-28 lg:px-8">
+          <h1 className="text-balance bg-gradient-to-r from-whop-pomegranate via-whop-chartreuse to-whop-blue bg-clip-text text-5xl font-extrabold tracking-tight text-transparent drop-shadow-sm sm:text-7xl md:text-8xl">
             Service Homie
           </h1>
-          <p className="mt-4 text-pretty text-lg text-white/85 md:text-xl">
+          <p className="mt-4 text-pretty text-xl text-slate-800 dark:text-slate-200">
             your all‑in‑one Whop booking platform
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a href="/t/demo/book" className="inline-flex items-center justify-center rounded-xl bg-whop-blue px-6 py-3 text-sm font-semibold text-white shadow-sm ring-1 ring-white/20 transition-colors hover:bg-whop-blue/90">
+            <a href="/t/demo/book" className="inline-flex items-center justify-center rounded-xl bg-whop-blue px-6 py-3 text-sm font-semibold text-white shadow-sm ring-1 ring-whop-blue/30 transition-colors hover:bg-whop-blue/90">
               Get started
             </a>
-            <a href="/t/demo/dashboard" className="inline-flex items-center justify-center rounded-xl border border-white/60 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur hover:bg-white/20">
+            <a href="/t/demo/dashboard" className="inline-flex items-center justify-center rounded-xl border border-whop-pomegranate bg-white px-6 py-3 text-sm font-semibold text-whop-pomegranate hover:bg-whop-fantasy dark:border-whop-pomegranate dark:bg-slate-900 dark:text-whop-pomegranate dark:hover:bg-slate-800">
               Creator dashboard
             </a>
           </div>
         </div>
       </section>
 
+      {/* Pain section */}
+      <section className="-mx-4 mb-16 bg-slate-950 py-16 text-white sm:-mx-6 lg:-mx-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold sm:text-4xl">The pain</h2>
+          <p className="mt-2 text-white/70">Creators juggle DMs, spreadsheets, and missed payments. Clients get confused and no‑shows happen.</p>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <span className="mb-2 inline-flex rounded-md bg-whop-pomegranate/20 px-2 py-1 text-xs text-whop-pomegranate">Scheduling chaos</span>
+              <p className="text-sm text-white/80">Back‑and‑forth messages to find a time. Time zones, double‑bookings, and last‑minute changes.</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <span className="mb-2 inline-flex rounded-md bg-whop-chartreuse/40 px-2 py-1 text-xs text-slate-900">Leaky payments</span>
+              <p className="text-sm text-white/80">Chasing invoices, manual refunds, and no way to tie revenue back to affiliates and roles.</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <span className="mb-2 inline-flex rounded-md bg-whop-blue/20 px-2 py-1 text-xs text-whop-blue">No‑shows</span>
+              <p className="text-sm text-white/80">Clients forget. Reminders are manual. You lose time and momentum.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
 
-        {/* Feature Grid */}
+        {/* Solution overview */}
         <section className="mb-20">
+          <h2 className="mb-6 text-3xl font-bold text-slate-900 dark:text-slate-100">What you get</h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {features.map((f) => {
               const c = colorClassMap[f.color];
@@ -74,6 +93,7 @@ export default function Page() {
 
         {/* How it works */}
         <section className="mb-20">
+          <h2 className="mb-6 text-3xl font-bold text-slate-900 dark:text-slate-100">How it works</h2>
           <div className="grid items-stretch gap-6 md:grid-cols-3">
             {[
               { n: '01', title: 'Connect Whop', desc: 'Link your company and choose who can book based on roles or products.', color: 'whop-blue' },
@@ -98,7 +118,7 @@ export default function Page() {
           <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-8 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950">
             <div className="grid gap-8 md:grid-cols-2">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Deep Whop integration</h2>
+              <h2 className="gradient-underline text-2xl font-bold text-slate-900 dark:text-slate-100">Deep Whop integration</h2>
                 <p className="mt-3 text-slate-600 dark:text-slate-300">Connect your Whop community to control who can book, sync access after purchase, and track affiliate revenue.</p>
                 <ul className="mt-4 space-y-2 text-sm text-slate-700 dark:text-slate-300">
                   <li className="flex items-start gap-2"><span className="mt-1 inline-block h-2 w-2 rounded-full bg-whop-blue" /> Gate bookings by role or product</li>
@@ -136,7 +156,7 @@ export default function Page() {
 
         {/* CTA */}
         <section>
-          <div className="rounded-2xl bg-gradient-to-r from-whop-pomegranate to-whop-blue px-8 py-10 text-center text-white shadow-lg">
+          <div className="rounded-2xl bg-gradient-to-r from-whop-pomegranate via-whop-chartreuse to-whop-blue px-8 py-10 text-center text-white shadow-lg">
             <h2 className="text-3xl font-bold">Launch your booking flow today</h2>
             <p className="mt-2 text-white/90">Create your first service in minutes — connect Whop, set availability, share your link.</p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
