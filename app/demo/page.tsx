@@ -1,43 +1,37 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { WeeklyAvailability, Weekday, TimeWindow } from "@/lib/availability";
 import { availabilityStorageKey, getDefaultWeeklyAvailability } from "@/lib/availability";
 
 const weekLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
-export default function DashboardClient({ tenant }: { tenant: string }) {
-  const storageKey = useMemo(() => availabilityStorageKey(tenant), [tenant]);
-  
+export default function DemoPage() {
   const [availability, setAvailability] = useState<WeeklyAvailability>(getDefaultWeeklyAvailability());
   const [upcoming, setUpcoming] = useState<{ date: string; time: string; customer: string }[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'booking'>('dashboard');
+
+  const storageKey = 'demo_availability';
 
   useEffect(() => {
-    console.log('DashboardClient mounted with tenant:', tenant);
-    
     try {
       const raw = localStorage.getItem(storageKey);
       if (raw) {
-        const parsed = JSON.parse(raw);
-        setAvailability(parsed);
+        setAvailability(JSON.parse(raw));
       }
     } catch (e) {
       console.error('Error loading availability:', e);
     }
     
     try {
-      const rawJobs = localStorage.getItem(`sh_jobs_${tenant}`);
+      const rawJobs = localStorage.getItem('demo_jobs');
       if (rawJobs) {
-        const parsed = JSON.parse(rawJobs);
-        setUpcoming(parsed);
+        setUpcoming(JSON.parse(rawJobs));
       }
     } catch (e) {
       console.error('Error loading jobs:', e);
     }
-    
-    setIsLoading(false);
-  }, [storageKey, tenant]);
+  }, []);
 
   function persist(next: WeeklyAvailability) {
     setAvailability(next);
@@ -70,65 +64,83 @@ export default function DashboardClient({ tenant }: { tenant: string }) {
     persist(next);
   }
 
+  function addDemoBooking() {
+    const demoBooking = {
+      date: new Date().toLocaleDateString(),
+      time: "2:00 PM",
+      customer: "Demo Customer"
+    };
+    const newBookings = [...upcoming, demoBooking];
+    setUpcoming(newBookings);
+    try {
+      localStorage.setItem('demo_jobs', JSON.stringify(newBookings));
+    } catch {}
+  }
+
   return (
     <div className="min-h-screen bg-white dark:bg-[#111111]">
-      <div className="mx-auto max-w-5xl px-4 py-10">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-            Welcome to Service Homie! 🎉
-          </h1>
-          <p className="text-xl text-slate-600 dark:text-slate-300 mb-2">
-            Your All-In-One Whop Booking Platform
-          </p>
-          <p className="text-slate-500 dark:text-slate-400">
-            Set your weekly availability and manage upcoming bookings
-          </p>
-        </header>
+      {/* Header */}
+      <header className="bg-gradient-to-r from-whop-pomegranate to-whop-blue text-white py-6">
+        <div className="max-w-7xl mx-auto px-4">
+          <h1 className="text-3xl font-bold mb-2">Service Homie</h1>
+          <p className="text-white/90">Your All-In-One Whop Booking Platform</p>
+        </div>
+      </header>
 
-        {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-whop-pomegranate mx-auto mb-4"></div>
-              <p className="text-slate-600 dark:text-slate-400">Loading your dashboard...</p>
-            </div>
+      {/* Navigation */}
+      <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex space-x-8">
+            <button
+              onClick={() => setActiveTab('dashboard')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm ${
+                activeTab === 'dashboard'
+                  ? 'border-whop-pomegranate text-whop-pomegranate'
+                  : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'
+              }`}
+            >
+              Creator Dashboard
+            </button>
+            <button
+              onClick={() => setActiveTab('booking')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm ${
+                activeTab === 'booking'
+                  ? 'border-whop-pomegranate text-whop-pomegranate'
+                  : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'
+              }`}
+            >
+              Customer Booking
+            </button>
           </div>
-        ) : (
-          <>
-            {/* Quick Start Guide */}
-            <section className="mb-10 rounded-xl border border-whop-pomegranate/20 bg-gradient-to-r from-whop-pomegranate/5 to-whop-blue/5 p-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3 flex items-center gap-2">
-                <span className="text-whop-pomegranate">🚀</span>
-                Quick Start Guide
-              </h2>
-              <div className="grid gap-4 md:grid-cols-3 text-sm">
-                <div className="space-y-2">
-                  <p className="font-medium text-slate-800 dark:text-slate-200">1. Set Your Availability</p>
-                  <p className="text-slate-600 dark:text-slate-400">Choose which days and times you're available for bookings</p>
-                </div>
-                <div className="space-y-2">
-                  <p className="font-medium text-slate-800 dark:text-slate-200">2. Share Your Link</p>
-                  <p className="text-slate-600 dark:text-slate-400">Customers will use your booking link to schedule sessions</p>
-                </div>
-                <div className="space-y-2">
-                  <p className="font-medium text-slate-800 dark:text-slate-200">3. Manage Bookings</p>
-                  <p className="text-slate-600 dark:text-slate-400">View and manage all upcoming appointments</p>
-                </div>
-              </div>
-            </section>
+        </div>
+      </nav>
 
-            {/* Availability editor */}
-            <section className="mb-10 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {activeTab === 'dashboard' ? (
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                Welcome to Your Creator Dashboard! 🎉
+              </h2>
+              <p className="text-slate-600 dark:text-slate-400">
+                Set your availability and manage bookings
+              </p>
+            </div>
+
+            {/* Availability Editor */}
+            <section className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
                 <span className="text-whop-blue">📅</span>
                 Weekly Availability
-              </h2>
+              </h3>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {weekLabels.map((label, idx) => {
                   const dayIndex = idx as Weekday;
                   const windows = availability[dayIndex];
                   const enabled = windows.length > 0;
                   return (
-                    <div key={label} className="rounded-lg border border-slate-200 p-4 dark:border-slate-800">
+                    <div key={label} className="rounded-lg border border-slate-200 dark:border-slate-800 p-4">
                       <div className="mb-2 flex items-center justify-between">
                         <span className="font-medium text-slate-800 dark:text-slate-100">{label}</span>
                         <button
@@ -179,19 +191,26 @@ export default function DashboardClient({ tenant }: { tenant: string }) {
                   );
                 })}
               </div>
-              <p className="mt-3 text-xs text-slate-500">Your availability is automatically saved and will be used for customer bookings.</p>
             </section>
 
-            {/* Upcoming jobs */}
-            <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                <span className="text-whop-chartreuse">📋</span>
-                Upcoming Bookings
-              </h2>
+            {/* Upcoming Bookings */}
+            <section className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                  <span className="text-whop-chartreuse">📋</span>
+                  Upcoming Bookings
+                </h3>
+                <button
+                  onClick={addDemoBooking}
+                  className="bg-whop-blue text-white px-4 py-2 rounded-lg text-sm hover:bg-whop-blue/90 transition-colors"
+                >
+                  Add Demo Booking
+                </button>
+              </div>
               {upcoming.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-slate-500 mb-2">No upcoming bookings yet</p>
-                  <p className="text-xs text-slate-400">When customers book sessions, they'll appear here</p>
+                  <p className="text-xs text-slate-400">Click "Add Demo Booking" to see how it works</p>
                 </div>
               ) : (
                 <ul className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -209,25 +228,24 @@ export default function DashboardClient({ tenant }: { tenant: string }) {
                 </ul>
               )}
             </section>
-
-            {/* Next Steps */}
-            <section className="mt-10 rounded-xl border border-whop-blue/20 bg-gradient-to-r from-whop-blue/5 to-whop-pomegranate/5 p-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3 flex items-center gap-2">
-                <span className="text-whop-blue">💡</span>
-                Next Steps
-              </h2>
-              <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
-                <p>• Set your availability for the days you want to accept bookings</p>
-                <p>• Share your booking link with customers</p>
-                <p>• Monitor and manage incoming bookings</p>
-                <p>• Integrate with your payment system (coming soon)</p>
-              </div>
-            </section>
-          </>
+          </div>
+        ) : (
+          <div className="text-center py-20">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Customer Booking Interface
+            </h2>
+            <p className="text-slate-600 dark:text-slate-400 mb-6">
+              This is where customers would select dates and times to book sessions
+            </p>
+            <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-6 max-w-md mx-auto">
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                The booking interface would show available time slots based on your set availability.
+                Customers would select a date, choose a time, and complete their booking.
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </div>
   );
 }
-
-
