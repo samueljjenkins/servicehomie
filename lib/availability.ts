@@ -8,15 +8,15 @@ export type TimeWindow = {
 export type WeeklyAvailability = Record<Weekday, TimeWindow[]>;
 
 export function getDefaultWeeklyAvailability(): WeeklyAvailability {
-  // Mon-Fri 9:00-17:00
+  // Start with no availability - users will set their own
   return {
-    0: [],
-    1: [{ start: "09:00", end: "17:00" }],
-    2: [{ start: "09:00", end: "17:00" }],
-    3: [{ start: "09:00", end: "17:00" }],
-    4: [{ start: "09:00", end: "17:00" }],
-    5: [{ start: "09:00", end: "17:00" }],
-    6: [],
+    0: [], // Sunday
+    1: [], // Monday
+    2: [], // Tuesday
+    3: [], // Wednesday
+    4: [], // Thursday
+    5: [], // Friday
+    6: [], // Saturday
   } as WeeklyAvailability;
 }
 
@@ -70,10 +70,6 @@ export function generateTimeSlots(
     }
   }
   return slots;
-}
-
-export function availabilityStorageKey(tenant: string): string {
-  return `sh_availability_${tenant}`;
 }
 
 

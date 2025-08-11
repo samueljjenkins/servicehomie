@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { WeeklyAvailability, Weekday, TimeWindow } from "@/lib/availability";
-import { availabilityStorageKey, getDefaultWeeklyAvailability } from "@/lib/availability";
+import { getDefaultWeeklyAvailability } from "@/lib/availability";
 
 const weekLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 

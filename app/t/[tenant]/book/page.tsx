@@ -35,46 +35,8 @@ export default function CustomerBookingPage() {
     // Mark that we're on the client side
     setIsClient(true);
     
-    // Only access localStorage on the client side
-    if (typeof window !== 'undefined') {
-      try {
-        const savedAvailability = localStorage.getItem('demo_availability');
-        if (savedAvailability) {
-          setAvailability(JSON.parse(savedAvailability));
-        }
-      } catch (e) {
-        console.error('Error loading availability:', e);
-      }
-
-      try {
-        const savedServices = localStorage.getItem('demo_services');
-        if (savedServices) {
-          setServices(JSON.parse(savedServices));
-        } else {
-          // Default services if none exist
-          setServices([
-            {
-              id: '1',
-              name: '1-on-1 Consultation',
-              description: 'Personalized 60-minute session',
-              price: 75,
-              duration: 60,
-              isActive: true
-            },
-            {
-              id: '2',
-              name: 'Group Workshop',
-              description: 'Interactive group session (2-5 people)',
-              price: 45,
-              duration: 90,
-              isActive: true
-            }
-          ]);
-        }
-      } catch (e) {
-        console.error('Error loading services:', e);
-      }
-    }
+    // TODO: Load data from Supabase instead of localStorage
+    // For now, we'll start with empty data
   }, []);
 
   // Generate next 14 days
@@ -142,7 +104,7 @@ export default function CustomerBookingPage() {
   function handleWhopCheckout() {
     if (!selectedService || !selectedDay || !selectedTime) return;
     
-    // Add demo booking
+    // TODO: Save booking to Supabase instead of localStorage
     const demoBooking = {
       date: selectedDay,
       time: selectedTime,
@@ -151,15 +113,7 @@ export default function CustomerBookingPage() {
       price: selectedService.price
     };
     
-    if (typeof window !== 'undefined') {
-      try {
-        const existing = JSON.parse(localStorage.getItem('demo_jobs') || '[]');
-        existing.push(demoBooking);
-        localStorage.setItem('demo_jobs', JSON.stringify(existing));
-      } catch (e) {
-        console.error('Error saving demo booking:', e);
-      }
-    }
+    console.log('Saving booking to Supabase:', demoBooking);
     
     // In production, this would redirect to Whop's checkout
     // For demo purposes, we'll show an alert
@@ -182,8 +136,8 @@ export default function CustomerBookingPage() {
 
   if (currentStep === 'services') {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-        {/* Header */}
+      <div className="min-h-screen bg-white dark:bg-slate-900">
+        {/* Header - Clean, professional design */}
         <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
           <div className="max-w-4xl mx-auto px-6 py-6">
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Book Your Session</h1>
@@ -195,8 +149,10 @@ export default function CustomerBookingPage() {
         <div className="max-w-4xl mx-auto px-6 py-8">
           {!isClient ? (
             <div className="text-center py-20">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-whop-pomegranate to-whop-blue rounded-full mb-4">
-                <span className="text-2xl text-white">🎯</span>
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-whop-pomegranate rounded-2xl mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
               </div>
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
                 Loading Service Homie...
@@ -211,8 +167,10 @@ export default function CustomerBookingPage() {
           ) : (
             <>
               <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-whop-pomegranate to-whop-blue rounded-full mb-4">
-                  <span className="text-2xl text-white">🎯</span>
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-whop-pomegranate rounded-2xl mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
                 </div>
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
                   Select Your Service
@@ -226,12 +184,14 @@ export default function CustomerBookingPage() {
                 {services.filter(s => s.isActive).map((service) => (
                   <div 
                     key={service.id} 
-                    className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 hover:border-whop-pomegranate hover:shadow-lg transition-all cursor-pointer group"
+                    className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 hover:border-whop-pomegranate hover:shadow-lg transition-all cursor-pointer group shadow-sm"
                     onClick={() => handleServiceSelection(service)}
                   >
                     <div className="text-center">
-                      <div className="w-16 h-16 bg-gradient-to-r from-whop-pomegranate to-whop-blue rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
-                        <span className="text-2xl text-white">💰</span>
+                      <div className="w-16 h-16 bg-whop-pomegranate/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
+                        <svg className="w-8 h-8 text-whop-pomegranate" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                        </svg>
                       </div>
                       <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
                         {service.name}
@@ -252,29 +212,29 @@ export default function CustomerBookingPage() {
                 ))}
               </div>
 
-              {/* How It Works */}
-              <div className="mt-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+              {/* How It Works - Clean, flat design */}
+              <div className="mt-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6 text-center">
                   How It Works
                 </h3>
                 <div className="grid md:grid-cols-3 gap-6">
                   <div className="text-center">
                     <div className="w-12 h-12 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                      <span className="text-xl text-whop-pomegranate">1</span>
+                      <span className="text-xl text-whop-pomegranate font-bold">1</span>
                     </div>
                     <p className="font-medium text-slate-800 dark:text-slate-200 mb-1">Choose Service</p>
                     <p className="text-slate-600 dark:text-slate-400 text-sm">Select from available options</p>
                   </div>
                   <div className="text-center">
                     <div className="w-12 h-12 bg-whop-blue/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                      <span className="text-xl text-whop-blue">2</span>
+                      <span className="text-xl text-whop-blue font-bold">2</span>
                     </div>
                     <p className="font-medium text-slate-800 dark:text-slate-200 mb-1">Pick Date & Time</p>
                     <p className="text-slate-600 dark:text-slate-400 text-sm">Choose your preferred slot</p>
                   </div>
                   <div className="text-center">
                     <div className="w-12 h-12 bg-whop-chartreuse/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                      <span className="text-xl text-whop-chartreuse">3</span>
+                      <span className="text-xl text-whop-chartreuse font-bold">3</span>
                     </div>
                     <p className="font-medium text-slate-800 dark:text-slate-200 mb-1">Complete Payment</p>
                     <p className="text-slate-600 dark:text-slate-400 text-sm">Secure checkout via Whop</p>

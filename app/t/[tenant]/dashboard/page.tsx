@@ -18,24 +18,7 @@ interface Service {
 export default function CreatorDashboardPage() {
   const [availability, setAvailability] = useState<WeeklyAvailability>(getDefaultWeeklyAvailability());
   const [upcoming, setUpcoming] = useState<{ date: string; time: string; customer: string; service: string; price: number }[]>([]);
-  const [services, setServices] = useState<Service[]>([
-    {
-      id: '1',
-      name: '1-on-1 Consultation',
-      description: 'Personalized 60-minute session',
-      price: 75,
-      duration: 60,
-      isActive: true
-    },
-    {
-      id: '2',
-      name: 'Group Workshop',
-      description: 'Interactive group session (2-5 people)',
-      price: 45,
-      duration: 90,
-      isActive: true
-    }
-  ]);
+  const [services, setServices] = useState<Service[]>([]);
   const [activeTab, setActiveTab] = useState<'overview' | 'services' | 'availability' | 'bookings'>('overview');
   const [showAddService, setShowAddService] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
@@ -45,57 +28,20 @@ export default function CreatorDashboardPage() {
     // Mark that we're on the client side
     setIsClient(true);
     
-    // Only access localStorage on the client side
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('demo_availability');
-        if (saved) {
-          setAvailability(JSON.parse(saved));
-        }
-      } catch (e) {
-        console.error('Error loading availability:', e);
-      }
-
-      try {
-        const saved = localStorage.getItem('demo_jobs');
-        if (saved) {
-          setUpcoming(JSON.parse(saved));
-        }
-      } catch (e) {
-        console.error('Error loading jobs:', e);
-      }
-
-      try {
-        const saved = localStorage.getItem('demo_services');
-        if (saved) {
-          setServices(JSON.parse(saved));
-        }
-      } catch (e) {
-        console.error('Error loading services:', e);
-      }
-    }
+    // TODO: Load data from Supabase instead of localStorage
+    // For now, we'll start with empty data
   }, []);
 
   function persistAvailability(next: WeeklyAvailability) {
     setAvailability(next);
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem('demo_availability', JSON.stringify(next));
-      } catch (e) {
-        console.error('Error saving availability:', e);
-      }
-    }
+    // TODO: Save to Supabase instead of localStorage
+    console.log('Saving availability to Supabase:', next);
   }
 
   function persistServices(next: Service[]) {
     setServices(next);
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem('demo_services', JSON.stringify(next));
-      } catch (e) {
-        console.error('Error saving services:', e);
-      }
-    }
+    // TODO: Save to Supabase instead of localStorage
+    console.log('Saving services to Supabase:', next);
   }
 
   function toggleDayEnabled(dayIndex: Weekday) {
@@ -120,28 +66,6 @@ export default function CreatorDashboardPage() {
     const next = structuredClone(availability);
     next[dayIndex].splice(windowIndex, 1);
     persistAvailability(next);
-  }
-
-  function addDemoBooking() {
-    const service = services.find(s => s.isActive);
-    if (!service) return;
-    
-    const demoBooking = {
-      date: new Date().toLocaleDateString(),
-      time: "2:00 PM",
-      customer: "Demo Customer",
-      service: service.name,
-      price: service.price
-    };
-    const newBookings = [...upcoming, demoBooking];
-    setUpcoming(newBookings);
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem('demo_jobs', JSON.stringify(newBookings));
-      } catch (e) {
-        console.error('Error saving jobs:', e);
-      }
-    }
   }
 
   function addService() {
@@ -187,13 +111,8 @@ export default function CreatorDashboardPage() {
   const availableDays = Object.values(availability).filter(day => day.length > 0).length;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      {/* Test Message - Remove this after debugging */}
-      <div className="bg-green-500 text-white text-center py-2 text-sm">
-        🎉 Dashboard is loading! If you see this, the routing is working.
-      </div>
-      
-      {/* Header */}
+    <div className="min-h-screen bg-white dark:bg-slate-900">
+      {/* Header - Clean, professional design */}
       <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
@@ -209,15 +128,47 @@ export default function CreatorDashboardPage() {
         </div>
       </header>
 
-      {/* Navigation Tabs */}
+      {/* Navigation Tabs - Clean, flat design */}
       <nav className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex space-x-1">
             {[
-              { id: 'overview', label: 'Overview', icon: '📊' },
-              { id: 'services', label: 'Services', icon: '💰' },
-              { id: 'availability', label: 'Availability', icon: '📅' },
-              { id: 'bookings', label: 'Bookings', icon: '📋' }
+              { 
+                id: 'overview', 
+                label: 'Overview', 
+                icon: (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                )
+              },
+              { 
+                id: 'services', 
+                label: 'Services', 
+                icon: (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                  </svg>
+                )
+              },
+              { 
+                id: 'availability', 
+                label: 'Availability', 
+                icon: (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                )
+              },
+              { 
+                id: 'bookings', 
+                label: 'Bookings', 
+                icon: (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                )
+              }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -228,7 +179,7 @@ export default function CreatorDashboardPage() {
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >
-                <span className="text-base">{tab.icon}</span>
+                {tab.icon}
                 {tab.label}
               </button>
             ))}
@@ -240,8 +191,10 @@ export default function CreatorDashboardPage() {
       <div className="max-w-7xl mx-auto px-6 py-8">
         {!isClient ? (
           <div className="text-center py-20">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-whop-pomegranate to-whop-blue rounded-full mb-4">
-              <span className="text-2xl text-white">🎯</span>
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-whop-pomegranate rounded-2xl mb-4">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
             </div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
               Loading Service Homie...
@@ -257,10 +210,12 @@ export default function CreatorDashboardPage() {
           <>
             {activeTab === 'overview' && (
               <div className="space-y-8">
-                {/* Welcome Section */}
+                {/* Welcome Section - Clean, professional */}
                 <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-whop-pomegranate to-whop-blue rounded-full mb-4">
-                    <span className="text-2xl text-white">🎉</span>
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-whop-pomegranate rounded-2xl mb-4">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
                   </div>
                   <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">
                     Welcome back!
@@ -270,52 +225,60 @@ export default function CreatorDashboardPage() {
                   </p>
                 </div>
 
-                {/* Stats Grid */}
+                {/* Stats Grid - Clean cards with proper contrast */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-10 h-10 bg-whop-pomegranate/10 rounded-lg flex items-center justify-center">
-                        <span className="text-whop-pomegranate text-lg">💰</span>
+                      <div className="w-10 h-10 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center">
+                        <svg className="w-5 h-5 text-whop-pomegranate" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                        </svg>
                       </div>
                       <span className="text-2xl font-bold text-whop-pomegranate">${totalRevenue}</span>
                     </div>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm">Total Revenue</p>
+                    <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">Total Revenue</p>
                   </div>
                   
-                  <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-10 h-10 bg-whop-blue/10 rounded-lg flex items-center justify-center">
-                        <span className="text-whop-blue text-lg">📅</span>
+                      <div className="w-10 h-10 bg-whop-blue/10 rounded-xl flex items-center justify-center">
+                        <svg className="w-5 h-5 text-whop-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
                       </div>
                       <span className="text-2xl font-bold text-whop-blue">{upcoming.length}</span>
                     </div>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm">Upcoming Bookings</p>
+                    <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">Upcoming Bookings</p>
                   </div>
                   
-                  <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-10 h-10 bg-whop-chartreuse/10 rounded-lg flex items-center justify-center">
-                        <span className="text-whop-chartreuse text-lg">🎯</span>
+                      <div className="w-10 h-10 bg-whop-chartreuse/10 rounded-xl flex items-center justify-center">
+                        <svg className="w-5 h-5 text-whop-chartreuse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                       </div>
                       <span className="text-2xl font-bold text-whop-chartreuse">{activeServices}</span>
                     </div>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm">Active Services</p>
+                    <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">Active Services</p>
                   </div>
                   
-                  <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center">
-                        <span className="text-slate-600 dark:text-slate-400 text-lg">📆</span>
+                      <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center">
+                        <svg className="w-5 h-5 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
                       </div>
                       <span className="text-2xl font-bold text-slate-900 dark:text-white">{availableDays}</span>
                     </div>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm">Days Available</p>
+                    <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">Days Available</p>
                   </div>
                 </div>
 
-                {/* Quick Actions */}
+                {/* Quick Actions - Clean, flat design */}
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div className="bg-gradient-to-br from-whop-pomegranate/5 to-whop-blue/5 rounded-2xl p-6 border border-whop-pomegranate/20">
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                       Quick Actions
                     </h3>
@@ -341,24 +304,26 @@ export default function CreatorDashboardPage() {
                     </div>
                   </div>
 
-                  <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                       Recent Activity
                     </h3>
                     {upcoming.length === 0 ? (
                       <div className="text-center py-8">
-                        <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-3">
-                          <span className="text-slate-400 text-lg">📋</span>
+                        <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-3">
+                          <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                          </svg>
                         </div>
-                        <p className="text-slate-500 text-sm">No recent bookings</p>
+                        <p className="text-slate-600 dark:text-slate-400 text-sm font-medium">No recent bookings</p>
                       </div>
                     ) : (
                       <div className="space-y-3">
                         {upcoming.slice(-3).map((booking, index) => (
-                          <div key={index} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-lg">
+                          <div key={index} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
                             <div>
                               <p className="font-medium text-slate-900 dark:text-white text-sm">{booking.customer}</p>
-                              <p className="text-slate-500 text-xs">{booking.service}</p>
+                              <p className="text-slate-500 dark:text-slate-400 text-xs">{booking.service}</p>
                             </div>
                             <span className="text-whop-pomegranate font-semibold text-sm">${booking.price}</span>
                           </div>
@@ -618,12 +583,7 @@ export default function CreatorDashboardPage() {
                       Manage and view all your customer appointments
                     </p>
                   </div>
-                  <button
-                    onClick={addDemoBooking}
-                    className="bg-whop-blue text-white px-6 py-3 rounded-xl font-semibold hover:bg-whop-blue/90 transition-colors shadow-sm"
-                  >
-                    + Add Demo
-                  </button>
+
                 </div>
 
                 {upcoming.length === 0 ? (
@@ -633,12 +593,7 @@ export default function CreatorDashboardPage() {
                     </div>
                     <p className="text-slate-500 mb-2 text-lg">No upcoming bookings yet</p>
                     <p className="text-slate-400 mb-6">When customers book sessions, they'll appear here</p>
-                    <button
-                      onClick={addDemoBooking}
-                      className="bg-whop-pomegranate text-white px-6 py-3 rounded-xl font-medium hover:bg-whop-pomegranate/90 transition-colors"
-                    >
-                      Add Demo Booking
-                    </button>
+
                   </div>
                 ) : (
                   <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
