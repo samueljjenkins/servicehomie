@@ -121,7 +121,7 @@ export default function CreatorDashboardPage() {
               <p className="text-slate-600 dark:text-slate-400">Manage your booking business</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-whop-chartreuse rounded-full"></div>
+              <div className="w-2 h-2 bg-whop-pomegranate rounded-full"></div>
               <span className="text-sm text-slate-600 dark:text-slate-400">Live</span>
             </div>
           </div>
@@ -253,12 +253,12 @@ export default function CreatorDashboardPage() {
                   
                   <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-10 h-10 bg-whop-chartreuse/10 rounded-xl flex items-center justify-center">
-                        <svg className="w-5 h-5 text-whop-chartreuse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-10 h-10 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center">
+                        <svg className="w-5 h-5 text-whop-pomegranate" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
-                      <span className="text-2xl font-bold text-whop-chartreuse">{activeServices}</span>
+                      <span className="text-2xl font-bold text-whop-pomegranate">{activeServices}</span>
                     </div>
                     <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">Active Services</p>
                   </div>
@@ -366,7 +366,7 @@ export default function CreatorDashboardPage() {
                             </h3>
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                               service.isActive
-                                ? 'bg-whop-chartreuse/20 text-whop-chartreuse'
+                                ? 'bg-whop-pomegranate/20 text-whop-pomegranate'
                                 : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'
                             }`}>
                               {service.isActive ? 'Active' : 'Inactive'}
@@ -387,7 +387,7 @@ export default function CreatorDashboardPage() {
                           onClick={() => toggleServiceActive(service.id)}
                           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                             service.isActive
-                              ? 'bg-whop-chartreuse text-slate-800'
+                              ? 'bg-whop-pomegranate text-slate-800'
                               : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'
                           }`}
                         >
@@ -498,68 +498,133 @@ export default function CreatorDashboardPage() {
             {activeTab === 'availability' && (
               <div className="space-y-8">
                 <div className="text-center">
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                    Weekly Availability
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-whop-blue/10 rounded-2xl mb-4">
+                    <svg className="w-8 h-8 text-whop-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">
+                    Set Your Weekly Schedule
                   </h2>
-                  <p className="text-slate-600 dark:text-slate-400">
-                    Set when you're available for customer bookings
+                  <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                    Choose which days and times you're available for customer bookings
                   </p>
                 </div>
 
-                {/* Availability Editor */}
-                <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {/* Enhanced Availability Editor */}
+                <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-8 shadow-sm">
+                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {weekLabels.map((label, idx) => {
                       const dayIndex = idx as Weekday;
                       const windows = availability[dayIndex];
                       const enabled = windows.length > 0;
                       return (
-                        <div key={label} className="bg-slate-50 dark:bg-slate-700 rounded-xl p-4 border border-slate-200 dark:border-slate-600">
-                          <div className="mb-3 flex items-center justify-between">
-                            <span className="font-medium text-slate-900 dark:text-white">{label}</span>
+                        <div key={label} className={`rounded-2xl p-6 transition-all duration-200 ${
+                          enabled 
+                            ? 'bg-gradient-to-br from-whop-pomegranate/5 to-whop-blue/5 border-2 border-whop-pomegranate/20 shadow-lg' 
+                            : 'bg-slate-50 dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600'
+                        }`}>
+                          <div className="mb-4 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                                enabled 
+                                  ? 'bg-whop-pomegranate text-white' 
+                                  : 'bg-slate-200 dark:bg-slate-600 text-slate-500'
+                              }`}>
+                                <span className="font-bold text-sm">{label}</span>
+                              </div>
+                              <div>
+                                <h3 className={`font-semibold text-sm ${
+                                  enabled 
+                                    ? 'text-slate-900 dark:text-white' 
+                                    : 'text-slate-600 dark:text-slate-400'
+                                }`}>
+                                  {label === 'Sun' ? 'Sunday' : 
+                                   label === 'Mon' ? 'Monday' : 
+                                   label === 'Tue' ? 'Tuesday' : 
+                                   label === 'Wed' ? 'Wednesday' : 
+                                   label === 'Thu' ? 'Thursday' : 
+                                   label === 'Fri' ? 'Friday' : 'Saturday'}
+                                </h3>
+                                <p className={`text-xs ${
+                                  enabled 
+                                    ? 'text-whop-pomegranate font-medium' 
+                                    : 'text-slate-500'
+                                }`}>
+                                  {enabled ? `${windows.length} time slot${windows.length > 1 ? 's' : ''}` : 'Not available'}
+                                </p>
+                              </div>
+                            </div>
                             <button
                               onClick={() => toggleDayEnabled(dayIndex)}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
                                 enabled 
-                                  ? "bg-whop-pomegranate text-white shadow-sm" 
-                                  : "border border-slate-300 text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-600"
+                                  ? "bg-whop-pomegranate text-white shadow-md hover:shadow-lg transform hover:scale-105" 
+                                  : "bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-whop-pomegranate/50"
                               }`}
                             >
-                              {enabled ? "Enabled" : "Disabled"}
+                              {enabled ? "✓ Available" : "Set Available"}
                             </button>
                           </div>
+                          
                           {enabled && (
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                               {windows.map((w, wi) => (
-                                <div key={wi} className="flex items-center gap-2">
-                                  <input
-                                    type="time"
-                                    value={w.start}
-                                    onChange={(e) => updateWindow(dayIndex, wi, "start", e.target.value)}
-                                    className="flex-1 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-600 dark:bg-slate-800 focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
-                                  />
-                                  <span className="text-slate-500 text-sm">to</span>
-                                  <input
-                                    type="time"
-                                    value={w.end}
-                                    onChange={(e) => updateWindow(dayIndex, wi, "end", e.target.value)}
-                                    className="flex-1 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-600 dark:bg-slate-800 focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
-                                  />
-                                  <button 
-                                    onClick={() => removeWindow(dayIndex, wi)} 
-                                    className="text-red-500 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                                  >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                  </button>
+                                <div key={wi} className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-600 shadow-sm">
+                                  <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-6 h-6 bg-whop-blue/10 rounded-lg flex items-center justify-center">
+                                      <svg className="w-3 h-3 text-whop-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                      </svg>
+                                    </div>
+                                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Time Slot {wi + 1}</span>
+                                    <button 
+                                      onClick={() => removeWindow(dayIndex, wi)} 
+                                      className="ml-auto text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                                    >
+                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                  <div className="flex items-center gap-3">
+                                    <div className="flex-1">
+                                      <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Start Time</label>
+                                      <input
+                                        type="time"
+                                        value={w.start}
+                                        onChange={(e) => updateWindow(dayIndex, wi, "start", e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-800 focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                                      />
+                                    </div>
+                                    <div className="flex items-center justify-center w-8">
+                                      <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                      </svg>
+                                    </div>
+                                    <div className="flex-1">
+                                      <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">End Time</label>
+                                      <input
+                                        type="time"
+                                        value={w.end}
+                                        onChange={(e) => updateWindow(dayIndex, wi, "end", e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-800 focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                                      />
+                                    </div>
+                                  </div>
                                 </div>
                               ))}
+                              
                               <button 
                                 onClick={() => addWindow(dayIndex)} 
-                                className="w-full text-whop-blue hover:text-whop-blue/80 text-sm px-3 py-1.5 rounded-lg hover:bg-whop-blue/10 transition-colors border border-dashed border-whop-blue/30"
+                                className="w-full bg-gradient-to-r from-whop-blue/10 to-whop-pomegranate/10 hover:from-whop-blue/20 hover:to-whop-pomegranate/20 text-whop-blue dark:text-whop-pomegranate border-2 border-dashed border-whop-blue/30 dark:border-whop-pomegranate/30 rounded-xl py-3 text-sm font-semibold transition-all duration-200 hover:scale-105 group"
                               >
-                                + Add time slot
+                                <div className="flex items-center justify-center gap-2">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                  </svg>
+                                  Add Another Time Slot
+                                </div>
                               </button>
                             </div>
                           )}
@@ -567,7 +632,20 @@ export default function CreatorDashboardPage() {
                       );
                     })}
                   </div>
-                  <p className="mt-4 text-sm text-slate-500 text-center">Your availability is automatically saved and will be used for customer bookings.</p>
+                  
+                  <div className="mt-8 p-6 bg-gradient-to-r from-whop-pomegranate/5 to-whop-blue/5 rounded-xl border border-whop-pomegranate/20">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-whop-pomegranate/20 rounded-lg flex items-center justify-center">
+                        <svg className="w-4 h-4 text-whop-pomegranate" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-slate-900 dark:text-white">Your availability is automatically saved</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">Changes are applied immediately and will be used for customer bookings</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -588,9 +666,11 @@ export default function CreatorDashboardPage() {
 
                 {upcoming.length === 0 ? (
                   <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
-                    <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-slate-400 text-2xl">📋</span>
-                    </div>
+                                      <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  </div>
                     <p className="text-slate-500 mb-2 text-lg">No upcoming bookings yet</p>
                     <p className="text-slate-400 mb-6">When customers book sessions, they'll appear here</p>
 
@@ -645,7 +725,7 @@ export default function CreatorDashboardPage() {
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-whop-chartreuse/20 text-whop-chartreuse">
+                                <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-whop-pomegranate/20 text-whop-pomegranate">
                                   Confirmed
                                 </span>
                               </td>
@@ -653,7 +733,7 @@ export default function CreatorDashboardPage() {
                                 <button className="text-whop-blue hover:text-whop-blue/80 mr-3 hover:bg-whop-blue/10 px-2 py-1 rounded transition-colors">
                                   View
                                 </button>
-                                <button className="text-whop-chartreuse hover:text-whop-chartreuse/80 hover:bg-whop-chartreuse/10 px-2 py-1 rounded transition-colors">
+                                <button className="text-whop-pomegranate hover:text-whop-pomegranate/80 hover:bg-whop-pomegranate/10 px-2 py-1 rounded transition-colors">
                                   Edit
                                 </button>
                               </td>

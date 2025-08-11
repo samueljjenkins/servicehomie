@@ -233,8 +233,8 @@ export default function CustomerBookingPage() {
                     <p className="text-slate-600 dark:text-slate-400 text-sm">Choose your preferred slot</p>
                   </div>
                   <div className="text-center">
-                    <div className="w-12 h-12 bg-whop-chartreuse/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                      <span className="text-xl text-whop-chartreuse font-bold">3</span>
+                    <div className="w-12 h-12 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <span className="text-xl text-whop-pomegranate font-bold">3</span>
                     </div>
                     <p className="font-medium text-slate-800 dark:text-slate-200 mb-1">Complete Payment</p>
                     <p className="text-slate-600 dark:text-slate-400 text-sm">Secure checkout via Whop</p>
@@ -401,7 +401,7 @@ export default function CustomerBookingPage() {
         {/* Booking Confirmation */}
         <div className="max-w-2xl mx-auto px-6 py-8">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-whop-chartreuse to-whop-blue rounded-full mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-whop-pomegranate to-whop-blue rounded-full mb-4">
               <span className="text-2xl text-white">📋</span>
             </div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
@@ -503,9 +503,9 @@ export default function CustomerBookingPage() {
           </div>
 
           {/* Security Notice */}
-          <div className="mt-6 bg-gradient-to-r from-whop-chartreuse/10 to-whop-blue/10 rounded-xl p-4 border border-whop-chartreuse/20">
+          <div className="mt-6 bg-gradient-to-r from-whop-pomegranate/10 to-whop-blue/10 rounded-xl p-4 border border-whop-pomegranate/20">
             <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-              <span className="text-whop-chartreuse">🔒</span>
+              <span className="text-whop-pomegranate">🔒</span>
               <span>Your payment is processed securely through Whop's platform</span>
             </div>
           </div>
