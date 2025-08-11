@@ -29,45 +29,51 @@ export default function CustomerBookingPage() {
     email: '',
     phone: ''
   });
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // Load any saved availability and services from localStorage
-    try {
-      const savedAvailability = localStorage.getItem('demo_availability');
-      if (savedAvailability) {
-        setAvailability(JSON.parse(savedAvailability));
+    // Mark that we're on the client side
+    setIsClient(true);
+    
+    // Only access localStorage on the client side
+    if (typeof window !== 'undefined') {
+      try {
+        const savedAvailability = localStorage.getItem('demo_availability');
+        if (savedAvailability) {
+          setAvailability(JSON.parse(savedAvailability));
+        }
+      } catch (e) {
+        console.error('Error loading availability:', e);
       }
-    } catch (e) {
-      console.error('Error loading availability:', e);
-    }
 
-    try {
-      const savedServices = localStorage.getItem('demo_services');
-      if (savedServices) {
-        setServices(JSON.parse(savedServices));
-      } else {
-        // Default services if none exist
-        setServices([
-          {
-            id: '1',
-            name: '1-on-1 Consultation',
-            description: 'Personalized 60-minute session',
-            price: 75,
-            duration: 60,
-            isActive: true
-          },
-          {
-            id: '2',
-            name: 'Group Workshop',
-            description: 'Interactive group session (2-5 people)',
-            price: 45,
-            duration: 90,
-            isActive: true
-          }
-        ]);
+      try {
+        const savedServices = localStorage.getItem('demo_services');
+        if (savedServices) {
+          setServices(JSON.parse(savedServices));
+        } else {
+          // Default services if none exist
+          setServices([
+            {
+              id: '1',
+              name: '1-on-1 Consultation',
+              description: 'Personalized 60-minute session',
+              price: 75,
+              duration: 60,
+              isActive: true
+            },
+            {
+              id: '2',
+              name: 'Group Workshop',
+              description: 'Interactive group session (2-5 people)',
+              price: 45,
+              duration: 90,
+              isActive: true
+            }
+          ]);
+        }
+      } catch (e) {
+        console.error('Error loading services:', e);
       }
-    } catch (e) {
-      console.error('Error loading services:', e);
     }
   }, []);
 
@@ -145,11 +151,15 @@ export default function CustomerBookingPage() {
       price: selectedService.price
     };
     
-    try {
-      const existing = JSON.parse(localStorage.getItem('demo_jobs') || '[]');
-      existing.push(demoBooking);
-      localStorage.setItem('demo_jobs', JSON.stringify(existing));
-    } catch {}
+    if (typeof window !== 'undefined') {
+      try {
+        const existing = JSON.parse(localStorage.getItem('demo_jobs') || '[]');
+        existing.push(demoBooking);
+        localStorage.setItem('demo_jobs', JSON.stringify(existing));
+      } catch (e) {
+        console.error('Error saving demo booking:', e);
+      }
+    }
     
     // In production, this would redirect to Whop's checkout
     // For demo purposes, we'll show an alert
@@ -183,77 +193,96 @@ export default function CustomerBookingPage() {
 
         {/* Services Selection */}
         <div className="max-w-4xl mx-auto px-6 py-8">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-whop-pomegranate to-whop-blue rounded-full mb-4">
-              <span className="text-2xl text-white">🎯</span>
-            </div>
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
-              Select Your Service
-            </h2>
-            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Choose from our available services below
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {services.filter(s => s.isActive).map((service) => (
-              <div 
-                key={service.id} 
-                className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 hover:border-whop-pomegranate hover:shadow-lg transition-all cursor-pointer group"
-                onClick={() => handleServiceSelection(service)}
-              >
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-whop-pomegranate to-whop-blue rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
-                    <span className="text-2xl text-white">💰</span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-                    {service.name}
-                  </h3>
-                  <p className="text-slate-600 dark:text-slate-400 mb-4 text-sm leading-relaxed">
-                    {service.description}
-                  </p>
-                  <div className="flex items-center justify-center gap-4 mb-4">
-                    <span className="text-2xl font-bold text-whop-pomegranate">${service.price}</span>
-                    <span className="text-slate-400">•</span>
-                    <span className="text-slate-600 dark:text-slate-400 font-medium">{service.duration} min</span>
-                  </div>
-                  <button className="w-full bg-whop-pomegranate text-white py-3 rounded-xl font-semibold hover:bg-whop-pomegranate/90 transition-colors shadow-sm">
-                    Select This Service
-                  </button>
-                </div>
+          {!isClient ? (
+            <div className="text-center py-20">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-whop-pomegranate to-whop-blue rounded-full mb-4">
+                <span className="text-2xl text-white">🎯</span>
               </div>
-            ))}
-          </div>
-
-          {/* How It Works */}
-          <div className="mt-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6 text-center">
-              How It Works
-            </h3>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <span className="text-xl text-whop-pomegranate">1</span>
-                </div>
-                <p className="font-medium text-slate-800 dark:text-slate-200 mb-1">Choose Service</p>
-                <p className="text-slate-600 dark:text-slate-400 text-sm">Select from available options</p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-whop-blue/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <span className="text-xl text-whop-blue">2</span>
-                </div>
-                <p className="font-medium text-slate-800 dark:text-slate-200 mb-1">Pick Date & Time</p>
-                <p className="text-slate-600 dark:text-slate-400 text-sm">Choose your preferred slot</p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-whop-chartreuse/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <span className="text-xl text-whop-chartreuse">3</span>
-                </div>
-                <p className="font-medium text-slate-800 dark:text-slate-200 mb-1">Complete Payment</p>
-                <p className="text-slate-600 dark:text-slate-400 text-sm">Secure checkout via Whop</p>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
+                Loading Service Homie...
+              </h2>
+              <p className="text-slate-600 dark:text-slate-400">
+                Initializing your booking experience
+              </p>
+              <div className="mt-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-whop-pomegranate mx-auto"></div>
               </div>
             </div>
-          </div>
+          ) : (
+            <>
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-whop-pomegranate to-whop-blue rounded-full mb-4">
+                  <span className="text-2xl text-white">🎯</span>
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
+                  Select Your Service
+                </h2>
+                <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                  Choose from our available services below
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {services.filter(s => s.isActive).map((service) => (
+                  <div 
+                    key={service.id} 
+                    className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 hover:border-whop-pomegranate hover:shadow-lg transition-all cursor-pointer group"
+                    onClick={() => handleServiceSelection(service)}
+                  >
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-gradient-to-r from-whop-pomegranate to-whop-blue rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
+                        <span className="text-2xl text-white">💰</span>
+                      </div>
+                      <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+                        {service.name}
+                      </h3>
+                      <p className="text-slate-600 dark:text-slate-400 mb-4 text-sm leading-relaxed">
+                        {service.description}
+                      </p>
+                      <div className="flex items-center justify-center gap-4 mb-4">
+                        <span className="text-2xl font-bold text-whop-pomegranate">${service.price}</span>
+                        <span className="text-slate-400">•</span>
+                        <span className="text-slate-600 dark:text-slate-400 font-medium">{service.duration} min</span>
+                      </div>
+                      <button className="w-full bg-whop-pomegranate text-white py-3 rounded-xl font-semibold hover:bg-whop-pomegranate/90 transition-colors shadow-sm">
+                        Select This Service
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* How It Works */}
+              <div className="mt-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6 text-center">
+                  How It Works
+                </h3>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <span className="text-xl text-whop-pomegranate">1</span>
+                    </div>
+                    <p className="font-medium text-slate-800 dark:text-slate-200 mb-1">Choose Service</p>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">Select from available options</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-whop-blue/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <span className="text-xl text-whop-blue">2</span>
+                    </div>
+                    <p className="font-medium text-slate-800 dark:text-slate-200 mb-1">Pick Date & Time</p>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">Choose your preferred slot</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-whop-chartreuse/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <span className="text-xl text-whop-chartreuse">3</span>
+                    </div>
+                    <p className="font-medium text-slate-800 dark:text-slate-200 mb-1">Complete Payment</p>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">Secure checkout via Whop</p>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     );
