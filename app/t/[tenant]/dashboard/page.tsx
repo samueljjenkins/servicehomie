@@ -188,6 +188,11 @@ export default function CreatorDashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+      {/* Test Message - Remove this after debugging */}
+      <div className="bg-green-500 text-white text-center py-2 text-sm">
+        🎉 Dashboard is loading! If you see this, the routing is working.
+      </div>
+      
       {/* Header */}
       <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-6 py-6">

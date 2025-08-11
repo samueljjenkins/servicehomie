@@ -1,28 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
-export default function TenantPage({ params }: { params: Promise<{ tenant: string }> }) {
+export default function TenantPage() {
   const router = useRouter();
+  const params = useParams();
   const [isLoading, setIsLoading] = useState(true);
-  const [tenant, setTenant] = useState<string>('');
 
   useEffect(() => {
-    // Extract tenant from params
-    params.then(({ tenant: tenantParam }) => {
-      setTenant(tenantParam);
+    // Get tenant from useParams instead of async params
+    const tenant = params?.tenant as string;
+    
+    if (tenant) {
       // This is the main tenant page that Whop loads
       // We'll redirect to the dashboard by default
-      // In production, you might want to check user permissions here
-      
-      // Simulate a brief loading state
       const timer = setTimeout(() => {
-        router.push(`/t/${tenantParam}/dashboard`);
-      }, 100);
+        router.push(`/t/${tenant}/dashboard`);
+      }, 500); // Slightly longer delay to ensure Whop loads properly
 
       return () => clearTimeout(timer);
-    });
+    }
   }, [params, router]);
 
   return (
@@ -40,6 +38,20 @@ export default function TenantPage({ params }: { params: Promise<{ tenant: strin
         <div className="mt-4">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-whop-pomegranate mx-auto"></div>
         </div>
+        <div className="mt-6 text-sm text-slate-500">
+          If you're not redirected automatically, click below:
+        </div>
+        <button 
+          onClick={() => {
+            const tenant = params?.tenant as string;
+            if (tenant) {
+              router.push(`/t/${tenant}/dashboard`);
+            }
+          }}
+          className="mt-3 bg-whop-pomegranate text-white px-4 py-2 rounded-lg hover:bg-whop-pomegranate/90 transition-colors"
+        >
+          Go to Dashboard
+        </button>
       </div>
     </div>
   );

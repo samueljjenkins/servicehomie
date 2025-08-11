@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Whop App",
-	description: "My Whop App",
+	title: "Service Homie - Whop Booking Platform",
+	description: "Your All-In-One Whop Booking Platform",
 };
 
 export default function RootLayout({
@@ -48,7 +48,9 @@ export default function RootLayout({
 					`}
 				</Script>
 				<Theme>
-					<WhopApp>{children}</WhopApp>
+					<WhopApp>
+						{children}
+					</WhopApp>
 				</Theme>
 			</body>
 		</html>
