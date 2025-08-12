@@ -2,9 +2,8 @@ import { WhopApp } from "@whop/react/components";
 import { Theme } from 'frosted-ui';
 import Script from "next/script";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
-import AppShell from "./components/AppShell";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -13,6 +12,11 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
 	variable: "--font-geist-mono",
+	subsets: ["latin"],
+});
+
+const inter = Inter({
+	variable: "--font-inter",
 	subsets: ["latin"],
 });
 
@@ -29,7 +33,7 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+				className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
 			>
 				<Script id="set-dark-mode" strategy="beforeInteractive">
 					{`
@@ -43,16 +47,14 @@ export default function RootLayout({
 					      root.classList.add('dark');
 					    } else {
 					      root.classList.remove('dark');
-					    }
-					  } catch (e) {}
+					}
+					} catch (e) {}
 					})();
 					`}
 				</Script>
 				<Theme>
 					<WhopApp>
-						<AppShell>
-							{children}
-						</AppShell>
+						{children}
 					</WhopApp>
 				</Theme>
 			</body>

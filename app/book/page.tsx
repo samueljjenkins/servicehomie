@@ -106,17 +106,17 @@ export default function BookPage() {
               { step: 'confirmation', label: 'Confirm', active: currentStep === 'confirmation' }
             ].map((stepInfo, index) => (
               <div key={stepInfo.step} className="flex items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium font-inter ${
                   stepInfo.active
                     ? 'bg-whop-pomegranate text-white'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                    : 'bg-gray-200 dark:bg-gray-700 text-[#626262] dark:text-gray-400'
                 }`}>
                   {index + 1}
                 </div>
-                <span className={`ml-2 text-sm font-medium ${
+                <span className={`ml-2 text-sm font-medium font-inter ${
                   stepInfo.active
                     ? 'text-whop-pomegranate'
-                    : 'text-gray-500 dark:text-gray-400'
+                    : 'text-[#626262] dark:text-gray-400'
                 }`}>
                   {stepInfo.label}
                 </span>
