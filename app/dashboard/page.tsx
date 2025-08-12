@@ -750,32 +750,6 @@ export default function DashboardPage() {
                     <p className="text-sm text-[#626262] dark:text-[#B5B5B5] mt-4 font-inter">Changing these times will update all available days automatically</p>
                   </div>
 
-                  {/* Available Days Summary */}
-                  <div>
-                    <h4 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] mb-4 font-inter flex items-center space-x-2">
-                      <svg className="w-5 h-5 text-[#1754d8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span>Available Days This Month</span>
-                    </h4>
-                    <div className="grid grid-cols-7 gap-2">
-                      {weekLabels.map((day, dayIndex) => {
-                        const isEnabled = hasWeekdayAvailabilityForMonth(day);
-                        const dayCount = getWeekdayCountInMonth(day);
-                        return (
-                          <div key={day} className={`text-center p-3 rounded-xl font-inter transition-all duration-200 ${
-                            isEnabled
-                              ? 'bg-[#1754d8] text-white shadow-lg'
-                              : 'bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5]'
-                          }`}>
-                            <div className="text-sm font-semibold">{day}</div>
-                            <div className="text-xs opacity-75">{dayCount} days</div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
                   {/* Quick Actions */}
                   <div className="flex space-x-4">
                     <button
@@ -885,85 +859,143 @@ export default function DashboardPage() {
       {/* Add/Edit Service Modal */}
       {showAddService && (
         <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-[#111111] rounded-2xl p-6 w-full max-w-md border border-[#E1E1E1] dark:border-[#2A2A2A] shadow-2xl">
-            <h3 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] mb-4 font-inter">
-              {editingService ? 'Edit Service' : 'Add New Service'}
-            </h3>
+          <div className="bg-white dark:bg-[#111111] rounded-2xl p-8 w-full max-w-lg border border-[#E1E1E1] dark:border-[#2A2A2A] shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold text-[#626262] dark:text-[#B5B5B5] font-inter">
+                {editingService ? 'Edit Service' : 'Add New Service'}
+              </h3>
+              <button
+                onClick={() => {
+                  setEditingService(null);
+                  setShowAddService(false);
+                }}
+                className="p-2 text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-100 dark:hover:bg-[#2A2A2A] rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
             
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-1 font-inter">
-                  Service Name
+                <label className="block text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-2 font-inter">
+                  Service Name *
                 </label>
                 <input
                   type="text"
                   value={editingService?.name || ''}
-                  onChange={(e) => setEditingService(prev => prev ? { ...prev, name: e.target.value } : null)}
-                  className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
-                  placeholder="e.g., Consultation"
+                  onChange={(e) => {
+                    if (editingService) {
+                      setEditingService({ ...editingService, name: e.target.value });
+                    } else {
+                      setEditingService({ id: '', name: e.target.value, description: '', price: 0, duration: 30, isActive: true });
+                    }
+                  }}
+                  className="w-full px-4 py-3 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-xl bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
+                  placeholder="e.g., Consultation, Coaching, Design"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-1 font-inter">
+                <label className="block text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-2 font-inter">
                   Description
                 </label>
                 <textarea
                   value={editingService?.description || ''}
-                  onChange={(e) => setEditingService(prev => prev ? { ...prev, description: e.target.value } : null)}
-                  className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
+                  onChange={(e) => {
+                    if (editingService) {
+                      setEditingService({ ...editingService, description: e.target.value });
+                    } else {
+                      setEditingService({ id: '', name: '', description: e.target.value, price: 0, duration: 30, isActive: true });
+                    }
+                  }}
+                  className="w-full px-4 py-3 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-xl bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                   rows={3}
-                  placeholder="Describe your service..."
+                  placeholder="Describe what this service includes..."
                 />
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-1 font-inter">
-                    Price ($)
+                  <label className="block text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-2 font-inter">
+                    Price ($) *
                   </label>
                   <input
                     type="number"
                     value={editingService?.price || ''}
-                    onChange={(e) => setEditingService(prev => prev ? { ...prev, price: Number(e.target.value) } : null)}
-                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
+                    onChange={(e) => {
+                      if (editingService) {
+                        setEditingService({ ...editingService, price: Number(e.target.value) });
+                      } else {
+                        setEditingService({ id: '', name: '', description: '', price: Number(e.target.value), duration: 30, isActive: true });
+                      }
+                    }}
+                    className="w-full px-4 py-3 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-xl bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                     min="0"
                     step="0.01"
+                    placeholder="0.00"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-1 font-inter">
-                    Duration (min)
+                  <label className="block text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-2 font-inter">
+                    Duration (min) *
                   </label>
                   <input
                     type="number"
                     value={editingService?.duration || ''}
-                    onChange={(e) => setEditingService(prev => prev ? { ...prev, duration: Number(e.target.value) } : null)}
-                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
+                    onChange={(e) => {
+                      if (editingService) {
+                        setEditingService({ ...editingService, duration: Number(e.target.value) });
+                      } else {
+                        setEditingService({ id: '', name: '', description: '', price: 0, duration: Number(e.target.value), isActive: true });
+                      }
+                    }}
+                    className="w-full px-4 py-3 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-xl bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                     min="15"
                     step="15"
+                    placeholder="30"
                   />
                 </div>
               </div>
+
+              {editingService && (
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="isActive"
+                    checked={editingService.isActive}
+                    onChange={(e) => setEditingService({ ...editingService, isActive: e.target.checked })}
+                    className="w-4 h-4 text-[#1754d8] border-[#E1E1E1] dark:border-[#2A2A2A] rounded focus:ring-[#1754d8] focus:ring-2"
+                  />
+                  <label htmlFor="isActive" className="text-sm font-medium text-[#626262] dark:text-[#B5B5B5] font-inter">
+                    Service is active and available for booking
+                  </label>
+                </div>
+              )}
             </div>
             
-            <div className="flex space-x-3 mt-6">
+            <div className="mt-8 flex justify-end space-x-3">
               <button
                 onClick={() => {
-                  setShowAddService(false);
                   setEditingService(null);
+                  setShowAddService(false);
                 }}
-                className="flex-1 px-4 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-50 dark:hover:bg-[#111111] transition-colors font-inter"
+                className="px-6 py-3 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-xl text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-50 dark:hover:bg-[#2A2A2A] transition-colors font-inter"
               >
                 Cancel
               </button>
               <button
-                onClick={() => editingService && saveService(editingService)}
-                disabled={!editingService?.name}
-                className="flex-1 px-4 py-2 bg-[#1754d8] text-white rounded-lg hover:bg-[#1754d8]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-inter"
+                onClick={() => {
+                  if (editingService && editingService.name && editingService.price > 0) {
+                    saveService(editingService);
+                  }
+                }}
+                disabled={!editingService?.name || !editingService?.price || editingService.price === 0}
+                className="px-6 py-3 bg-[#1754d8] text-white rounded-xl hover:bg-[#1754d8]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-inter"
               >
-                {editingService ? 'Update' : 'Create'}
+                {editingService ? 'Update Service' : 'Create Service'}
               </button>
             </div>
           </div>
