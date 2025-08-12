@@ -84,7 +84,7 @@ export default function BookPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
-      <div className="bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800 px-6 py-4">
+      <div className="bg-white dark:bg-black border-b border-[#E1E1E1] dark:border-gray-800 px-6 py-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Book Your Session
@@ -96,7 +96,7 @@ export default function BookPage() {
       </div>
 
       {/* Progress Steps */}
-      <div className="bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800">
+      <div className="bg-white dark:bg-black border-b border-[#E1E1E1] dark:border-gray-800">
         <div className="px-6 py-4">
           <div className="flex items-center justify-center space-x-8">
             {[
@@ -156,7 +156,7 @@ export default function BookPage() {
                 <div
                   key={service.id}
                   onClick={() => handleServiceSelect(service)}
-                  className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 cursor-pointer hover:shadow-lg transition-all hover:border-whop-pomegranate/50"
+                  className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-[#E1E1E1] dark:border-gray-800 cursor-pointer hover:shadow-lg transition-all hover:border-whop-pomegranate/50"
                 >
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center">
@@ -186,7 +186,7 @@ export default function BookPage() {
             </div>
 
             {/* How It Works */}
-            <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-gray-100 dark:border-gray-800">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-[#E1E1E1] dark:border-gray-800">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 text-center">
                 How It Works
               </h3>
@@ -235,7 +235,7 @@ export default function BookPage() {
               </p>
             </div>
 
-            <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-[#E1E1E1] dark:border-gray-800">
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -245,7 +245,7 @@ export default function BookPage() {
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                   />
                 </div>
 
@@ -257,7 +257,7 @@ export default function BookPage() {
                     type="time"
                     value={selectedTime}
                     onChange={(e) => setSelectedTime(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                   />
                 </div>
               </div>
@@ -266,7 +266,7 @@ export default function BookPage() {
             <div className="flex space-x-4">
               <button
                 onClick={goBack}
-                className="flex-1 px-6 py-3 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="flex-1 px-6 py-3 border border-[#E1E1E1] dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 Back
               </button>
@@ -292,7 +292,7 @@ export default function BookPage() {
               </p>
             </div>
 
-            <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-[#E1E1E1] dark:border-gray-800">
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -302,7 +302,7 @@ export default function BookPage() {
                     type="text"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -315,7 +315,7 @@ export default function BookPage() {
                     type="email"
                     value={customerEmail}
                     onChange={(e) => setCustomerEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                     placeholder="Enter your email address"
                   />
                 </div>
@@ -328,7 +328,7 @@ export default function BookPage() {
                     type="tel"
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                     placeholder="Enter your phone number"
                   />
                 </div>
@@ -338,7 +338,7 @@ export default function BookPage() {
             <div className="flex space-x-4">
               <button
                 onClick={goBack}
-                className="flex-1 px-6 py-3 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="flex-1 px-6 py-3 border border-[#E1E1E1] dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 Back
               </button>
@@ -369,7 +369,7 @@ export default function BookPage() {
               </p>
             </div>
 
-            <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-[#E1E1E1] dark:border-gray-800">
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Service:</span>
@@ -395,7 +395,7 @@ export default function BookPage() {
                   <span className="text-gray-600 dark:text-gray-400">Email:</span>
                   <span className="font-semibold text-gray-900 dark:text-white">{customerEmail}</span>
                 </div>
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                <div className="border-t border-[#E1E1E1] dark:border-gray-700 pt-4">
                   <div className="flex justify-between">
                     <span className="text-lg font-semibold text-gray-900 dark:text-white">Total:</span>
                     <span className="text-2xl font-bold text-whop-pomegranate">${selectedService?.price}</span>
@@ -407,7 +407,7 @@ export default function BookPage() {
             <div className="flex space-x-4">
               <button
                 onClick={goBack}
-                className="flex-1 px-6 py-3 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="flex-1 px-6 py-3 border border-[#E1E1E1] dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 Back
               </button>
