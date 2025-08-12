@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import type { WeeklyAvailability, Weekday, TimeWindow } from "@/lib/availability";
 import { getDefaultWeeklyAvailability } from "@/lib/availability";
+import { isValidTenant } from "@/lib/tenant-utils";
 
 const weekLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
@@ -16,12 +18,52 @@ interface Service {
 }
 
 export default function CreatorDashboardPage() {
+  const params = useParams();
   const [availability, setAvailability] = useState<WeeklyAvailability>(getDefaultWeeklyAvailability());
   const [upcoming, setUpcoming] = useState<{ date: string; time: string; customer: string; service: string; price: number }[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [activeTab, setActiveTab] = useState<'overview' | 'services' | 'availability' | 'bookings'>('overview');
   const [showAddService, setShowAddService] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
+  const [tenantValid, setTenantValid] = useState(false);
+  const [tenant, setTenant] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Validate tenant before proceeding
+    const routeTenant = params?.tenant as string;
+    
+    if (routeTenant && isValidTenant(routeTenant)) {
+      setTenant(routeTenant);
+      setTenantValid(true);
+      
+      // TODO: Initialize Supabase connection here only after tenant is confirmed
+      console.log('Tenant confirmed, initializing dashboard for:', routeTenant);
+    } else {
+      console.error('Invalid tenant detected:', routeTenant);
+      setTenantValid(false);
+    }
+  }, [params?.tenant]);
+
+  // Don't render anything until tenant is validated
+  if (!tenantValid || !tenant) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+            Invalid Tenant
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            The tenant ID "{params?.tenant}" is not valid.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   function persistAvailability(next: WeeklyAvailability) {
     setAvailability(next);
@@ -105,9 +147,14 @@ export default function CreatorDashboardPage() {
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
       <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 px-6 py-4">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Manage your booking business
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Manage your booking business
+          </h1>
+          <div className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-lg">
+            Tenant: {tenant}
+          </div>
+        </div>
       </div>
 
       {/* Navigation Tabs */}
@@ -499,7 +546,7 @@ export default function CreatorDashboardPage() {
                     type="number"
                     value={editingService?.duration || ''}
                     onChange={(e) => setEditingService(prev => prev ? { ...prev, duration: Number(e.target.value) } : null)}
-                    className="w-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                     min="15"
                     step="15"
                   />

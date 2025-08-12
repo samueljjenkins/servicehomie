@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import type { WeeklyAvailability, Weekday } from "@/lib/availability";
+import { isValidTenant } from "@/lib/tenant-utils";
 
 interface Service {
   id: string;
@@ -15,6 +17,7 @@ interface Service {
 type BookingStep = 'services' | 'datetime' | 'details' | 'confirmation';
 
 export default function CustomerBookingPage() {
+  const params = useParams();
   const [currentStep, setCurrentStep] = useState<BookingStep>('services');
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedDate, setSelectedDate] = useState('');
@@ -23,6 +26,8 @@ export default function CustomerBookingPage() {
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [tenantValid, setTenantValid] = useState(false);
+  const [tenant, setTenant] = useState<string | null>(null);
 
   // Mock data - TODO: Replace with Supabase
   const [services] = useState<Service[]>([
@@ -55,10 +60,65 @@ export default function CustomerBookingPage() {
   });
 
   useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, []);
+    // Validate tenant before proceeding
+    const routeTenant = params?.tenant as string;
+    
+    if (routeTenant && isValidTenant(routeTenant)) {
+      setTenant(routeTenant);
+      setTenantValid(true);
+      
+      // TODO: Initialize Supabase connection here only after tenant is confirmed
+      console.log('Tenant confirmed, initializing booking for:', routeTenant);
+      
+      // Simulate loading
+      const timer = setTimeout(() => setIsLoading(false), 500);
+      return () => clearTimeout(timer);
+    } else {
+      console.error('Invalid tenant detected:', routeTenant);
+      setTenantValid(false);
+    }
+  }, [params?.tenant]);
+
+  // Don't render anything until tenant is validated
+  if (!tenantValid || !tenant) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+            Invalid Tenant
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            The tenant ID "{params?.tenant}" is not valid.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-whop-pomegranate rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+            Loading Services...
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Getting everything ready for you
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   function handleServiceSelect(service: Service) {
     setSelectedService(service);
@@ -88,33 +148,18 @@ export default function CustomerBookingPage() {
     else if (currentStep === 'confirmation') setCurrentStep('details');
   }
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-whop-pomegranate rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-            Loading Services...
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Getting everything ready for you
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
       <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 px-6 py-4">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Book Your Session
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Book Your Session
+          </h1>
+          <div className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-lg">
+            Tenant: {tenant}
+          </div>
+        </div>
       </div>
 
       {/* Progress Steps */}
