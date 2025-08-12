@@ -437,7 +437,7 @@ export default function DashboardPage() {
       {/* Add/Edit Service Modal */}
       {showAddService && (
         <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-[#2A2A2A] rounded-2xl p-6 w-full max-w-md border border-[#E1E1E1] dark:border-[#2A2A2A] shadow-2xl">
+          <div className="bg-white dark:bg-[#111111] rounded-2xl p-6 w-full max-w-md border border-[#E1E1E1] dark:border-[#2A2A2A] shadow-2xl">
             <h3 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] mb-4 font-inter">
               {editingService ? 'Edit Service' : 'Add New Service'}
             </h3>
@@ -451,7 +451,7 @@ export default function DashboardPage() {
                   type="text"
                   value={editingService?.name || ''}
                   onChange={(e) => setEditingService(prev => prev ? { ...prev, name: e.target.value } : null)}
-                  className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
+                  className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                   placeholder="e.g., Consultation"
                 />
               </div>
@@ -463,7 +463,7 @@ export default function DashboardPage() {
                 <textarea
                   value={editingService?.description || ''}
                   onChange={(e) => setEditingService(prev => prev ? { ...prev, description: e.target.value } : null)}
-                  className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
+                  className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                   rows={3}
                   placeholder="Describe your service..."
                 />
@@ -478,7 +478,7 @@ export default function DashboardPage() {
                     type="number"
                     value={editingService?.price || ''}
                     onChange={(e) => setEditingService(prev => prev ? { ...prev, price: Number(e.target.value) } : null)}
-                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                     min="0"
                     step="0.01"
                   />
@@ -492,7 +492,7 @@ export default function DashboardPage() {
                     type="number"
                     value={editingService?.duration || ''}
                     onChange={(e) => setEditingService(prev => prev ? { ...prev, duration: Number(e.target.value) } : null)}
-                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                     min="15"
                     step="15"
                   />
@@ -506,7 +506,7 @@ export default function DashboardPage() {
                   setShowAddService(false);
                   setEditingService(null);
                 }}
-                className="flex-1 px-4 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-50 dark:hover:bg-[#2A2A2A] transition-colors font-inter"
+                className="flex-1 px-4 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-50 dark:hover:bg-[#111111] transition-colors font-inter"
               >
                 Cancel
               </button>
