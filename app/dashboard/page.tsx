@@ -436,8 +436,8 @@ export default function DashboardPage() {
       
       {/* Add/Edit Service Modal */}
       {showAddService && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-[#2A2A2A] rounded-2xl p-6 w-full max-w-md border border-[#E1E1E1] dark:border-[#2A2A2A]">
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-[#2A2A2A] rounded-2xl p-6 w-full max-w-md border border-[#E1E1E1] dark:border-[#2A2A2A] shadow-2xl">
             <h3 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] mb-4 font-inter">
               {editingService ? 'Edit Service' : 'Add New Service'}
             </h3>
