@@ -353,47 +353,110 @@ export default function DashboardPage() {
       {/* Main Content */}
       <div className="px-6 py-8 bg-white dark:bg-[#111111]">
         {activeTab === 'overview' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter">Dashboard Overview</h2>
+          <div className="space-y-8">
+            {/* Welcome Header */}
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#1754d8] to-[#1754d8]/80 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h1 className="text-3xl font-bold text-[#626262] dark:text-[#B5B5B5] mb-2 font-inter">Welcome back!</h1>
+              <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">Here's what's happening with your booking business today</p>
             </div>
 
-            {/* Stats Grid */}
+            {/* Enhanced Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="border-b border-[#E1E1E1] dark:border-[#2A2A2A] pb-4">
-                <div className="text-2xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter">{activeServicesCount}</div>
-                <div className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">Active Services</div>
+              <div className="relative p-6 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-xl hover:border-[#1754d8]/30 transition-all duration-200 group">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                    <svg className="w-6 h-6 text-[#1754d8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-3xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter">{activeServicesCount}</div>
+                    <div className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">Active Services</div>
+                  </div>
+                </div>
+                <div className="h-1 bg-gradient-to-r from-[#1754d8] to-[#1754d8]/50 rounded-full"></div>
               </div>
-              <div className="border-b border-[#E1E1E1] dark:border-[#2A2A2A] pb-4">
-                <div className="text-2xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter">{availableDaysCount}</div>
-                <div className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">Available Days</div>
+
+              <div className="relative p-6 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-xl hover:border-[#1754d8]/30 transition-all duration-200 group">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                    <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-3xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter">{availableDaysCount}</div>
+                    <div className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">Available Days</div>
+                  </div>
+                </div>
+                <div className="h-1 bg-gradient-to-r from-green-500 to-green-400 rounded-full"></div>
               </div>
-              <div className="border-b border-[#E1E1E1] dark:border-[#2A2A2A] pb-4">
-                <div className="text-2xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter">${upcoming.reduce((sum, booking) => sum + booking.price, 0)}</div>
-                <div className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">Upcoming Revenue</div>
+
+              <div className="relative p-6 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-xl hover:border-[#1754d8]/30 transition-all duration-200 group">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                    <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                    </svg>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-3xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter">${upcoming.reduce((sum, booking) => sum + booking.price, 0)}</div>
+                    <div className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">Upcoming Revenue</div>
+                  </div>
+                </div>
+                <div className="h-1 bg-gradient-to-r from-purple-500 to-purple-400 rounded-full"></div>
               </div>
             </div>
 
-            {/* Recent Bookings */}
-            <div className="border-t border-[#E1E1E1] dark:border-[#2A2A2A] pt-6">
-              <h3 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] mb-4 font-inter">Recent Bookings</h3>
+            {/* Recent Bookings with Enhanced Design */}
+            <div className="border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-xl overflow-hidden">
+              <div className="px-6 py-4 bg-gradient-to-r from-[#1754d8]/5 to-[#1754d8]/10 border-b border-[#E1E1E1] dark:border-[#2A2A2A]">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-[#1754d8] rounded-lg flex items-center justify-center">
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] font-inter">Recent Bookings</h3>
+                </div>
+              </div>
+              
               {upcoming.length === 0 ? (
-                <div className="text-center py-8">
-                  <svg className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">No upcoming bookings</p>
-                  <p className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">Bookings will appear here</p>
+                <div className="text-center py-12">
+                  <div className="w-20 h-20 bg-gray-100 dark:bg-[#2A2A2A] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-10 h-10 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <p className="text-[#626262] dark:text-[#B5B5B5] font-inter mb-2">No upcoming bookings</p>
+                  <p className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">Bookings will appear here once customers start scheduling</p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="divide-y divide-[#E1E1E1] dark:divide-[#2A2A2A]">
                   {upcoming.slice(0, 5).map((booking, index) => (
-                    <div key={index} className="flex items-center justify-between py-3 border-b border-[#E1E1E1] dark:border-[#2A2A2A] last:border-b-0">
-                      <div>
-                        <div className="font-medium text-[#626262] dark:text-[#B5B5B5] font-inter">{booking.customer}</div>
-                        <div className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">{booking.service} - {booking.date} at {booking.time}</div>
+                    <div key={index} className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-[#2A2A2A]/50 transition-colors duration-150">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-10 h-10 bg-[#1754d8]/10 rounded-full flex items-center justify-center">
+                            <svg className="w-5 h-5 text-[#1754d8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                          </div>
+                          <div>
+                            <div className="font-semibold text-[#626262] dark:text-[#B5B5B5] font-inter">{booking.customer}</div>
+                            <div className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">{booking.service} • {booking.date} at {booking.time}</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xl font-bold text-[#1754d8] font-inter">${booking.price}</div>
+                          <div className="text-xs text-[#626262] dark:text-[#B5B5B5] font-inter">Confirmed</div>
+                        </div>
                       </div>
-                      <div className="text-lg font-semibold text-[#1754d8] font-inter">${booking.price}</div>
                     </div>
                   ))}
                 </div>
@@ -403,79 +466,118 @@ export default function DashboardPage() {
         )}
 
         {activeTab === 'services' && (
-          <div className="space-y-6">
+          <div className="space-y-8">
+            {/* Enhanced Header */}
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter">Manage Services</h2>
+              <div>
+                <h2 className="text-3xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter mb-2">Manage Services</h2>
+                <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">Create and manage your service offerings</p>
+              </div>
               <button
                 onClick={() => {
                   setEditingService(null);
                   setShowAddService(true);
                 }}
-                className="px-4 py-2 bg-[#1754d8] text-white rounded-lg hover:bg-[#1754d8]/90 transition-colors font-inter"
+                className="px-6 py-3 bg-[#1754d8] text-white rounded-xl hover:bg-[#1754d8]/90 transition-all duration-200 font-inter flex items-center space-x-2 shadow-lg hover:shadow-xl"
               >
-                Add Service
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                <span>Add Service</span>
               </button>
             </div>
 
             {services.length === 0 ? (
-              <div className="text-center py-8">
-                <svg className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">No services yet</p>
-                <p className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">Add your first service to get started</p>
+              <div className="text-center py-16 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-2xl">
+                <div className="w-24 h-24 bg-gray-100 dark:bg-[#2A2A2A] rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-12 h-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-[#626262] dark:text-[#B5B5B5] mb-3 font-inter">No services yet</h3>
+                <p className="text-[#626262] dark:text-[#B5B5B5] mb-6 font-inter">Create your first service to start accepting bookings</p>
+                <button
+                  onClick={() => {
+                    setEditingService(null);
+                    setShowAddService(true);
+                  }}
+                  className="px-6 py-3 bg-[#1754d8] text-white rounded-xl hover:bg-[#1754d8]/90 transition-all duration-200 font-inter"
+                >
+                  Create Your First Service
+                </button>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {services.map((service) => (
-                  <div key={service.id} className="flex items-center justify-between py-4 border-b border-[#E1E1E1] dark:border-[#2A2A2A] last:border-b-0">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3">
-                        <h3 className="font-semibold text-[#626262] dark:text-[#B5B5B5] font-inter">{service.name}</h3>
-                        <span className={`px-2 py-1 text-xs rounded-full font-inter ${
-                          service.isActive
-                            ? 'bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400'
-                            : 'bg-gray-100 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400'
-                        }`}>
-                          {service.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                      </div>
-                      <p className="text-sm text-[#626262] dark:text-[#B5B5B5] mt-1 font-inter">{service.description}</p>
-                      <div className="flex items-center space-x-4 mt-2 text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">
-                        <span>${service.price}</span>
-                        <span>{service.duration} min</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => {
-                          setEditingService(service);
-                          setShowAddService(true);
-                        }}
-                        className="p-2 text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-100 dark:hover:bg-[#2A2A2A] rounded-lg transition-colors"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </button>
-                      <button
-                        onClick={() => toggleServiceActive(service.id)}
-                        className={`p-2 rounded-lg transition-colors font-inter ${
-                          service.isActive
-                            ? 'text-red-500 hover:bg-red-100 dark:hover:bg-red-900/20'
-                            : 'text-green-500 hover:bg-green-100 dark:hover:bg-green-900/20'
-                        }`}
-                      >
-                        {service.isActive ? (
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728" />
+                  <div key={service.id} className="border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-xl p-6 hover:border-[#1754d8]/30 transition-all duration-200 group">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-[#1754d8]/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                          <svg className="w-6 h-6 text-[#1754d8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
-                        ) : (
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </div>
+                        <div>
+                          <div className="flex items-center space-x-3 mb-2">
+                            <h3 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] font-inter">{service.name}</h3>
+                            <span className={`px-3 py-1 text-xs rounded-full font-medium font-inter ${
+                              service.isActive
+                                ? 'bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400'
+                                : 'bg-gray-100 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400'
+                            }`}>
+                              {service.isActive ? '✓ Active' : '○ Inactive'}
+                            </span>
+                          </div>
+                          <p className="text-[#626262] dark:text-[#B5B5B5] mb-3 font-inter">{service.description}</p>
+                          <div className="flex items-center space-x-6 text-sm">
+                            <div className="flex items-center space-x-2">
+                              <svg className="w-4 h-4 text-[#1754d8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                              </svg>
+                              <span className="text-[#626262] dark:text-[#B5B5B5] font-inter">${service.price}</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <svg className="w-4 h-4 text-[#1754d8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              <span className="text-[#626262] dark:text-[#B5B5B5] font-inter">{service.duration} min</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => {
+                            setEditingService(service);
+                            setShowAddService(true);
+                          }}
+                          className="p-3 text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-100 dark:hover:bg-[#2A2A2A] rounded-lg transition-colors duration-150"
+                          title="Edit Service"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
-                        )}
-                      </button>
+                        </button>
+                        <button
+                          onClick={() => toggleServiceActive(service.id)}
+                          className={`p-3 rounded-lg transition-colors duration-150 font-inter ${
+                            service.isActive
+                              ? 'text-red-500 hover:bg-red-100 dark:hover:bg-red-900/20'
+                              : 'text-green-500 hover:bg-green-100 dark:hover:bg-green-900/20'
+                          }`}
+                          title={service.isActive ? 'Deactivate Service' : 'Activate Service'}
+                        >
+                          {service.isActive ? (
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728" />
+                            </svg>
+                          ) : (
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -485,30 +587,34 @@ export default function DashboardPage() {
         )}
 
         {activeTab === 'availability' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter">Set Your Monthly Schedule</h2>
-              <div className="text-sm text-[#626262] dark:text-[#B5B5B5] bg-gray-50 dark:bg-[#2A2A2A] px-3 py-2 rounded-lg font-inter">
-                Availability is automatically saved
+          <div className="space-y-8">
+            {/* Enhanced Header */}
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
               </div>
+              <h2 className="text-3xl font-bold text-[#626262] dark:text-[#B5B5B5] mb-2 font-inter">Set Your Monthly Schedule</h2>
+              <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">Manage your availability and business hours</p>
             </div>
 
             {/* Monthly Calendar */}
-            <div className="border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-2xl p-6">
+            <div className="border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-2xl p-8 shadow-sm">
               {/* Quick Day Selection */}
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-3 font-inter">Select Weekdays for Entire Month</h4>
-                <div className="grid grid-cols-7 gap-1">
+              <div className="mb-8">
+                <h4 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] mb-4 font-inter">Select Weekdays for Entire Month</h4>
+                <div className="grid grid-cols-7 gap-2">
                   {weekLabels.map((day, dayIndex) => {
                     const isEnabled = hasWeekdayAvailabilityForMonth(day);
                     return (
                       <button
                         key={day}
                         onClick={() => toggleWeekdayAvailability(day)}
-                        className={`h-12 rounded-lg text-sm font-medium transition-all font-inter ${
+                        className={`h-14 rounded-xl text-sm font-medium transition-all duration-200 font-inter ${
                           isEnabled
-                            ? 'bg-[#1754d8] text-white hover:bg-[#1754d8]/90'
-                            : 'bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-200 dark:hover:bg-[#111111]'
+                            ? 'bg-[#1754d8] text-white shadow-lg hover:shadow-xl transform hover:scale-105'
+                            : 'bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-200 dark:hover:bg-[#111111] hover:border-[#1754d8]/30 border border-transparent'
                         }`}
                       >
                         {day}
@@ -519,21 +625,21 @@ export default function DashboardPage() {
               </div>
 
               {/* Calendar Header */}
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-8">
                 <button
                   onClick={() => {
                     const newDate = new Date(currentMonth);
                     newDate.setMonth(newDate.getMonth() - 1);
                     setCurrentMonth(newDate);
                   }}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-[#111111] rounded-lg transition-colors"
+                  className="p-3 hover:bg-gray-100 dark:hover:bg-[#111111] rounded-xl transition-colors duration-150"
                 >
-                  <svg className="w-5 h-5 text-[#626262] dark:text-[#B5B5B5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-[#626262] dark:text-[#B5B5B5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
                 
-                <h3 className="text-xl font-semibold text-[#626262] dark:text-[#B5B5B5] font-inter">
+                <h3 className="text-2xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter">
                   {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </h3>
                 
@@ -543,25 +649,25 @@ export default function DashboardPage() {
                     newDate.setMonth(newDate.getMonth() + 1);
                     setCurrentMonth(newDate);
                   }}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-[#111111] rounded-lg transition-colors"
+                  className="p-3 hover:bg-gray-100 dark:hover:bg-[#111111] rounded-xl transition-colors duration-150"
                 >
-                  <svg className="w-5 h-5 text-[#626262] dark:text-[#B5B5B5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-[#626262] dark:text-[#B5B5B5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
               </div>
 
               {/* Calendar Grid */}
-              <div className="grid grid-cols-7 gap-1 mb-4">
+              <div className="grid grid-cols-7 gap-2 mb-6">
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                  <div key={day} className="text-center py-2 text-sm font-medium text-[#626262] dark:text-[#B5B5B5] font-inter">
+                  <div key={day} className="text-center py-3 text-sm font-semibold text-[#626262] dark:text-[#B5B5B5] font-inter">
                     {day}
                   </div>
                 ))}
                 
                 {getCalendarDays().map((day, index) => {
                   if (!day) {
-                    return <div key={index} className="h-12" />;
+                    return <div key={index} className="h-14" />;
                   }
                   
                   const isAvailable = availability[day.toDateString()]?.length > 0;
@@ -573,12 +679,12 @@ export default function DashboardPage() {
                       key={index}
                       onClick={() => !isPast && toggleDayAvailability(day)}
                       disabled={isPast}
-                      className={`h-12 rounded-lg transition-all font-inter ${
+                      className={`h-14 rounded-xl transition-all duration-200 font-inter ${
                         isPast
-                          ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                          ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed bg-gray-100 dark:bg-[#2A2A2A]'
                           : isAvailable
-                            ? 'bg-[#1754d8] text-white hover:bg-[#1754d8]/90'
-                            : 'border border-[#E1E1E1] dark:border-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-50 dark:hover:bg-[#111111]'
+                            ? 'bg-[#1754d8] text-white hover:bg-[#1754d8]/90 shadow-lg hover:shadow-xl transform hover:scale-105'
+                            : 'border border-[#E1E1E1] dark:border-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-50 dark:hover:bg-[#111111] hover:border-[#1754d8]/50'
                       } ${isToday ? 'ring-2 ring-[#1754d8] ring-offset-2' : ''}`}
                     >
                       {day.getDate()}
@@ -589,65 +695,80 @@ export default function DashboardPage() {
             </div>
 
             {/* Time Slots Management */}
-            <div className="border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] font-inter">Business Hours</h3>
-                <div className="text-sm text-[#626262] dark:text-[#B5B5B5] bg-gray-50 dark:bg-[#2A2A2A] px-3 py-2 rounded-lg font-inter">
-                  Set once, applies to all available days
+            <div className="border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-2xl p-8 shadow-sm">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h3 className="text-2xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter mb-2">Business Hours</h3>
+                  <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">Set once, applies to all available days</p>
+                </div>
+                <div className="text-sm text-[#626262] dark:text-[#B5B5B5] bg-gray-50 dark:bg-[#2A2A2A] px-4 py-2 rounded-xl font-inter">
+                  Auto-save enabled
                 </div>
               </div>
               
               {Object.keys(availability).length === 0 ? (
-                <div className="text-center py-8">
-                  <svg className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">No availability set yet</p>
-                  <p className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">Select weekdays above to get started</p>
+                <div className="text-center py-16 border-2 border-dashed border-[#E1E1E1] dark:border-[#2A2A2A] rounded-2xl">
+                  <div className="w-24 h-24 bg-gray-100 dark:bg-[#2A2A2A] rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg className="w-12 h-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold text-[#626262] dark:text-[#B5B5B5] mb-3 font-inter">No availability set yet</h3>
+                  <p className="text-[#626262] dark:text-[#B5B5B5] mb-6 font-inter">Select weekdays above and set your business hours</p>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   {/* Global Business Hours */}
-                  <div className="bg-gray-50 dark:bg-[#111111] rounded-lg p-4">
-                    <h4 className="text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-3 font-inter">Default Business Hours</h4>
-                    <div className="flex items-center space-x-4">
+                  <div className="bg-gradient-to-r from-[#1754d8]/5 to-[#1754d8]/10 rounded-2xl p-6 border border-[#1754d8]/20">
+                    <h4 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] mb-4 font-inter flex items-center space-x-2">
+                      <svg className="w-5 h-5 text-[#1754d8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Default Business Hours</span>
+                    </h4>
+                    <div className="flex items-center space-x-6">
                       <div className="flex-1">
-                        <label className="block text-xs text-[#626262] dark:text-[#B5B5B5] mb-1 font-inter">Start Time</label>
+                        <label className="block text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-2 font-inter">Start Time</label>
                         <input
                           type="time"
                           value={getDefaultStartTime()}
                           onChange={(e) => updateAllTimeSlots('start', e.target.value)}
-                          className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
+                          className="w-full px-4 py-3 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-xl bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter text-lg"
                         />
                       </div>
-                      <div className="text-[#626262] dark:text-[#B5B5B5] self-end pb-2 font-inter">to</div>
+                      <div className="text-[#626262] dark:text-[#B5B5B5] self-end pb-3 font-inter text-lg">to</div>
                       <div className="flex-1">
-                        <label className="block text-xs text-[#626262] dark:text-[#B5B5B5] mb-1 font-inter">End Time</label>
+                        <label className="block text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-2 font-inter">End Time</label>
                         <input
                           type="time"
                           value={getDefaultEndTime()}
                           onChange={(e) => updateAllTimeSlots('end', e.target.value)}
-                          className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
+                          className="w-full px-4 py-3 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-xl bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter text-lg"
                         />
                       </div>
                     </div>
-                    <p className="text-xs text-[#626262] dark:text-[#B5B5B5] mt-2 font-inter">Changing these times will update all available days</p>
+                    <p className="text-sm text-[#626262] dark:text-[#B5B5B5] mt-4 font-inter">Changing these times will update all available days automatically</p>
                   </div>
 
                   {/* Available Days Summary */}
                   <div>
-                    <h4 className="text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-3 font-inter">Available Days This Month</h4>
-                    <div className="grid grid-cols-7 gap-1">
+                    <h4 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] mb-4 font-inter flex items-center space-x-2">
+                      <svg className="w-5 h-5 text-[#1754d8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span>Available Days This Month</span>
+                    </h4>
+                    <div className="grid grid-cols-7 gap-2">
                       {weekLabels.map((day, dayIndex) => {
                         const isEnabled = hasWeekdayAvailabilityForMonth(day);
                         const dayCount = getWeekdayCountInMonth(day);
                         return (
-                          <div key={day} className={`text-center p-2 rounded-lg font-inter ${
+                          <div key={day} className={`text-center p-3 rounded-xl font-inter transition-all duration-200 ${
                             isEnabled
-                              ? 'bg-[#1754d8] text-white'
+                              ? 'bg-[#1754d8] text-white shadow-lg'
                               : 'bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5]'
                           }`}>
-                            <div className="text-xs font-medium">{day}</div>
+                            <div className="text-sm font-semibold">{day}</div>
                             <div className="text-xs opacity-75">{dayCount} days</div>
                           </div>
                         );
@@ -656,24 +777,33 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Quick Actions */}
-                  <div className="flex space-x-3">
+                  <div className="flex space-x-4">
                     <button
                       onClick={setStandardBusinessHours}
-                      className="flex-1 px-4 py-2 bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] rounded-lg hover:bg-gray-200 dark:hover:bg-[#111111] transition-colors font-inter"
+                      className="flex-1 px-6 py-3 bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] rounded-xl hover:bg-gray-200 dark:hover:bg-[#111111] transition-all duration-200 font-inter flex items-center justify-center space-x-2"
                     >
-                      Set 9 AM - 5 PM
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Set 9 AM - 5 PM</span>
                     </button>
                     <button
                       onClick={setExtendedHours}
-                      className="flex-1 px-4 py-2 bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] rounded-lg hover:bg-gray-200 dark:hover:bg-[#111111] transition-colors font-inter"
+                      className="flex-1 px-6 py-3 bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] rounded-xl hover:bg-gray-200 dark:hover:bg-[#111111] transition-all duration-200 font-inter flex items-center justify-center space-x-2"
                     >
-                      Set 8 AM - 8 PM
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Set 8 AM - 8 PM</span>
                     </button>
                     <button
                       onClick={clearAllAvailability}
-                      className="px-4 py-2 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/30 transition-colors font-inter"
+                      className="px-6 py-3 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-200 dark:hover:bg-red-900/30 transition-all duration-200 font-inter flex items-center space-x-2"
                     >
-                      Clear All
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      <span>Clear All</span>
                     </button>
                   </div>
                 </div>
@@ -683,30 +813,69 @@ export default function DashboardPage() {
         )}
 
         {activeTab === 'bookings' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter">Manage Bookings</h2>
+          <div className="space-y-8">
+            {/* Enhanced Header */}
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <h2 className="text-3xl font-bold text-[#626262] dark:text-[#B5B5B5] mb-2 font-inter">Manage Bookings</h2>
+              <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">View and manage your upcoming appointments</p>
             </div>
 
             {upcoming.length === 0 ? (
-              <div className="text-center py-8">
-                <svg className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">No upcoming bookings</p>
-                <p className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">Bookings will appear here</p>
+              <div className="text-center py-20 border-2 border-dashed border-[#E1E1E1] dark:border-[#2A2A2A] rounded-2xl">
+                <div className="w-24 h-24 bg-gray-100 dark:bg-[#2A2A2A] rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-12 h-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-[#626262] dark:text-[#B5B5B5] mb-3 font-inter">No upcoming bookings</h3>
+                <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">Bookings will appear here once customers start scheduling</p>
               </div>
             ) : (
-              <div className="space-y-3">
-                {upcoming.map((booking, index) => (
-                  <div key={index} className="flex items-center justify-between py-4 border-b border-[#E1E1E1] dark:border-[#2A2A2A] last:border-b-0">
-                    <div>
-                      <div className="font-medium text-[#626262] dark:text-[#B5B5B5] font-inter">{booking.customer}</div>
-                      <div className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">{booking.service} - {booking.date} at {booking.time}</div>
+              <div className="border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-2xl overflow-hidden shadow-sm">
+                <div className="px-6 py-4 bg-gradient-to-r from-purple-500/5 to-purple-500/10 border-b border-[#E1E1E1] dark:border-[#2A2A2A]">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] font-inter">Upcoming Bookings</h3>
                     </div>
-                    <div className="text-lg font-semibold text-[#1754d8] font-inter">${booking.price}</div>
+                    <div className="text-sm text-[#626262] dark:text-[#B5B5B5] bg-white dark:bg-[#2A2A2A] px-3 py-1 rounded-lg font-inter">
+                      {upcoming.length} total
+                    </div>
                   </div>
-                ))}
+                </div>
+                
+                <div className="divide-y divide-[#E1E1E1] dark:divide-[#2A2A2A]">
+                  {upcoming.map((booking, index) => (
+                    <div key={index} className="px-6 py-5 hover:bg-gray-50 dark:hover:bg-[#2A2A2A]/50 transition-colors duration-150">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center">
+                            <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                          </div>
+                          <div>
+                            <div className="font-semibold text-lg text-[#626262] dark:text-[#B5B5B5] font-inter mb-1">{booking.customer}</div>
+                            <div className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">{booking.service} • {booking.date} at {booking.time}</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 font-inter">${booking.price}</div>
+                          <div className="text-xs text-[#626262] dark:text-[#B5B5B5] font-inter bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-2 py-1 rounded-full">Confirmed</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
