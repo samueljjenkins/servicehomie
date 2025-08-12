@@ -104,19 +104,19 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
-      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 px-6 py-4">
+      <div className="bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800 px-6 py-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Manage your booking business
           </h1>
-          <div className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-lg">
+          <div className="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-3 py-1 rounded-lg">
             Demo Mode
           </div>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
+      <div className="bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800">
         <div className="px-6">
           <nav className="flex space-x-8">
             {[
@@ -159,7 +159,7 @@ export default function DashboardPage() {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,7 +173,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -187,7 +187,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -201,7 +201,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -218,7 +218,7 @@ export default function DashboardPage() {
 
             {/* Recent Activity */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Activity</h3>
                 <div className="text-center py-8">
                   <svg className="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -228,7 +228,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Bookings</h3>
                 <div className="text-center py-8">
                   <svg className="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,7 +254,7 @@ export default function DashboardPage() {
             </div>
 
             {services.length === 0 ? (
-              <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 text-center border border-gray-200 dark:border-gray-800">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 text-center border border-gray-100 dark:border-gray-800">
                 <svg className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
@@ -270,7 +270,7 @@ export default function DashboardPage() {
             ) : (
               <div className="grid gap-4">
                 {services.map(service => (
-                  <div key={service.id} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                  <div key={service.id} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
                         <div className="w-12 h-12 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center">
@@ -338,7 +338,7 @@ export default function DashboardPage() {
                 const isEnabled = dayAvailability.length > 0;
                 
                 return (
-                  <div key={day} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                  <div key={day} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-semibold text-gray-900 dark:text-white">{day}</h3>
                       <button
@@ -366,14 +366,14 @@ export default function DashboardPage() {
                                   type="time"
                                   value={window.start}
                                   onChange={(e) => updateWindow(dayIndex as Weekday, windowIndex, 'start', e.target.value)}
-                                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                                  className="flex-1 px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                                 />
                                 <span className="text-gray-500 dark:text-gray-400 self-center">to</span>
                                 <input
                                   type="time"
                                   value={window.end}
                                   onChange={(e) => updateWindow(dayIndex as Weekday, windowIndex, 'end', e.target.value)}
-                                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                                  className="flex-1 px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                                 />
                               </div>
                             </div>
@@ -389,7 +389,7 @@ export default function DashboardPage() {
                         ))}
                         <button
                           onClick={() => addWindow(dayIndex as Weekday)}
-                          className="w-full py-2 px-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors flex items-center justify-center space-x-2"
+                          className="w-full py-2 px-4 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors flex items-center justify-center space-x-2"
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -412,7 +412,7 @@ export default function DashboardPage() {
             </div>
 
             {upcoming.length === 0 ? (
-              <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 text-center border border-gray-200 dark:border-gray-800">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 text-center border border-gray-100 dark:border-gray-800">
                 <svg className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -420,11 +420,11 @@ export default function DashboardPage() {
                 <p className="text-gray-500 dark:text-gray-400">Bookings will appear here once customers start scheduling</p>
               </div>
             ) : (
-              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Upcoming Bookings</h3>
                 </div>
-                <div className="divide-y divide-gray-200 dark:divide-gray-800">
+                <div className="divide-y divide-gray-100 dark:divide-gray-800">
                   {upcoming.map((booking, index) => (
                     <div key={index} className="px-6 py-4">
                       <div className="flex items-center justify-between">
@@ -449,7 +449,7 @@ export default function DashboardPage() {
       {/* Add/Edit Service Modal */}
       {showAddService && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-md border border-gray-200 dark:border-gray-800">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-md border border-gray-100 dark:border-gray-800">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               {editingService ? 'Edit Service' : 'Add New Service'}
             </h3>
@@ -463,7 +463,7 @@ export default function DashboardPage() {
                   type="text"
                   value={editingService?.name || ''}
                   onChange={(e) => setEditingService(prev => prev ? { ...prev, name: e.target.value } : null)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                   placeholder="e.g., Consultation"
                 />
               </div>
@@ -475,7 +475,7 @@ export default function DashboardPage() {
                 <textarea
                   value={editingService?.description || ''}
                   onChange={(e) => setEditingService(prev => prev ? { ...prev, description: e.target.value } : null)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                   rows={3}
                   placeholder="Describe your service..."
                 />
@@ -490,7 +490,7 @@ export default function DashboardPage() {
                     type="number"
                     value={editingService?.price || ''}
                     onChange={(e) => setEditingService(prev => prev ? { ...prev, price: Number(e.target.value) } : null)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                     min="0"
                     step="0.01"
                   />
@@ -504,7 +504,7 @@ export default function DashboardPage() {
                     type="number"
                     value={editingService?.duration || ''}
                     onChange={(e) => setEditingService(prev => prev ? { ...prev, duration: Number(e.target.value) } : null)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                     min="15"
                     step="15"
                   />
@@ -518,7 +518,7 @@ export default function DashboardPage() {
                   setShowAddService(false);
                   setEditingService(null);
                 }}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="flex-1 px-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 Cancel
               </button>
