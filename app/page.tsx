@@ -1,28 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for tenant in query parameters
-    const queryTenant = searchParams.get('tenant');
-    
-    if (queryTenant) {
-      // Redirect to tenant route with query param
-      router.replace(`/t/${queryTenant}?tenant=${queryTenant}`);
-    } else {
-      // No tenant specified, redirect to default demo tenant
-      router.replace('/t/demo');
-    }
-    
-    // Set loading to false after redirect
-    setIsLoading(false);
-  }, [searchParams, router]);
+    // Simply redirect to dashboard without tenant validation
+    router.replace('/dashboard');
+  }, [router]);
 
   // Show loading while redirecting
   return (
@@ -38,7 +25,7 @@ export default function HomePage() {
             Service Homie
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Redirecting to your experience...
+            Redirecting to dashboard...
           </p>
         </div>
       </div>
