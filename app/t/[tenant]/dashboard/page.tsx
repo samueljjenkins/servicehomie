@@ -98,627 +98,436 @@ export default function CreatorDashboardPage() {
   }
 
   const totalRevenue = upcoming.reduce((sum, booking) => sum + booking.price, 0);
-  const activeServices = services.filter(s => s.isActive).length;
-  const availableDays = Object.values(availability).filter(day => day.length > 0).length;
+  const activeServicesCount = services.filter(s => s.isActive).length;
+  const availableDaysCount = Object.values(availability).filter(day => day.length > 0).length;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-900">
-      {/* Header - Clean, professional design */}
-      <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Service Homie</h1>
-              <p className="text-slate-600 dark:text-slate-400">Manage your booking business</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-whop-pomegranate rounded-full"></div>
-              <span className="text-sm text-slate-600 dark:text-slate-400">Live</span>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-white dark:bg-black">
+      {/* Header */}
+      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 px-6 py-4">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Manage your booking business
+        </h1>
+      </div>
 
-      {/* Navigation Tabs - Clean, flat design */}
-      <nav className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex space-x-1">
+      {/* Navigation Tabs */}
+      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
+        <div className="px-6">
+          <nav className="flex space-x-8">
             {[
-              { 
-                id: 'overview', 
-                label: 'Overview', 
-                icon: (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                )
-              },
-              { 
-                id: 'services', 
-                label: 'Services', 
-                icon: (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                  </svg>
-                )
-              },
-              { 
-                id: 'availability', 
-                label: 'Availability', 
-                icon: (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                )
-              },
-              { 
-                id: 'bookings', 
-                label: 'Bookings', 
-                icon: (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                )
-              }
-            ].map((tab) => (
+              { id: 'overview', label: 'Overview', icon: '📊' },
+              { id: 'services', label: 'Services', icon: '⚙️' },
+              { id: 'availability', label: 'Availability', icon: '📅' },
+              { id: 'bookings', label: 'Bookings', icon: '📋' }
+            ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`px-4 py-3 rounded-lg font-medium text-sm flex items-center gap-2 transition-all ${
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === tab.id
-                    ? 'bg-whop-pomegranate text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700'
+                    ? 'border-whop-pomegranate text-whop-pomegranate'
+                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                 }`}
               >
-                {tab.icon}
                 {tab.label}
               </button>
             ))}
-          </div>
+          </nav>
         </div>
-      </nav>
+      </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="px-6 py-8">
         {activeTab === 'overview' && (
           <div className="space-y-8">
-            {/* Welcome Section - Clean, professional */}
+            {/* Hero Section */}
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-whop-pomegranate rounded-2xl mb-4">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-20 h-20 bg-whop-pomegranate rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">
-                Welcome back!
-              </h2>
-              <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              <h2 className="text-xl text-gray-600 dark:text-gray-400">
                 Here's what's happening with your booking business today
-              </p>
+              </h2>
             </div>
 
-            {/* Stats Grid - Clean cards with proper contrast */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center">
-                    <svg className="w-5 h-5 text-whop-pomegranate" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-xl flex items-center justify-center">
+                    <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                     </svg>
                   </div>
-                  <span className="text-2xl font-bold text-whop-pomegranate">${totalRevenue}</span>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Revenue</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">${totalRevenue}</p>
+                  </div>
                 </div>
-                <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">Total Revenue</p>
               </div>
-              
-              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 bg-whop-blue/10 rounded-xl flex items-center justify-center">
-                    <svg className="w-5 h-5 text-whop-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
+                    <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
-                  <span className="text-2xl font-bold text-whop-blue">{upcoming.length}</span>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Upcoming Bookings</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{upcoming.length}</p>
+                  </div>
                 </div>
-                <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">Upcoming Bookings</p>
               </div>
-              
-              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center">
-                    <svg className="w-5 h-5 text-whop-pomegranate" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-xl flex items-center justify-center">
+                    <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <span className="text-2xl font-bold text-whop-pomegranate">{activeServices}</span>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Services</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{activeServicesCount}</p>
+                  </div>
                 </div>
-                <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">Active Services</p>
               </div>
-              
-              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center">
-                    <svg className="w-5 h-5 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-xl flex items-center justify-center">
+                    <svg className="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
-                  <span className="text-2xl font-bold text-slate-900 dark:text-white">{availableDays}</span>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Days Available</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{availableDaysCount}</p>
+                  </div>
                 </div>
-                <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">Days Available</p>
               </div>
             </div>
 
-            {/* Quick Actions - Clean, flat design */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-                  Quick Actions
-                </h3>
-                <div className="space-y-3">
-                  <button
-                    onClick={() => setActiveTab('services')}
-                    className="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-4 py-3 rounded-xl font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700"
-                  >
-                    Manage Services & Pricing
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('availability')}
-                    className="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-4 py-3 rounded-xl font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700"
-                  >
-                    Set Your Availability
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('bookings')}
-                    className="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-4 py-3 rounded-xl font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700"
-                  >
-                    View All Bookings
-                  </button>
+            {/* Recent Activity */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Activity</h3>
+                <div className="text-center py-8">
+                  <svg className="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p className="text-gray-500 dark:text-gray-400">No recent activity</p>
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-                  Recent Activity
-                </h3>
-                {upcoming.length === 0 ? (
-                  <div className="text-center py-8">
-                    <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-3">
-                      <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
-                    </div>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm font-medium">No recent bookings</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {upcoming.slice(-3).map((booking, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                        <div>
-                          <p className="font-medium text-slate-900 dark:text-white text-sm">{booking.customer}</p>
-                          <p className="text-slate-500 dark:text-slate-400 text-xs">{booking.service}</p>
-                        </div>
-                        <span className="text-whop-pomegranate font-semibold text-sm">${booking.price}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Bookings</h3>
+                <div className="text-center py-8">
+                  <svg className="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  <p className="text-gray-500 dark:text-gray-400">No recent bookings</p>
+                </div>
               </div>
             </div>
           </div>
         )}
 
         {activeTab === 'services' && (
-          <div className="space-y-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                  Services & Pricing
-                </h2>
-                <p className="text-slate-600 dark:text-slate-400">
-                  Manage your service offerings and pricing
-                </p>
-              </div>
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Services</h2>
               <button
                 onClick={addService}
-                className="bg-whop-pomegranate text-white px-6 py-3 rounded-xl font-semibold hover:bg-whop-pomegranate/90 transition-colors shadow-sm"
+                className="bg-whop-pomegranate text-white px-4 py-2 rounded-xl hover:bg-whop-pomegranate/90 transition-colors"
               >
-                + Add Service
+                Add Service
               </button>
             </div>
 
-            {/* Services Grid */}
-            <div className="grid md:grid-cols-2 gap-6">
-              {services.map((service) => (
-                <div key={service.id} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 hover:shadow-lg transition-all">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
-                          {service.name}
-                        </h3>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          service.isActive
-                            ? 'bg-whop-pomegranate/20 text-whop-pomegranate'
-                            : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'
-                        }`}>
+            {services.length === 0 ? (
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 text-center border border-gray-200 dark:border-gray-800">
+                <svg className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No services yet</h3>
+                <p className="text-gray-500 dark:text-gray-400 mb-4">Create your first service to start accepting bookings</p>
+                <button
+                  onClick={addService}
+                  className="bg-whop-pomegranate text-white px-6 py-3 rounded-xl hover:bg-whop-pomegranate/90 transition-colors"
+                >
+                  Create Service
+                </button>
+              </div>
+            ) : (
+              <div className="grid gap-4">
+                {services.map(service => (
+                  <div key={service.id} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center">
+                          <svg className="w-6 h-6 text-whop-pomegranate" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900 dark:text-white">{service.name}</h3>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{service.description}</p>
+                          <div className="flex items-center space-x-4 mt-1">
+                            <span className="text-sm text-gray-600 dark:text-gray-300">${service.price}</span>
+                            <span className="text-sm text-gray-600 dark:text-gray-300">{service.duration} min</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => toggleServiceActive(service.id)}
+                          className={`px-3 py-1 rounded-lg text-sm font-medium ${
+                            service.isActive
+                              ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'
+                              : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+                          }`}
+                        >
                           {service.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                      </div>
-                      <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">
-                        {service.description}
-                      </p>
-                      <div className="flex items-center gap-4">
-                        <span className="text-2xl font-bold text-whop-pomegranate">${service.price}</span>
-                        <span className="text-slate-500">•</span>
-                        <span className="text-slate-600 dark:text-slate-400">{service.duration} min</span>
+                        </button>
+                        <button
+                          onClick={() => setEditingService(service)}
+                          className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => deleteService(service.id)}
+                          className="text-red-400 dark:text-red-500 hover:text-red-600 dark:hover:text-red-400"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 pt-4 border-t border-slate-200 dark:border-slate-700">
-                    <button
-                      onClick={() => toggleServiceActive(service.id)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                        service.isActive
-                          ? 'bg-whop-pomegranate text-slate-800'
-                          : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'
-                      }`}
-                    >
-                      {service.isActive ? 'Active' : 'Inactive'}
-                    </button>
-                    <button
-                      onClick={() => setEditingService(service)}
-                      className="text-whop-blue hover:text-whop-blue/80 text-sm px-3 py-1.5 rounded-lg hover:bg-whop-blue/10 transition-colors"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => deleteService(service.id)}
-                      className="text-red-500 hover:text-red-600 text-sm px-3 py-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Add/Edit Service Modal */}
-            {showAddService && (
-              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-                    {editingService ? 'Edit Service' : 'Add New Service'}
-                  </h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                        Service Name
-                      </label>
-                      <input
-                        type="text"
-                        value={editingService?.name || ''}
-                        onChange={(e) => setEditingService(prev => prev ? { ...prev, name: e.target.value } : null)}
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
-                        placeholder="e.g., 1-on-1 Consultation"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                        Description
-                      </label>
-                      <textarea
-                        value={editingService?.description || ''}
-                        onChange={(e) => setEditingService(prev => prev ? { ...prev, description: e.target.value } : null)}
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
-                        rows={3}
-                        placeholder="Describe your service..."
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                          Price ($)
-                        </label>
-                        <input
-                          type="number"
-                          value={editingService?.price || 0}
-                          onChange={(e) => setEditingService(prev => prev ? { ...prev, price: Number(e.target.value) } : null)}
-                          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
-                          min="0"
-                          step="0.01"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                          Duration (min)
-                        </label>
-                        <input
-                          type="number"
-                          value={editingService?.duration || 60}
-                          onChange={(e) => setEditingService(prev => prev ? { ...prev, duration: Number(e.target.value) } : null)}
-                          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
-                          min="15"
-                          step="15"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex gap-3 pt-4">
-                      <button
-                        onClick={() => {
-                          setShowAddService(false);
-                          setEditingService(null);
-                        }}
-                        className="flex-1 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={() => editingService && saveService(editingService)}
-                        disabled={!editingService?.name}
-                        className="flex-1 bg-whop-pomegranate text-white px-4 py-2 rounded-lg font-medium hover:bg-whop-pomegranate/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                      >
-                        Save Service
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             )}
           </div>
         )}
 
         {activeTab === 'availability' && (
-          <div className="space-y-8">
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-whop-blue/10 rounded-2xl mb-4">
-                <svg className="w-8 h-8 text-whop-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Set Your Weekly Schedule</h2>
+              <div className="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-lg">
+                Availability is automatically saved
               </div>
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">
-                Set Your Weekly Schedule
-              </h2>
-              <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                Choose which days and times you're available for customer bookings
-              </p>
             </div>
 
-            {/* Enhanced Availability Editor */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-8 shadow-sm">
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {weekLabels.map((label, idx) => {
-                  const dayIndex = idx as Weekday;
-                  const windows = availability[dayIndex];
-                  const enabled = windows.length > 0;
-                  return (
-                    <div key={label} className={`rounded-2xl p-6 transition-all duration-200 ${
-                      enabled 
-                        ? 'bg-gradient-to-br from-whop-pomegranate/5 to-whop-blue/5 border-2 border-whop-pomegranate/20 shadow-lg' 
-                        : 'bg-slate-50 dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600'
-                    }`}>
-                      <div className="mb-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                            enabled 
-                              ? 'bg-whop-pomegranate text-white' 
-                              : 'bg-slate-200 dark:bg-slate-600 text-slate-500'
-                          }`}>
-                            <span className="font-bold text-sm">{label}</span>
+            <div className="grid gap-4">
+              {weekLabels.map((day, dayIndex) => {
+                const dayAvailability = availability[dayIndex as Weekday];
+                const isEnabled = dayAvailability.length > 0;
+                
+                return (
+                  <div key={day} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="font-semibold text-gray-900 dark:text-white">{day}</h3>
+                      <button
+                        onClick={() => toggleDayEnabled(dayIndex as Weekday)}
+                        className={`px-4 py-2 rounded-xl font-medium transition-all ${
+                          isEnabled
+                            ? 'bg-gradient-to-br from-whop-pomegranate to-orange-500 text-white shadow-lg'
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        }`}
+                      >
+                        {isEnabled ? '✓ Available' : 'Set Available'}
+                      </button>
+                    </div>
+
+                    {isEnabled && (
+                      <div className="space-y-3">
+                        {dayAvailability.map((window, windowIndex) => (
+                          <div key={windowIndex} className="flex items-center space-x-3">
+                            <div className="flex-1">
+                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Time Slot {windowIndex + 1}
+                              </label>
+                              <div className="flex space-x-2">
+                                <input
+                                  type="time"
+                                  value={window.start}
+                                  onChange={(e) => updateWindow(dayIndex as Weekday, windowIndex, 'start', e.target.value)}
+                                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                                />
+                                <span className="text-gray-500 dark:text-gray-400 self-center">to</span>
+                                <input
+                                  type="time"
+                                  value={window.end}
+                                  onChange={(e) => updateWindow(dayIndex as Weekday, windowIndex, 'end', e.target.value)}
+                                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                                />
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => removeWindow(dayIndex as Weekday, windowIndex)}
+                              className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-2"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
                           </div>
-                          <div>
-                            <h3 className={`font-semibold text-sm ${
-                              enabled 
-                                ? 'text-slate-900 dark:text-white' 
-                                : 'text-slate-600 dark:text-slate-400'
-                            }`}>
-                              {label === 'Sun' ? 'Sunday' : 
-                               label === 'Mon' ? 'Monday' : 
-                               label === 'Tue' ? 'Tuesday' : 
-                               label === 'Wed' ? 'Wednesday' : 
-                               label === 'Thu' ? 'Thursday' : 
-                               label === 'Fri' ? 'Friday' : 'Saturday'}
-                            </h3>
-                            <p className={`text-xs ${
-                              enabled 
-                                ? 'text-whop-pomegranate font-medium' 
-                                : 'text-slate-500'
-                            }`}>
-                              {enabled ? `${windows.length} time slot${windows.length > 1 ? 's' : ''}` : 'Not available'}
-                            </p>
-                          </div>
-                        </div>
+                        ))}
                         <button
-                          onClick={() => toggleDayEnabled(dayIndex)}
-                          className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                            enabled 
-                              ? "bg-whop-pomegranate text-white shadow-md hover:shadow-lg transform hover:scale-105" 
-                              : "bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-whop-pomegranate/50"
-                          }`}
+                          onClick={() => addWindow(dayIndex as Weekday)}
+                          className="w-full py-2 px-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors flex items-center justify-center space-x-2"
                         >
-                          {enabled ? "✓ Available" : "Set Available"}
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                          </svg>
+                          <span>Add time slot</span>
                         </button>
                       </div>
-                      
-                      {enabled && (
-                        <div className="space-y-4">
-                          {windows.map((w, wi) => (
-                            <div key={wi} className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-600 shadow-sm">
-                              <div className="flex items-center gap-3 mb-3">
-                                <div className="w-6 h-6 bg-whop-blue/10 rounded-lg flex items-center justify-center">
-                                  <svg className="w-3 h-3 text-whop-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                  </svg>
-                                </div>
-                                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Time Slot {wi + 1}</span>
-                                <button 
-                                  onClick={() => removeWindow(dayIndex, wi)} 
-                                  className="ml-auto text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                                >
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                  </svg>
-                                </button>
-                              </div>
-                              <div className="flex items-center gap-3">
-                                <div className="flex-1">
-                                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Start Time</label>
-                                  <input
-                                    type="time"
-                                    value={w.start}
-                                    onChange={(e) => updateWindow(dayIndex, wi, "start", e.target.value)}
-                                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-800 focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
-                                  />
-                                </div>
-                                <div className="flex items-center justify-center w-8">
-                                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                  </svg>
-                                </div>
-                                <div className="flex-1">
-                                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">End Time</label>
-                                  <input
-                                    type="time"
-                                    value={w.end}
-                                    onChange={(e) => updateWindow(dayIndex, wi, "end", e.target.value)}
-                                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-800 focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                          
-                          <button 
-                            onClick={() => addWindow(dayIndex)} 
-                            className="w-full bg-gradient-to-r from-whop-blue/10 to-whop-pomegranate/10 hover:from-whop-blue/20 hover:to-whop-pomegranate/20 text-whop-blue dark:text-whop-pomegranate border-2 border-dashed border-whop-blue/30 dark:border-whop-pomegranate/30 rounded-xl py-3 text-sm font-semibold transition-all duration-200 hover:scale-105 group"
-                          >
-                            <div className="flex items-center justify-center gap-2">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                              </svg>
-                              Add Another Time Slot
-                            </div>
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-              
-              <div className="mt-8 p-6 bg-gradient-to-r from-whop-pomegranate/5 to-whop-blue/5 rounded-xl border border-whop-pomegranate/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-whop-pomegranate/20 rounded-lg flex items-center justify-center">
-                    <svg className="w-4 h-4 text-whop-pomegranate" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    )}
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-900 dark:text-white">Your availability is automatically saved</p>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">Changes are applied immediately and will be used for customer bookings</p>
-                  </div>
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
         )}
 
         {activeTab === 'bookings' && (
-          <div className="space-y-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                  Upcoming Bookings
-                </h2>
-                <p className="text-slate-600 dark:text-slate-400">
-                  Manage and view all your customer appointments
-                </p>
-              </div>
-
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Bookings</h2>
             </div>
 
             {upcoming.length === 0 ? (
-              <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
-                                      <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 text-center border border-gray-200 dark:border-gray-800">
+                <svg className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-              </div>
-                <p className="text-slate-500 mb-2 text-lg">No upcoming bookings yet</p>
-                <p className="text-slate-400 mb-6">When customers book sessions, they'll appear here</p>
-
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No bookings yet</h3>
+                <p className="text-gray-500 dark:text-gray-400">Bookings will appear here once customers start scheduling</p>
               </div>
             ) : (
-              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-slate-50 dark:bg-slate-700">
-                      <tr>
-                        <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                          Customer
-                        </th>
-                        <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                          Service
-                        </th>
-                        <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                          Date & Time
-                        </th>
-                        <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                          Price
-                        </th>
-                        <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                          Status
-                        </th>
-                        <th className="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                      {upcoming.map((booking, index) => (
-                        <tr key={index} className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-slate-900 dark:text-white">
-                              {booking.customer}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-slate-900 dark:text-white">
-                              {booking.service || 'General Session'}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-slate-900 dark:text-white">
-                              {booking.date} · {booking.time}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-whop-pomegranate">
-                              ${booking.price || 50}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-whop-pomegranate/20 text-whop-pomegranate">
-                              Confirmed
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button className="text-whop-blue hover:text-whop-blue/80 mr-3 hover:bg-whop-blue/10 px-2 py-1 rounded transition-colors">
-                              View
-                            </button>
-                            <button className="text-whop-pomegranate hover:text-whop-pomegranate/80 hover:bg-whop-pomegranate/10 px-2 py-1 rounded transition-colors">
-                              Edit
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Upcoming Bookings</h3>
+                </div>
+                <div className="divide-y divide-gray-200 dark:divide-gray-800">
+                  {upcoming.map((booking, index) => (
+                    <div key={index} className="px-6 py-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-gray-900 dark:text-white">{booking.customer}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{booking.service}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{booking.date} at {booking.time}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-gray-900 dark:text-white">${booking.price}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
           </div>
         )}
       </div>
+
+      {/* Add/Edit Service Modal */}
+      {showAddService && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-md border border-gray-200 dark:border-gray-800">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              {editingService ? 'Edit Service' : 'Add New Service'}
+            </h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Service Name
+                </label>
+                <input
+                  type="text"
+                  value={editingService?.name || ''}
+                  onChange={(e) => setEditingService(prev => prev ? { ...prev, name: e.target.value } : null)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                  placeholder="e.g., Consultation"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Description
+                </label>
+                <textarea
+                  value={editingService?.description || ''}
+                  onChange={(e) => setEditingService(prev => prev ? { ...prev, description: e.target.value } : null)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                  rows={3}
+                  placeholder="Describe your service..."
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Price ($)
+                  </label>
+                  <input
+                    type="number"
+                    value={editingService?.price || ''}
+                    onChange={(e) => setEditingService(prev => prev ? { ...prev, price: Number(e.target.value) } : null)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Duration (min)
+                  </label>
+                  <input
+                    type="number"
+                    value={editingService?.duration || ''}
+                    onChange={(e) => setEditingService(prev => prev ? { ...prev, duration: Number(e.target.value) } : null)}
+                    className="w-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    min="15"
+                    step="15"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex space-x-3 mt-6">
+              <button
+                onClick={() => {
+                  setShowAddService(false);
+                  setEditingService(null);
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => editingService && saveService(editingService)}
+                disabled={!editingService?.name}
+                className="flex-1 px-4 py-2 bg-whop-pomegranate text-white rounded-lg hover:bg-whop-pomegranate/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {editingService ? 'Update' : 'Create'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
