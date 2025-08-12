@@ -3,37 +3,37 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-white">
       {/* Hero Section with Background Image */}
       <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="absolute inset-0 w-full h-full z-0">
           <img
-            src="/background.png"
+            src="/backgroundimage.png"
             alt="Business background"
             className="w-full h-full object-cover object-center"
             draggable="false"
           />
-          {/* Dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/20"></div>
+          {/* White overlay for better text readability */}
+          <div className="absolute inset-0 bg-white/90"></div>
         </div>
         <div className="relative max-w-7xl mx-auto z-10">
           <div className="text-center">
-            <h1 className="text-5xl tracking-tight font-extrabold text-white sm:text-6xl md:text-7xl mb-6" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 900 }}>
+            <h1 className="text-5xl tracking-tight font-extrabold text-[#1E2937] sm:text-6xl md:text-7xl mb-6" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 900 }}>
               <span className="block">
-                Your Professional <span className="text-whop-chartreuse">Landing Page</span>
+                Your Professional <span className="text-[#1754D4]">Landing Page</span>
               </span>
             </h1>
-            <p className="mt-6 max-w-3xl mx-auto text-xl text-white/90 sm:text-2xl md:mt-8 md:text-3xl" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+            <p className="mt-6 max-w-3xl mx-auto text-xl text-[#1E2937]/80 sm:text-2xl md:mt-8 md:text-3xl" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
               Professional landing pages for service businesses. Get your custom URL, Calendly booking, and Google Reviews—all for $19/month.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4 md:mt-12">
-              <a href="https://whop.com/apps/app_g0qSlT2gr0HBpX/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold text-white bg-whop-pomegranate hover:bg-whop-pomegranate/90 md:py-5 md:text-xl md:px-12 rounded-2xl transition-all duration-200 transform hover:scale-105 shadow-2xl" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+              <a href="https://whop.com/apps/app_g0qSlT2gr0HBpX/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold text-white bg-[#1754D4] hover:bg-[#1754D4]/90 md:py-5 md:text-xl md:px-12 rounded-2xl transition-all duration-200 transform hover:scale-105 shadow-2xl" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                 <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
                 Start Your $19/month Plan
               </a>
-              <Link href="#features" className="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-lg font-bold text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 md:py-5 md:text-xl md:px-12 rounded-2xl transition-all duration-200 transform hover:scale-105" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+              <Link href="#features" className="inline-flex items-center justify-center px-8 py-4 border-2 border-[#1754D4]/30 text-lg font-bold text-[#1754D4] bg-white hover:bg-[#1754D4]/5 md:py-5 md:text-xl md:px-12 rounded-2xl transition-all duration-200 transform hover:scale-105" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                 <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
@@ -48,10 +48,10 @@ export default function Home() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <h2 className="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-6" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+            <h2 className="text-4xl font-extrabold text-[#1E2937] sm:text-5xl mb-6" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
               See Your Landing Page in Action
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+            <p className="text-xl text-[#1E2937]/70 max-w-3xl mx-auto" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
               This is exactly what your customers will see when they visit your custom URL.
             </p>
           </div>
@@ -71,22 +71,22 @@ export default function Home() {
               </div>
 
               {/* Landing Page Preview */}
-              <div className="bg-gradient-to-br from-gray-50 via-white to-gray-100 p-12">
+              <div className="bg-white p-12">
                 <div className="max-w-4xl mx-auto">
                   {/* Hero Section */}
                   <div className="text-center mb-12">
                     <div className="flex items-center justify-center mb-6">
-                      <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-whop-pomegranate to-whop-blue flex items-center justify-center text-white text-3xl md:text-4xl font-bold border-4 border-white shadow-xl">
+                      <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-[#1754D4] flex items-center justify-center text-white text-3xl md:text-4xl font-bold border-4 border-white shadow-xl">
                         JW
                       </div>
                     </div>
-                    <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E2937] mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                       John's Window Cleaning
                     </h1>
-                    <p className="text-xl text-gray-600 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                    <p className="text-xl text-[#1E2937]/70 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                       Austin, TX
                     </p>
-                    <p className="text-gray-700 max-w-3xl mx-auto text-lg" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                    <p className="text-[#1E2937]/80 max-w-3xl mx-auto text-lg" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                       Professional window cleaning services for residential and commercial properties. Crystal clear results guaranteed.
                     </p>
                   </div>
@@ -94,26 +94,26 @@ export default function Home() {
                   {/* Services Section */}
                   <div className="mb-12">
                     <div className="text-center mb-8">
-                      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                      <h2 className="text-3xl md:text-4xl font-bold text-[#1E2937] mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                         Our Services
                       </h2>
-                      <p className="text-gray-600 max-w-2xl mx-auto text-lg" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                      <p className="text-[#1E2937]/70 max-w-2xl mx-auto text-lg" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                         Professional services tailored to your needs
                       </p>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                       {/* Window Cleaning Service */}
-                      <div className="group bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-gray-200 p-8 hover:shadow-2xl hover:border-whop-pomegranate/30 transition-all duration-300 transform hover:-translate-y-2">
+                      <div className="group bg-white rounded-2xl shadow-xl border border-gray-200 p-8 hover:shadow-2xl hover:border-[#1754D4]/30 transition-all duration-300 transform hover:-translate-y-2">
                         <div className="flex flex-col h-full">
                           <div className="flex items-center justify-between mb-6">
-                            <div className="w-12 h-12 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center">
-                              <svg className="w-6 h-6 text-whop-pomegranate" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="w-12 h-12 bg-[#1754D4]/10 rounded-xl flex items-center justify-center">
+                              <svg className="w-6 h-6 text-[#1754D4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                               </svg>
                             </div>
                             <div className="text-right">
-                              <div className="text-3xl md:text-4xl font-bold text-whop-pomegranate" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                              <div className="text-3xl md:text-4xl font-bold text-[#1754D4]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                                 $199+
                               </div>
                               <div className="text-sm text-gray-500 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
@@ -123,10 +123,10 @@ export default function Home() {
                           </div>
                           
                           <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-whop-pomegranate transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                            <h3 className="text-xl font-bold text-[#1E2937] mb-4 group-hover:text-[#1754D4] transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                               Window Cleaning
                             </h3>
-                            <p className="text-gray-600 leading-relaxed text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            <p className="text-[#1E2937]/70 leading-relaxed text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                               Professional window cleaning for residential and commercial properties. Crystal clear results guaranteed.
                             </p>
                           </div>
@@ -134,16 +134,16 @@ export default function Home() {
                       </div>
 
                       {/* Pressure Washing Service */}
-                      <div className="group bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-gray-200 p-8 hover:shadow-2xl hover:border-whop-blue/30 transition-all duration-300 transform hover:-translate-y-2">
+                      <div className="group bg-white rounded-2xl shadow-xl border border-gray-200 p-8 hover:shadow-2xl hover:border-[#1754D4]/30 transition-all duration-300 transform hover:-translate-y-2">
                         <div className="flex flex-col h-full">
                           <div className="flex items-center justify-between mb-6">
-                            <div className="w-12 h-12 bg-whop-blue/10 rounded-xl flex items-center justify-center">
-                              <svg className="w-6 h-6 text-whop-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="w-12 h-12 bg-[#1754D4]/10 rounded-xl flex items-center justify-center">
+                              <svg className="w-6 h-6 text-[#1754D4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                               </svg>
                             </div>
                             <div className="text-right">
-                              <div className="text-3xl md:text-4xl font-bold text-whop-blue" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                              <div className="text-3xl md:text-4xl font-bold text-[#1754D4]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                                 $249+
                               </div>
                               <div className="text-sm text-gray-500 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
@@ -153,10 +153,10 @@ export default function Home() {
                           </div>
                           
                           <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-whop-blue transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                            <h3 className="text-xl font-bold text-[#1E2937] mb-4 group-hover:text-[#1754D4] transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                               Pressure Washing
                             </h3>
-                            <p className="text-gray-600 leading-relaxed text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            <p className="text-[#1E2937]/70 leading-relaxed text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                               Exterior cleaning and pressure washing services. Restore your property's curb appeal.
                             </p>
                           </div>
@@ -164,16 +164,16 @@ export default function Home() {
                       </div>
 
                       {/* Gutter Cleaning Service */}
-                      <div className="group bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-gray-200 p-8 hover:shadow-2xl hover:border-whop-chartreuse/30 transition-all duration-300 transform hover:-translate-y-2">
+                      <div className="group bg-white rounded-2xl shadow-xl border border-gray-200 p-8 hover:shadow-2xl hover:border-[#1754D4]/30 transition-all duration-300 transform hover:-translate-y-2">
                         <div className="flex flex-col h-full">
                           <div className="flex items-center justify-between mb-6">
-                            <div className="w-12 h-12 bg-whop-chartreuse/10 rounded-xl flex items-center justify-center">
-                              <svg className="w-6 h-6 text-whop-chartreuse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="w-12 h-12 bg-[#1754D4]/10 rounded-xl flex items-center justify-center">
+                              <svg className="w-6 h-6 text-[#1754D4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                               </svg>
                             </div>
                             <div className="text-right">
-                              <div className="text-3xl md:text-4xl font-bold text-whop-chartreuse" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+                              <div className="text-3xl md:text-4xl font-bold text-[#1754D4]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
                                 $229+
                               </div>
                               <div className="text-sm text-gray-500 font-medium" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
@@ -183,10 +183,10 @@ export default function Home() {
                           </div>
                           
                           <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-whop-chartreuse transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
+                            <h3 className="text-xl font-bold text-[#1E2937] mb-4 group-hover:text-[#1754D4] transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>
                               Gutter Cleaning
                             </h3>
-                            <p className="text-gray-600 leading-relaxed text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+                            <p className="text-[#1E2937]/70 leading-relaxed text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                               Complete gutter cleaning and maintenance. Prevent water damage and keep your home protected.
                             </p>
                           </div>
@@ -206,8 +206,8 @@ export default function Home() {
             </div>
 
             <div className="text-center mt-12">
-              <p className="text-gray-600 mb-6 text-lg">Your custom URL will be: <span className="font-mono bg-gray-100 px-3 py-2 rounded-lg text-whop-pomegranate font-semibold">servicehomie.com/yourname</span></p>
-              <a href="https://whop.com/apps/app_g0qSlT2gr0HBpX/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-2xl text-white bg-whop-pomegranate hover:bg-whop-pomegranate/90 transition-all duration-200 transform hover:scale-105 shadow-xl">
+              <p className="text-[#1E2937]/70 mb-6 text-lg">Your custom URL will be: <span className="font-mono bg-gray-100 px-3 py-2 rounded-lg text-[#1754D4] font-semibold">servicehomie.com/yourname</span></p>
+              <a href="https://whop.com/apps/app_g0qSlT2gr0HBpX/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-2xl text-white bg-[#1754D4] hover:bg-[#1754D4]/90 transition-all duration-200 transform hover:scale-105 shadow-xl">
                 <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
@@ -222,10 +222,10 @@ export default function Home() {
       <section id="features" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <h2 className="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-6" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+            <h2 className="text-4xl font-extrabold text-[#1E2937] sm:text-5xl mb-6" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
               Everything You Need for $19/month
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+            <p className="text-xl text-[#1E2937]/70 max-w-3xl mx-auto" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
               Professional tools to grow your business—no hidden fees, no commission on bookings.
             </p>
           </div>
@@ -240,7 +240,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 ),
-                color: 'whop-pomegranate'
+                color: '[#1754D4]'
               },
               {
                 title: 'Calendly Integration',
@@ -250,17 +250,17 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 ),
-                color: 'whop-blue'
+                color: '[#1754D4]'
               },
               {
                 title: 'Google Reviews Display',
                 description: 'Display your Google Business rating and review count to build trust.',
                 icon: (
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                   </svg>
                 ),
-                color: 'whop-chartreuse'
+                color: '[#1754D4]'
               },
               {
                 title: 'Payment Link Integration',
@@ -270,7 +270,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
                 ),
-                color: 'whop-pomegranate'
+                color: '[#1754D4]'
               },
               {
                 title: 'Mobile Responsive',
@@ -280,7 +280,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                   </svg>
                 ),
-                color: 'whop-blue'
+                color: '[#1754D4]'
               },
               {
                 title: 'Photo Upload',
@@ -290,17 +290,17 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 ),
-                color: 'whop-chartreuse'
+                color: '[#1754D4]'
               }
             ].map((feature, index) => (
               <div key={feature.title} className="group bg-white rounded-2xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 hover:border-gray-200">
-                <div className={`w-16 h-16 bg-${feature.color}/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200`}>
-                  <div className={`text-${feature.color}`}>
+                <div className="w-16 h-16 bg-[#1754D4]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200">
+                  <div className="text-[#1754D4]">
                     {feature.icon}
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>{feature.title}</h3>
-                <p className="text-gray-600 leading-relaxed" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>{feature.description}</p>
+                <h3 className="text-xl font-semibold text-[#1E2937] mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>{feature.title}</h3>
+                <p className="text-[#1E2937]/70 leading-relaxed" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>{feature.description}</p>
               </div>
             ))}
           </div>
@@ -311,10 +311,10 @@ export default function Home() {
       <section id="how-it-works" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <h2 className="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-6" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+            <h2 className="text-4xl font-extrabold text-[#1E2937] sm:text-5xl mb-6" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
               How It Works
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+            <p className="text-xl text-[#1E2937]/70 max-w-3xl mx-auto" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
               Get your professional landing page set up in 3 simple steps.
             </p>
           </div>
@@ -354,16 +354,16 @@ export default function Home() {
             ].map((step) => (
               <div key={step.step} className="relative text-center">
                 <div className="flex flex-col items-center">
-                  <div className="flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-whop-pomegranate to-whop-blue text-white text-2xl font-bold mb-6 shadow-xl">
+                  <div className="flex items-center justify-center h-16 w-16 rounded-full bg-[#1754D4] text-white text-2xl font-bold mb-6 shadow-xl">
                     {step.step}
                   </div>
-                  <div className="w-16 h-16 bg-whop-chartreuse/10 rounded-2xl flex items-center justify-center mb-6">
-                    <div className="text-whop-chartreuse">
+                  <div className="w-16 h-16 bg-[#1754D4]/10 rounded-2xl flex items-center justify-center mb-6">
+                    <div className="text-[#1754D4]">
                       {step.icon}
                     </div>
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>{step.title}</h3>
-                  <p className="text-gray-600 text-lg leading-relaxed" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>{step.description}</p>
+                  <h3 className="text-2xl font-semibold text-[#1E2937] mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>{step.title}</h3>
+                  <p className="text-[#1E2937]/70 text-lg leading-relaxed" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>{step.description}</p>
                 </div>
               </div>
             ))}
@@ -372,32 +372,32 @@ export default function Home() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-24 bg-gradient-to-br from-gray-50 to-gray-100">
+      <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <h2 className="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-6" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
+            <h2 className="text-4xl font-extrabold text-[#1E2937] sm:text-5xl mb-6" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
               Simple, Transparent Pricing
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+            <p className="text-xl text-[#1E2937]/70 max-w-3xl mx-auto" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
               One plan. Everything included. No surprises.
             </p>
           </div>
 
           <div className="max-w-lg mx-auto">
-            <div className="bg-white rounded-3xl shadow-2xl p-10 border-2 border-whop-pomegranate/20 relative overflow-hidden">
+            <div className="bg-white rounded-3xl shadow-2xl p-10 border-2 border-[#1754D4]/20 relative overflow-hidden">
               {/* Background decoration */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-whop-pomegranate/5 to-whop-blue/5 rounded-full -translate-y-16 translate-x-16"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-br from-whop-chartreuse/5 to-whop-pomegranate/5 rounded-full translate-y-12 -translate-x-12"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#1754D4]/5 rounded-full -translate-y-16 translate-x-16"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#1754D4]/5 rounded-full translate-y-12 -translate-x-12"></div>
               
               <div className="relative text-center">
-                <div className="w-24 h-24 bg-gradient-to-br from-whop-pomegranate to-whop-blue rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl">
+                <div className="w-24 h-24 bg-[#1754D4] rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl">
                   <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-4">Starter Plan</h3>
+                <h3 className="text-3xl font-bold text-[#1E2937] mb-4">Starter Plan</h3>
                 <div className="mb-8">
-                  <span className="text-5xl font-bold text-whop-pomegranate">$19</span>
+                  <span className="text-5xl font-bold text-[#1754D4]">$19</span>
                   <span className="text-2xl text-gray-600">/month</span>
                 </div>
                 
@@ -416,12 +416,12 @@ export default function Home() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <span className="text-gray-700 text-lg">{feature}</span>
+                      <span className="text-[#1E2937] text-lg">{feature}</span>
                     </div>
                   ))}
                 </div>
 
-                <a href="https://whop.com/apps/app_g0qSlT2gr0HBpX/" target="_blank" rel="noopener noreferrer" className="w-full bg-gradient-to-r from-whop-pomegranate to-whop-blue text-white px-10 py-5 rounded-2xl font-bold hover:from-whop-pomegranate/90 hover:to-whop-blue/90 transition-all duration-200 transform hover:scale-105 shadow-2xl block text-center text-xl">
+                <a href="https://whop.com/apps/app_g0qSlT2gr0HBpX/" target="_blank" rel="noopener noreferrer" className="w-full bg-[#1754D4] text-white px-10 py-5 rounded-2xl font-bold hover:bg-[#1754D4]/90 transition-all duration-200 transform hover:scale-105 shadow-2xl block text-center text-xl">
                   Start Your $19/month Plan
                 </a>
                 
@@ -435,7 +435,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-r from-whop-pomegranate to-whop-blue">
+      <section className="bg-[#1754D4]">
         <div className="max-w-7xl mx-auto py-20 px-4 sm:px-6 lg:py-24 lg:px-8 lg:flex lg:items-center lg:justify-between">
           <h2 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl mb-8 lg:mb-0" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>
             <span className="block">Ready to look professional?</span>
@@ -453,7 +453,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900">
+      <footer className="bg-[#1E2937]">
         <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h3 className="text-white text-2xl font-semibold mb-6" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>Service Homie</h3>
@@ -466,7 +466,7 @@ export default function Home() {
               <Link href="/terms" className="text-gray-400 hover:text-white transition-colors" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>Terms</Link>
             </div>
           </div>
-          <div className="border-t border-gray-800 pt-8">
+          <div className="border-t border-gray-700 pt-8">
             <p className="text-gray-500 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>&copy; 2025 Service Homie. All rights reserved.</p>
           </div>
         </div>
