@@ -54,7 +54,7 @@ export default function RootLayout({
 				</Script>
 				<Theme>
 					<WhopApp>
-						<div className="min-h-screen bg-white dark:bg-black">
+						<div className="min-h-screen bg-white dark:bg-[#111111]">
 							{children}
 						</div>
 					</WhopApp>
