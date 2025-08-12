@@ -238,6 +238,90 @@ export default function DashboardPage() {
   const activeServicesCount = services.filter(s => s.isActive).length;
   const availableDaysCount = Object.values(availability).filter(day => day.length > 0).length;
 
+  function getDefaultStartTime() {
+    const defaultStart = '09:00';
+    const defaultEnd = '17:00';
+    const defaultSlots = availability[new Date().toDateString()] || [];
+    if (defaultSlots.length > 0) {
+      return defaultSlots[0].start;
+    }
+    return defaultStart;
+  }
+
+  function getDefaultEndTime() {
+    const defaultStart = '09:00';
+    const defaultEnd = '17:00';
+    const defaultSlots = availability[new Date().toDateString()] || [];
+    if (defaultSlots.length > 0) {
+      return defaultSlots[0].end;
+    }
+    return defaultEnd;
+  }
+
+  function updateAllTimeSlots(field: 'start' | 'end', value: string) {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    for (let date = new Date(firstDay); date <= lastDay; date.setDate(date.getDate() + 1)) {
+      const dateString = date.toDateString();
+      const currentSlots = availability[dateString] || [];
+      const newSlots = currentSlots.map(slot => ({ ...slot, [field]: value }));
+      setAvailability(prev => ({ ...prev, [dateString]: newSlots }));
+    }
+  }
+
+  function setStandardBusinessHours() {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    for (let date = new Date(firstDay); date <= lastDay; date.setDate(date.getDate() + 1)) {
+      const dateString = date.toDateString();
+      setAvailability(prev => ({
+        ...prev,
+        [dateString]: [{ start: '09:00', end: '17:00' }]
+      }));
+    }
+  }
+
+  function setExtendedHours() {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    for (let date = new Date(firstDay); date <= lastDay; date.setDate(date.getDate() + 1)) {
+      const dateString = date.toDateString();
+      setAvailability(prev => ({
+        ...prev,
+        [dateString]: [{ start: '08:00', end: '20:00' }]
+      }));
+    }
+  }
+
+  function clearAllAvailability() {
+    setAvailability({});
+  }
+
+  function getWeekdayCountInMonth(weekday: string) {
+    const targetDay = weekLabels.indexOf(weekday as any);
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    let count = 0;
+    for (let date = new Date(firstDay); date <= lastDay; date.setDate(date.getDate() + 1)) {
+      if (date.getDay() === targetDay) {
+        count++;
+      }
+    }
+    return count;
+  }
+
   return (
     <div className="min-h-screen">
       {/* Navigation Tabs */}
@@ -462,16 +546,16 @@ export default function DashboardPage() {
               {/* Quick Day Selection */}
               <div className="mb-6">
                 <h4 className="text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-3 font-inter">Select Weekdays for Entire Month</h4>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-7 gap-1">
                   {weekLabels.map((day, dayIndex) => {
                     const isEnabled = hasWeekdayAvailabilityForMonth(day);
                     return (
                       <button
                         key={day}
                         onClick={() => toggleWeekdayAvailability(day)}
-                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-all font-inter ${
+                        className={`h-12 rounded-lg text-sm font-medium transition-all font-inter ${
                           isEnabled
-                            ? 'bg-[#1754d8] text-white'
+                            ? 'bg-[#1754d8] text-white hover:bg-[#1754d8]/90'
                             : 'bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-200 dark:hover:bg-[#111111]'
                         }`}
                       >
@@ -554,7 +638,12 @@ export default function DashboardPage() {
 
             {/* Time Slots Management */}
             <div className="bg-white dark:bg-[#2A2A2A] rounded-2xl p-6 border border-[#E1E1E1] dark:border-[#2A2A2A]">
-              <h3 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] mb-4 font-inter">Time Slots</h3>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] font-inter">Business Hours</h3>
+                <div className="text-sm text-[#626262] dark:text-[#B5B5B5] bg-gray-50 dark:bg-[#2A2A2A] px-3 py-2 rounded-lg font-inter">
+                  Set once, applies to all available days
+                </div>
+              </div>
               
               {Object.keys(availability).length === 0 ? (
                 <div className="text-center py-8">
@@ -562,105 +651,79 @@ export default function DashboardPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                   <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">No availability set yet</p>
-                  <p className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">Select days above and add time slots</p>
+                  <p className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">Select weekdays above to get started</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {Object.entries(availability).map(([date, timeSlots]) => {
-                    const dateObj = new Date(date);
-                    const isToday = dateObj.toDateString() === new Date().toDateString();
-                    const isPast = dateObj.getTime() < new Date().setHours(0, 0, 0, 0);
-                    
-                    return (
-                      <div key={date} className={`p-4 rounded-lg border ${
-                        isPast 
-                          ? 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-[#111111]' 
-                          : 'border-[#E1E1E1] dark:border-[#2A2A2A]'
-                      }`}>
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center space-x-3">
-                            <h4 className={`font-medium font-inter ${
-                              isPast 
-                                ? 'text-gray-500 dark:text-gray-400' 
-                                : 'text-[#626262] dark:text-[#B5B5B5]'
-                            }`}>
-                              {dateObj.toLocaleDateString('en-US', { 
-                                weekday: 'long', 
-                                month: 'short', 
-                                day: 'numeric' 
-                              })}
-                            </h4>
-                            {isToday && (
-                              <span className="px-2 py-1 text-xs bg-[#1754d8] text-white rounded-full font-inter">Today</span>
-                            )}
-                            {isPast && (
-                              <span className="px-2 py-1 text-xs bg-gray-400 text-white rounded-full font-inter">Past</span>
-                            )}
-                          </div>
-                          {!isPast && (
-                            <button
-                              onClick={() => removeDateAvailability(date)}
-                              className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-1"
-                            >
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          )}
-                        </div>
-                        
-                        <div className="space-y-2">
-                          {timeSlots.map((slot, slotIndex) => (
-                            <div key={slotIndex} className="flex items-center space-x-2">
-                              <input
-                                type="time"
-                                value={slot.start}
-                                onChange={(e) => updateTimeSlot(date, slotIndex, 'start', e.target.value)}
-                                disabled={isPast}
-                                className={`px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter ${
-                                  isPast ? 'opacity-50 cursor-not-allowed' : ''
-                                }`}
-                              />
-                              <span className={`text-[#626262] dark:text-[#B5B5B5] font-inter ${
-                                isPast ? 'opacity-50' : ''
-                              }`}>to</span>
-                              <input
-                                type="time"
-                                value={slot.end}
-                                onChange={(e) => updateTimeSlot(date, slotIndex, 'end', e.target.value)}
-                                disabled={isPast}
-                                className={`px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter ${
-                                  isPast ? 'opacity-50 cursor-not-allowed' : ''
-                                }`}
-                              />
-                              {!isPast && (
-                                <button
-                                  onClick={() => removeTimeSlot(date, slotIndex)}
-                                  className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-1"
-                                >
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                  </svg>
-                                </button>
-                              )}
-                            </div>
-                          ))}
-                          
-                          {!isPast && (
-                            <button
-                              onClick={() => addTimeSlot(date)}
-                              className="w-full py-2 px-4 border-2 border-dashed border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg text-[#626262] dark:text-[#B5B5B5] hover:border-[#1754d8] hover:text-[#1754d8] transition-colors flex items-center justify-center space-x-2 font-inter"
-                            >
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                              </svg>
-                              <span>Add time slot</span>
-                            </button>
-                          )}
-                        </div>
+                <div className="space-y-6">
+                  {/* Global Business Hours */}
+                  <div className="bg-gray-50 dark:bg-[#111111] rounded-lg p-4">
+                    <h4 className="text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-3 font-inter">Default Business Hours</h4>
+                    <div className="flex items-center space-x-4">
+                      <div className="flex-1">
+                        <label className="block text-xs text-[#626262] dark:text-[#B5B5B5] mb-1 font-inter">Start Time</label>
+                        <input
+                          type="time"
+                          value={getDefaultStartTime()}
+                          onChange={(e) => updateAllTimeSlots('start', e.target.value)}
+                          className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
+                        />
                       </div>
-                    );
-                  })}
+                      <div className="text-[#626262] dark:text-[#B5B5B5] self-end pb-2 font-inter">to</div>
+                      <div className="flex-1">
+                        <label className="block text-xs text-[#626262] dark:text-[#B5B5B5] mb-1 font-inter">End Time</label>
+                        <input
+                          type="time"
+                          value={getDefaultEndTime()}
+                          onChange={(e) => updateAllTimeSlots('end', e.target.value)}
+                          className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
+                        />
+                      </div>
+                    </div>
+                    <p className="text-xs text-[#626262] dark:text-[#B5B5B5] mt-2 font-inter">Changing these times will update all available days</p>
+                  </div>
+
+                  {/* Available Days Summary */}
+                  <div>
+                    <h4 className="text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-3 font-inter">Available Days This Month</h4>
+                    <div className="grid grid-cols-7 gap-1">
+                      {weekLabels.map((day, dayIndex) => {
+                        const isEnabled = hasWeekdayAvailabilityForMonth(day);
+                        const dayCount = getWeekdayCountInMonth(day);
+                        return (
+                          <div key={day} className={`text-center p-2 rounded-lg font-inter ${
+                            isEnabled
+                              ? 'bg-[#1754d8] text-white'
+                              : 'bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5]'
+                          }`}>
+                            <div className="text-xs font-medium">{day}</div>
+                            <div className="text-xs opacity-75">{dayCount} days</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Quick Actions */}
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={setStandardBusinessHours}
+                      className="flex-1 px-4 py-2 bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] rounded-lg hover:bg-gray-200 dark:hover:bg-[#111111] transition-colors font-inter"
+                    >
+                      Set 9 AM - 5 PM
+                    </button>
+                    <button
+                      onClick={setExtendedHours}
+                      className="flex-1 px-4 py-2 bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] rounded-lg hover:bg-gray-200 dark:hover:bg-[#111111] transition-colors font-inter"
+                    >
+                      Set 8 AM - 8 PM
+                    </button>
+                    <button
+                      onClick={clearAllAvailability}
+                      className="px-4 py-2 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/30 transition-colors font-inter"
+                    >
+                      Clear All
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
