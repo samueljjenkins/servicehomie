@@ -103,18 +103,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
-      <div className="bg-white dark:bg-[#111111] border-b border-[#E1E1E1] dark:border-[#2A2A2A] px-6 py-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter">
-            Manage your booking business
-          </h1>
-          <div className="text-sm text-[#626262] dark:text-[#B5B5B5] bg-gray-50 dark:bg-[#2A2A2A] px-3 py-1 rounded-lg font-inter">
-            Demo Mode
-          </div>
-        </div>
-      </div>
-
       {/* Navigation Tabs */}
       <div className="bg-white dark:bg-[#111111] border-b border-[#E1E1E1] dark:border-[#2A2A2A]">
         <div className="px-6">
