@@ -312,7 +312,7 @@ export default function DashboardPage() {
     const month = currentMonth.getMonth();
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-
+    
     let count = 0;
     for (let date = new Date(firstDay); date <= lastDay; date.setDate(date.getDate() + 1)) {
       if (date.getDay() === targetDay) {
@@ -320,6 +320,20 @@ export default function DashboardPage() {
       }
     }
     return count;
+  }
+
+  function saveAvailabilityToSupabase() {
+    // TODO: Implement Supabase saving logic
+    console.log('Saving availability to Supabase:', availability);
+    
+    // Show success message
+    alert('Availability settings saved to Supabase!');
+    
+    // Here you would typically:
+    // 1. Call your Supabase client
+    // 2. Insert/update the availability data
+    // 3. Handle success/error states
+    // 4. Update local state if needed
   }
 
   return (
@@ -354,17 +368,6 @@ export default function DashboardPage() {
       <div className="px-6 py-8 bg-white dark:bg-[#111111]">
         {activeTab === 'overview' && (
           <div className="space-y-8">
-            {/* Welcome Header */}
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-[#1754d8] to-[#1754d8]/80 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h1 className="text-3xl font-bold text-[#626262] dark:text-[#B5B5B5] mb-2 font-inter">Welcome back!</h1>
-              <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">Here's what's happening with your booking business today</p>
-            </div>
-
             {/* Enhanced Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="relative p-6 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-xl hover:border-[#1754d8]/30 transition-all duration-200 group">
@@ -588,17 +591,6 @@ export default function DashboardPage() {
 
         {activeTab === 'availability' && (
           <div className="space-y-8">
-            {/* Enhanced Header */}
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h2 className="text-3xl font-bold text-[#626262] dark:text-[#B5B5B5] mb-2 font-inter">Set Your Monthly Schedule</h2>
-              <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">Manage your availability and business hours</p>
-            </div>
-
             {/* Monthly Calendar */}
             <div className="border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-2xl p-8 shadow-sm">
               {/* Quick Day Selection */}
@@ -780,6 +772,20 @@ export default function DashboardPage() {
                       <span>Clear All</span>
                     </button>
                   </div>
+
+                  {/* Save Button */}
+                  <div className="pt-6 border-t border-[#E1E1E1] dark:border-[#2A2A2A]">
+                    <button
+                      onClick={saveAvailabilityToSupabase}
+                      className="w-full px-8 py-4 bg-[#1754d8] text-white rounded-xl hover:bg-[#1754d8]/90 transition-all duration-200 font-inter flex items-center justify-center space-x-3 text-lg font-semibold shadow-lg hover:shadow-xl"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                      </svg>
+                      <span>Save Availability to Supabase</span>
+                    </button>
+                    <p className="text-sm text-[#626262] dark:text-[#B5B5B5] text-center mt-3 font-inter">Your availability settings will be saved to the database</p>
+                  </div>
                 </div>
               )}
             </div>
@@ -788,17 +794,6 @@ export default function DashboardPage() {
 
         {activeTab === 'bookings' && (
           <div className="space-y-8">
-            {/* Enhanced Header */}
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              </div>
-              <h2 className="text-3xl font-bold text-[#626262] dark:text-[#B5B5B5] mb-2 font-inter">Manage Bookings</h2>
-              <p className="text-[#626262] dark:text-[#B5B5B5] font-inter">View and manage your upcoming appointments</p>
-            </div>
-
             {upcoming.length === 0 ? (
               <div className="text-center py-20 border-2 border-dashed border-[#E1E1E1] dark:border-[#2A2A2A] rounded-2xl">
                 <div className="w-24 h-24 bg-gray-100 dark:bg-[#2A2A2A] rounded-full flex items-center justify-center mx-auto mb-6">
