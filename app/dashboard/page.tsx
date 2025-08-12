@@ -102,7 +102,7 @@ export default function DashboardPage() {
   const availableDaysCount = Object.values(availability).filter(day => day.length > 0).length;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black">
+    <div className="min-h-screen">
       {/* Header */}
       <div className="bg-white dark:bg-black border-b border-[#E1E1E1] dark:border-gray-800 px-6 py-4">
         <div className="flex items-center justify-between">
@@ -142,7 +142,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Main Content */}
-      <div className="px-6 py-8">
+      <div className="px-6 py-8 bg-white dark:bg-black">
         {activeTab === 'overview' && (
           <div className="space-y-8">
             {/* Hero Section */}

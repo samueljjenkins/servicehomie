@@ -47,14 +47,16 @@ export default function RootLayout({
 					      root.classList.add('dark');
 					    } else {
 					      root.classList.remove('dark');
-					}
-					} catch (e) {}
+					    }
+					  } catch (e) {}
 					})();
 					`}
 				</Script>
 				<Theme>
 					<WhopApp>
-						{children}
+						<div className="min-h-screen bg-white dark:bg-black">
+							{children}
+						</div>
 					</WhopApp>
 				</Theme>
 			</body>
