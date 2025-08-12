@@ -66,42 +66,56 @@ export default function DashboardPage() {
   };
 
   const toggleWeekdayAvailability = (weekday: string) => {
-    // Get next 4 occurrences of this weekday
-    const nextDates = [];
-    const currentDate = new Date();
     const targetDay = weekLabels.indexOf(weekday as any);
     
-    for (let i = 0; i < 4; i++) {
-      const date = new Date(currentDate);
-      date.setDate(date.getDate() + i);
-      
-      while (date.getDay() !== targetDay) {
-        date.setDate(date.getDate() + 1);
-      }
-      
-      nextDates.push(date);
-    }
+    // Check if this weekday is already enabled for the current month
+    const isCurrentlyEnabled = hasWeekdayAvailabilityForMonth(weekday);
     
-    // Check if any of these dates are already available
-    const hasAvailability = nextDates.some(date => 
-      availability[date.toDateString()]?.length > 0
-    );
-    
-    if (hasAvailability) {
-      // Remove availability for all these dates
+    if (isCurrentlyEnabled) {
+      // Remove availability for all dates of this weekday in the current month
       const newAvailability = { ...availability };
-      nextDates.forEach(date => {
-        delete newAvailability[date.toDateString()];
-      });
+      const year = currentMonth.getFullYear();
+      const month = currentMonth.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      
+      for (let date = new Date(firstDay); date <= lastDay; date.setDate(date.getDate() + 1)) {
+        if (date.getDay() === targetDay) {
+          delete newAvailability[date.toDateString()];
+        }
+      }
       setAvailability(newAvailability);
     } else {
-      // Add availability for all these dates
+      // Add availability for all dates of this weekday in the current month
       const newAvailability = { ...availability };
-      nextDates.forEach(date => {
-        newAvailability[date.toDateString()] = [{ start: '09:00', end: '17:00' }];
-      });
+      const year = currentMonth.getFullYear();
+      const month = currentMonth.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      
+      for (let date = new Date(firstDay); date <= lastDay; date.setDate(date.getDate() + 1)) {
+        if (date.getDay() === targetDay) {
+          newAvailability[date.toDateString()] = [{ start: '09:00', end: '17:00' }];
+        }
+      }
       setAvailability(newAvailability);
     }
+  };
+
+  const hasWeekdayAvailabilityForMonth = (weekday: string) => {
+    const targetDay = weekLabels.indexOf(weekday as any);
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    
+    // Check if any date of this weekday in the current month has availability
+    for (let date = new Date(firstDay); date <= lastDay; date.setDate(date.getDate() + 1)) {
+      if (date.getDay() === targetDay && availability[date.toDateString()]?.length > 0) {
+        return true;
+      }
+    }
+    return false;
   };
 
   const addTimeSlot = (date: string) => {
@@ -445,6 +459,29 @@ export default function DashboardPage() {
 
             {/* Monthly Calendar */}
             <div className="bg-white dark:bg-[#2A2A2A] rounded-2xl p-6 border border-[#E1E1E1] dark:border-[#2A2A2A]">
+              {/* Quick Day Selection */}
+              <div className="mb-6">
+                <h4 className="text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-3 font-inter">Select Weekdays for Entire Month</h4>
+                <div className="flex flex-wrap gap-2">
+                  {weekLabels.map((day, dayIndex) => {
+                    const isEnabled = hasWeekdayAvailabilityForMonth(day);
+                    return (
+                      <button
+                        key={day}
+                        onClick={() => toggleWeekdayAvailability(day)}
+                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-all font-inter ${
+                          isEnabled
+                            ? 'bg-[#1754d8] text-white'
+                            : 'bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-200 dark:hover:bg-[#111111]'
+                        }`}
+                      >
+                        {day}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Calendar Header */}
               <div className="flex items-center justify-between mb-6">
                 <button
@@ -512,29 +549,6 @@ export default function DashboardPage() {
                     </button>
                   );
                 })}
-              </div>
-
-              {/* Quick Day Selection */}
-              <div className="border-t border-[#E1E1E1] dark:border-[#2A2A2A] pt-4">
-                <h4 className="text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-3 font-inter">Quick Day Selection</h4>
-                <div className="flex flex-wrap gap-2">
-                  {weekLabels.map((day, dayIndex) => {
-                    const isEnabled = availability[day]?.length > 0;
-                    return (
-                      <button
-                        key={day}
-                        onClick={() => toggleWeekdayAvailability(day)}
-                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-all font-inter ${
-                          isEnabled
-                            ? 'bg-[#1754d8] text-white'
-                            : 'bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-200 dark:hover:bg-[#111111]'
-                        }`}
-                      >
-                        {day}
-                      </button>
-                    );
-                  })}
-                </div>
               </div>
             </div>
 
