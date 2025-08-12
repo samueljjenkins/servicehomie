@@ -21,8 +21,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-	title: "Service Homie - Whop Booking Platform",
-	description: "Your All-In-One Whop Booking Platform",
+	title: "Service Homie - Professional Landing Pages for Service Businesses",
+	description: "Get your professional landing page with custom URL, Calendly booking, and Google Reviews—all for $19/month.",
 };
 
 export default function RootLayout({
@@ -53,11 +53,7 @@ export default function RootLayout({
 					`}
 				</Script>
 				<Theme>
-					<WhopApp>
-						<div className="min-h-screen bg-white dark:bg-[#111111]">
-							{children}
-						</div>
-					</WhopApp>
+					{children}
 				</Theme>
 			</body>
 		</html>
