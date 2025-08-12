@@ -130,7 +130,7 @@ export default function DashboardPage() {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`py-4 px-1 border-b-2 font-medium text-sm font-inter ${
                   activeTab === tab.id
-                    ? 'border-whop-pomegranate text-whop-pomegranate'
+                    ? 'border-[#1754d8] text-[#1754d8]'
                     : 'border-transparent text-[#626262] dark:text-[#B5B5B5] hover:text-gray-700 dark:hover:text-[#B5B5B5]'
                 }`}
               >
@@ -147,7 +147,7 @@ export default function DashboardPage() {
           <div className="space-y-8">
             {/* Hero Section */}
             <div className="text-center">
-              <div className="w-20 h-20 bg-whop-pomegranate rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-20 h-20 bg-[#1754d8] rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
@@ -203,8 +203,8 @@ export default function DashboardPage() {
 
               <div className="bg-white dark:bg-[#2A2A2A] rounded-2xl p-6 border border-[#E1E1E1] dark:border-[#2A2A2A]">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 bg-[#1754d8]/10 rounded-xl flex items-center justify-center">
+                    <svg className="w-6 h-6 text-[#1754d8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
@@ -247,7 +247,7 @@ export default function DashboardPage() {
               <h2 className="text-2xl font-bold text-[#626262] dark:text-[#B5B5B5] font-inter">Services</h2>
               <button
                 onClick={addService}
-                className="bg-whop-pomegranate text-white px-4 py-2 rounded-xl hover:bg-whop-pomegranate/90 transition-colors font-inter"
+                className="bg-[#1754d8] text-white px-4 py-2 rounded-xl hover:bg-[#1754d8]/90 transition-colors font-inter"
               >
                 Add Service
               </button>
@@ -262,7 +262,7 @@ export default function DashboardPage() {
                 <p className="text-[#626262] dark:text-[#B5B5B5] mb-4 font-inter">Create your first service to start accepting bookings</p>
                 <button
                   onClick={addService}
-                  className="bg-whop-pomegranate text-white px-6 py-3 rounded-xl hover:bg-whop-pomegranate/90 transition-colors font-inter"
+                  className="bg-[#1754d8] text-white px-6 py-3 rounded-xl hover:bg-[#1754d8]/90 transition-colors font-inter"
                 >
                   Create Service
                 </button>
@@ -273,8 +273,8 @@ export default function DashboardPage() {
                   <div key={service.id} className="bg-white dark:bg-[#2A2A2A] rounded-2xl p-6 border border-[#E1E1E1] dark:border-[#2A2A2A]">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center">
-                          <svg className="w-6 h-6 text-whop-pomegranate" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-12 h-12 bg-[#1754d8]/10 rounded-xl flex items-center justify-center">
+                          <svg className="w-6 h-6 text-[#1754d8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </div>
@@ -345,7 +345,7 @@ export default function DashboardPage() {
                         onClick={() => toggleDayEnabled(dayIndex as Weekday)}
                         className={`px-4 py-2 rounded-xl font-medium transition-all font-inter ${
                           isEnabled
-                            ? 'bg-gradient-to-br from-whop-pomegranate to-orange-500 text-white shadow-lg'
+                            ? 'bg-[#1754d8] text-white shadow-lg'
                             : 'bg-gray-100 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] hover:bg-gray-200 dark:hover:bg-[#2A2A2A]'
                         }`}
                       >
@@ -366,14 +366,14 @@ export default function DashboardPage() {
                                   type="time"
                                   value={window.start}
                                   onChange={(e) => updateWindow(dayIndex as Weekday, windowIndex, 'start', e.target.value)}
-                                  className="flex-1 px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent font-inter"
+                                  className="flex-1 px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                                 />
                                 <span className="text-[#626262] dark:text-[#B5B5B5] self-center font-inter">to</span>
                                 <input
                                   type="time"
                                   value={window.end}
                                   onChange={(e) => updateWindow(dayIndex as Weekday, windowIndex, 'end', e.target.value)}
-                                  className="flex-1 px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent font-inter"
+                                  className="flex-1 px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                                 />
                               </div>
                             </div>
@@ -463,7 +463,7 @@ export default function DashboardPage() {
                   type="text"
                   value={editingService?.name || ''}
                   onChange={(e) => setEditingService(prev => prev ? { ...prev, name: e.target.value } : null)}
-                  className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent font-inter"
+                  className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                   placeholder="e.g., Consultation"
                 />
               </div>
@@ -475,7 +475,7 @@ export default function DashboardPage() {
                 <textarea
                   value={editingService?.description || ''}
                   onChange={(e) => setEditingService(prev => prev ? { ...prev, description: e.target.value } : null)}
-                  className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent font-inter"
+                  className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                   rows={3}
                   placeholder="Describe your service..."
                 />
@@ -490,7 +490,7 @@ export default function DashboardPage() {
                     type="number"
                     value={editingService?.price || ''}
                     onChange={(e) => setEditingService(prev => prev ? { ...prev, price: Number(e.target.value) } : null)}
-                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent font-inter"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                     min="0"
                     step="0.01"
                   />
@@ -504,7 +504,7 @@ export default function DashboardPage() {
                     type="number"
                     value={editingService?.duration || ''}
                     onChange={(e) => setEditingService(prev => prev ? { ...prev, duration: Number(e.target.value) } : null)}
-                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent font-inter"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                     min="15"
                     step="15"
                   />
@@ -525,7 +525,7 @@ export default function DashboardPage() {
               <button
                 onClick={() => editingService && saveService(editingService)}
                 disabled={!editingService?.name}
-                className="flex-1 px-4 py-2 bg-whop-pomegranate text-white rounded-lg hover:bg-whop-pomegranate/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-inter"
+                className="flex-1 px-4 py-2 bg-[#1754d8] text-white rounded-lg hover:bg-[#1754d8]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-inter"
               >
                 {editingService ? 'Update' : 'Create'}
               </button>

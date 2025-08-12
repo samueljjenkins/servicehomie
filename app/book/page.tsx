@@ -108,21 +108,21 @@ export default function BookPage() {
               <div key={stepInfo.step} className="flex items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium font-inter ${
                   stepInfo.active
-                    ? 'bg-whop-pomegranate text-white'
+                    ? 'bg-[#1754d8] text-white'
                     : 'bg-gray-200 dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5]'
                 }`}>
                   {index + 1}
                 </div>
                 <span className={`ml-2 text-sm font-medium font-inter ${
                   stepInfo.active
-                    ? 'text-whop-pomegranate'
+                    ? 'text-[#1754d8]'
                     : 'text-[#626262] dark:text-[#B5B5B5]'
                 }`}>
                   {stepInfo.label}
                 </span>
                 {index < 3 && (
                   <div className={`ml-4 w-8 h-0.5 ${
-                    stepInfo.active ? 'bg-whop-pomegranate' : 'bg-gray-200 dark:bg-[#2A2A2A]'
+                    stepInfo.active ? 'bg-[#1754d8]' : 'bg-gray-200 dark:bg-[#2A2A2A]'
                   }`} />
                 )}
               </div>
@@ -137,7 +137,7 @@ export default function BookPage() {
           <div className="max-w-4xl mx-auto space-y-8">
             {/* Hero Section */}
             <div className="text-center">
-              <div className="w-20 h-20 bg-whop-pomegranate rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-20 h-20 bg-[#1754d8]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
@@ -156,11 +156,11 @@ export default function BookPage() {
                 <div
                   key={service.id}
                   onClick={() => handleServiceSelect(service)}
-                  className="bg-white dark:bg-[#2A2A2A] rounded-2xl p-6 border border-[#E1E1E1] dark:border-[#2A2A2A] cursor-pointer hover:shadow-lg transition-all hover:border-whop-pomegranate/50 font-inter"
+                  className="bg-white dark:bg-[#2A2A2A] rounded-2xl p-6 border border-[#E1E1E1] dark:border-[#2A2A2A] cursor-pointer hover:shadow-lg transition-all hover:border-[#1754d8]/50 font-inter"
                 >
                   <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center">
-                      <svg className="w-6 h-6 text-whop-pomegranate" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-12 h-12 bg-[#1754d8]/10 rounded-xl flex items-center justify-center">
+                      <svg className="w-6 h-6 text-[#1754d8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
@@ -175,7 +175,7 @@ export default function BookPage() {
                         <div className="flex items-center space-x-4 text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">
                           <span>{service.duration} min</span>
                         </div>
-                        <div className="text-2xl font-bold text-whop-pomegranate font-inter">
+                        <div className="text-2xl font-bold text-[#1754d8] font-inter">
                           ${service.price}
                         </div>
                       </div>
@@ -197,8 +197,8 @@ export default function BookPage() {
                   { number: '3', title: 'Get Started', description: 'Complete your booking and start your session' }
                 ].map((step, index) => (
                   <div key={index} className="text-center">
-                    <div className="w-12 h-12 bg-whop-pomegranate/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                      <span className="text-xl font-bold text-whop-pomegranate font-inter">{step.number}</span>
+                    <div className="w-12 h-12 bg-[#1754d8]/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <span className="text-xl font-bold text-[#1754d8] font-inter">{step.number}</span>
                     </div>
                     <h4 className="font-semibold text-[#626262] dark:text-[#B5B5B5] mb-2 font-inter">{step.title}</h4>
                     <p className="text-sm text-[#626262] dark:text-[#B5B5B5] font-inter">{step.description}</p>
@@ -245,7 +245,7 @@ export default function BookPage() {
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent font-inter"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                   />
                 </div>
 
@@ -257,7 +257,7 @@ export default function BookPage() {
                     type="time"
                     value={selectedTime}
                     onChange={(e) => setSelectedTime(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent font-inter"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                   />
                 </div>
               </div>
@@ -273,7 +273,7 @@ export default function BookPage() {
               <button
                 onClick={handleDateTimeSelect}
                 disabled={!selectedDate || !selectedTime}
-                className="flex-1 px-6 py-3 bg-whop-pomegranate text-white rounded-xl hover:bg-whop-pomegranate/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-inter"
+                className="flex-1 px-6 py-3 bg-[#1754d8] text-white rounded-xl hover:bg-[#1754d8]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-inter"
               >
                 Continue
               </button>
@@ -302,7 +302,7 @@ export default function BookPage() {
                     type="text"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent font-inter"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -315,7 +315,7 @@ export default function BookPage() {
                     type="email"
                     value={customerEmail}
                     onChange={(e) => setCustomerEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent font-inter"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                     placeholder="Enter your email address"
                   />
                 </div>
@@ -328,7 +328,7 @@ export default function BookPage() {
                     type="tel"
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent font-inter"
+                    className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#2A2A2A] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent font-inter"
                     placeholder="Enter your phone number"
                   />
                 </div>
@@ -345,7 +345,7 @@ export default function BookPage() {
               <button
                 onClick={handleDetailsSubmit}
                 disabled={!customerName || !customerEmail}
-                className="flex-1 px-6 py-3 bg-whop-pomegranate text-white rounded-xl hover:bg-whop-pomegranate/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-inter"
+                className="flex-1 px-6 py-3 bg-[#1754d8] text-white rounded-xl hover:bg-[#1754d8]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-inter"
               >
                 Continue
               </button>
@@ -398,7 +398,7 @@ export default function BookPage() {
                 <div className="border-t border-[#E1E1E1] dark:border-[#2A2A2A] pt-4">
                   <div className="flex justify-between">
                     <span className="text-lg font-semibold text-[#626262] dark:text-[#B5B5B5] font-inter">Total:</span>
-                    <span className="text-2xl font-bold text-whop-pomegranate font-inter">${selectedService?.price}</span>
+                    <span className="text-2xl font-bold text-[#1754d8] font-inter">${selectedService?.price}</span>
                   </div>
                 </div>
               </div>
@@ -413,7 +413,7 @@ export default function BookPage() {
               </button>
               <button
                 onClick={handleWhopCheckout}
-                className="flex-1 px-6 py-3 bg-whop-pomegranate text-white rounded-xl hover:bg-whop-pomegranate/90 transition-colors font-inter"
+                className="flex-1 px-6 py-3 bg-[#1754d8] text-white rounded-xl hover:bg-[#1754d8]/90 transition-colors font-inter"
               >
                 Complete Booking
               </button>
