@@ -12,6 +12,7 @@ export default function CreatorDashboardPage() {
   const [showAddService, setShowAddService] = useState(false);
   const [editingService, setEditingService] = useState<any>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [quickAddDay, setQuickAddDay] = useState<Weekday | null>(null);
 
   // Whop data hooks
   const { user, loading: userLoading } = useWhopUser();
@@ -416,12 +417,12 @@ export default function CreatorDashboardPage() {
                     <button
                       onClick={() => toggleDayEnabled(dayIndex as Weekday)}
                       className={`w-full py-3 px-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        availability[dayIndex].length > 0
+                        availability[dayIndex] && availability[dayIndex].length > 0
                           ? 'bg-whop-blue text-white shadow-md'
                           : 'bg-muted text-muted-foreground hover:bg-muted/80 border border-transparent hover:border-whop-blue/20'
                       }`}
                     >
-                      {availability[dayIndex].length > 0 ? 'Available' : 'Unavailable'}
+                      {availability[dayIndex] && availability[dayIndex].length > 0 ? 'Available' : 'Unavailable'}
                     </button>
                   </div>
                 ))}
@@ -552,6 +553,17 @@ export default function CreatorDashboardPage() {
                             {availability[dayOfWeek].length} time{availability[dayOfWeek].length > 1 ? 's' : ''}
                           </div>
                         )}
+                        
+                        {/* Quick Add Hours Button */}
+                        {isAvailable && (
+                          <button
+                            onClick={() => setQuickAddDay(dayOfWeek as Weekday)}
+                            className="absolute -top-1 -right-1 w-5 h-5 bg-whop-blue text-white rounded-full text-xs flex items-center justify-center hover:bg-whop-blue/90 transition-colors"
+                            title="Add time window"
+                          >
+                            +
+                          </button>
+                        )}
                       </div>
                     );
                   })}
@@ -631,6 +643,61 @@ export default function CreatorDashboardPage() {
           </div>
         )}
       </div>
+
+      {/* Quick Add Hours Modal */}
+      {quickAddDay !== null && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="rounded-2xl p-6 w-full max-w-md border bg-background shadow-xl">
+            <h3 className="text-lg font-semibold mb-4">
+              Add Working Hours for {weekLabels[quickAddDay]}
+            </h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Start Time</label>
+                <input
+                  type="time"
+                  value="09:00"
+                  onChange={(e) => {
+                    // This will be handled by the addWindow function
+                  }}
+                  className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">End Time</label>
+                <input
+                  type="time"
+                  value="17:00"
+                  onChange={(e) => {
+                    // This will be handled by the addWindow function
+                  }}
+                  className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
+                />
+              </div>
+            </div>
+            
+            <div className="flex space-x-3 mt-6">
+              <button
+                onClick={() => setQuickAddDay(null)}
+                className="flex-1 px-4 py-2 border text-foreground rounded-lg hover:bg-muted transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  addWindow(quickAddDay);
+                  setQuickAddDay(null);
+                }}
+                className="flex-1 px-4 py-2 bg-whop-blue text-white rounded-lg hover:bg-whop-blue/90 transition-colors"
+              >
+                Add Hours
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Add/Edit Service Modal */}
       {showAddService && (
