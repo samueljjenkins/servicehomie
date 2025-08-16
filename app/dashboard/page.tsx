@@ -156,6 +156,11 @@ export default function CreatorDashboardPage() {
       return true; // This specific date is manually selected
     }
     
+    // Check if this specific date has been explicitly deselected
+    if (specificDatesAvailability.has(`!${dateString}`)) {
+      return false; // This specific date is explicitly deselected
+    }
+    
     // If no manual override, check if the day of the week is generally available
     const dayOfWeek = day.getDay();
     const isWeekdayAvailable = availability[dayOfWeek] && availability[dayOfWeek].length > 0;
@@ -175,14 +180,26 @@ export default function CreatorDashboardPage() {
     
     const newSpecificDates = new Set(specificDatesAvailability);
     
-    if (newSpecificDates.has(dateString)) {
-      // Remove this specific date override
-      newSpecificDates.delete(dateString);
-      console.log('Removed specific date override:', dateString);
+    // Check current state of this specific day
+    const isCurrentlyAvailable = isSpecificDayAvailable(day);
+    
+    if (isCurrentlyAvailable) {
+      // Day is currently available, so deselect it
+      if (newSpecificDates.has(dateString)) {
+        // Remove explicit selection
+        newSpecificDates.delete(dateString);
+        console.log('Removed explicit selection:', dateString);
+      }
+      // Add explicit deselection to override weekly pattern
+      newSpecificDates.add(`!${dateString}`);
+      console.log('Added explicit deselection:', `!${dateString}`);
     } else {
-      // Add this specific date override
+      // Day is currently unavailable, so select it
+      // Remove any explicit deselection
+      newSpecificDates.delete(`!${dateString}`);
+      // Add explicit selection
       newSpecificDates.add(dateString);
-      console.log('Added specific date override:', dateString);
+      console.log('Added explicit selection:', dateString);
     }
     
     console.log('New specificDatesAvailability:', Array.from(newSpecificDates));
