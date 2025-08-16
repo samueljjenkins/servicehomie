@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import { WhopIframeSdkProvider } from "@whop/react/iframe";
+import { Theme } from "frosted-ui";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,11 +28,11 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <WhopIframeSdkProvider>
-          <div className="min-h-screen bg-white dark:bg-black">
+        <Theme>
+          <WhopIframeSdkProvider>
             {children}
-          </div>
-        </WhopIframeSdkProvider>
+          </WhopIframeSdkProvider>
+        </Theme>
       </body>
     </html>
   );

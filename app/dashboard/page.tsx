@@ -39,17 +39,17 @@ export default function CreatorDashboardPage() {
   // Show loading state while data is being fetched
   if (userLoading || dataLoading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-whop-bg-dark flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 bg-whop-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-whop-text dark:text-whop-text-dark mb-3 font-inter">
+          <h1 className="text-2xl font-bold mb-3">
             Loading Services...
           </h1>
-          <p className="text-whop-text dark:text-whop-text-dark font-inter">
+          <p className="text-muted-foreground">
             Getting everything ready for you
           </p>
         </div>
@@ -183,21 +183,21 @@ export default function CreatorDashboardPage() {
   const availableDaysCount = Object.values(availability).filter(day => day.length > 0).length;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-whop-bg-dark">
+    <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-white dark:bg-whop-bg-dark border-b border-whop-line dark:border-whop-line px-6 py-4">
+      <div className="border-b px-6 py-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-whop-text dark:text-whop-text-dark font-inter">
+          <h1 className="text-2xl font-bold">
             Dashboard
           </h1>
-          <div className="text-sm text-whop-text dark:text-whop-text-dark bg-gray-100 dark:bg-whop-line-dark px-3 py-1 rounded-lg font-inter">
+          <div className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-lg">
             Welcome, {user?.first_name || 'User'}!
           </div>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-white dark:bg-whop-bg-dark border-b border-whop-line dark:border-whop-line">
+      <div className="border-b">
         <div className="px-6">
           <nav className="flex space-x-8">
             {[
@@ -210,10 +210,10 @@ export default function CreatorDashboardPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm font-inter transition-colors ${
+                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === tab.id
                     ? 'border-whop-blue text-whop-blue'
-                    : 'border-transparent text-whop-text dark:text-whop-text-dark hover:text-gray-700 dark:hover:text-gray-300'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {tab.label}
@@ -229,7 +229,7 @@ export default function CreatorDashboardPage() {
           <div className="space-y-8">
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-white dark:bg-whop-bg-dark rounded-2xl p-6 border border-whop-line dark:border-whop-line shadow-sm">
+              <div className="rounded-2xl p-6 border shadow-sm">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -237,13 +237,13 @@ export default function CreatorDashboardPage() {
                     </svg>
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-whop-text dark:text-whop-text-dark font-inter">Total Revenue</p>
-                    <p className="text-2xl font-bold text-whop-text dark:text-whop-text-dark font-inter">${totalRevenue}</p>
+                    <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+                    <p className="text-2xl font-bold">${totalRevenue}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-whop-bg-dark rounded-2xl p-6 border border-whop-line dark:border-whop-line shadow-sm">
+              <div className="rounded-2xl p-6 border shadow-sm">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -251,13 +251,13 @@ export default function CreatorDashboardPage() {
                     </svg>
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-whop-text dark:text-whop-text-dark font-inter">Upcoming Bookings</p>
-                    <p className="text-2xl font-bold text-whop-text dark:text-whop-text-dark font-inter">{upcomingBookings.length}</p>
+                    <p className="text-sm font-medium text-muted-foreground">Upcoming Bookings</p>
+                    <p className="text-2xl font-bold">{upcomingBookings.length}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-whop-bg-dark rounded-2xl p-6 border border-whop-line dark:border-whop-line shadow-sm">
+              <div className="rounded-2xl p-6 border shadow-sm">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -265,13 +265,13 @@ export default function CreatorDashboardPage() {
                     </svg>
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-whop-text dark:text-whop-text-dark font-inter">Active Services</p>
-                    <p className="text-2xl font-bold text-whop-text dark:text-whop-text-dark font-inter">{activeServicesCount}</p>
+                    <p className="text-sm font-medium text-muted-foreground">Active Services</p>
+                    <p className="text-2xl font-bold">{activeServicesCount}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-whop-bg-dark rounded-2xl p-6 border border-whop-line dark:border-whop-line shadow-sm">
+              <div className="rounded-2xl p-6 border shadow-sm">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-whop-blue/10 dark:bg-whop-blue/20 rounded-xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-whop-blue dark:text-whop-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -279,33 +279,33 @@ export default function CreatorDashboardPage() {
                     </svg>
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-whop-text dark:text-whop-text-dark font-inter">Available Days</p>
-                    <p className="text-2xl font-bold text-whop-text dark:text-whop-text-dark font-inter">{availableDaysCount}</p>
+                    <p className="text-sm font-medium text-muted-foreground">Available Days</p>
+                    <p className="text-2xl font-bold">{availableDaysCount}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Recent Bookings */}
-            <div className="bg-white dark:bg-whop-bg-dark rounded-2xl p-6 border border-whop-line dark:border-whop-line shadow-sm">
-              <h3 className="text-lg font-semibold text-whop-text dark:text-whop-text-dark mb-4 font-inter">Recent Bookings</h3>
+            <div className="rounded-2xl p-6 border shadow-sm">
+              <h3 className="text-lg font-semibold mb-4">Recent Bookings</h3>
               {upcomingBookings.length > 0 ? (
                 <div className="space-y-3">
                   {upcomingBookings.slice(0, 5).map((booking) => (
-                    <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-whop-line-dark rounded-lg">
+                    <div key={booking.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                       <div>
-                        <p className="font-medium text-whop-text dark:text-whop-text-dark font-inter">{booking.customer_name}</p>
-                        <p className="text-sm text-whop-text dark:text-whop-text-dark font-inter">{new Date(booking.booking_date).toLocaleDateString()}</p>
+                        <p className="font-medium">{booking.customer_name}</p>
+                        <p className="text-sm text-muted-foreground">{new Date(booking.booking_date).toLocaleDateString()}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium text-whop-text dark:text-whop-text-dark font-inter">${booking.total_price}</p>
-                        <p className="text-sm text-whop-text dark:text-whop-text-dark font-inter">{booking.start_time}</p>
+                        <p className="font-medium">${booking.total_price}</p>
+                        <p className="text-sm text-muted-foreground">{booking.start_time}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-whop-text dark:text-whop-text-dark font-inter">No upcoming bookings</p>
+                <p className="text-muted-foreground">No upcoming bookings</p>
               )}
             </div>
           </div>
@@ -314,10 +314,10 @@ export default function CreatorDashboardPage() {
         {activeTab === 'services' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-whop-text dark:text-whop-text-dark font-inter">Services</h2>
+              <h2 className="text-2xl font-bold">Services</h2>
               <button
                 onClick={addService}
-                className="px-4 py-2 bg-whop-blue text-white rounded-lg hover:bg-whop-blue/90 transition-colors font-inter"
+                className="px-4 py-2 bg-whop-blue text-white rounded-lg hover:bg-whop-blue/90 transition-colors"
               >
                 Add Service
               </button>
@@ -325,9 +325,9 @@ export default function CreatorDashboardPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service) => (
-                <div key={service.id} className="bg-white dark:bg-whop-bg-dark rounded-2xl p-6 border border-whop-line dark:border-whop-line shadow-sm">
+                <div key={service.id} className="rounded-2xl p-6 border shadow-sm">
                   <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-whop-text dark:text-whop-text-dark font-inter">{service.name}</h3>
+                    <h3 className="text-lg font-semibold">{service.name}</h3>
                     <div className="flex space-x-2">
                       <button
                         onClick={() => toggleServiceActive(service.id)}
@@ -360,10 +360,10 @@ export default function CreatorDashboardPage() {
                       </button>
                     </div>
                   </div>
-                  <p className="text-whop-text dark:text-whop-text-dark mb-4 font-inter">{service.description}</p>
+                  <p className="text-muted-foreground mb-4">{service.description}</p>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-whop-text dark:text-whop-text-dark font-inter">{service.duration_minutes} min</span>
-                    <span className="text-xl font-bold text-whop-blue font-inter">${service.price}</span>
+                    <span className="text-muted-foreground">{service.duration_minutes} min</span>
+                    <span className="text-xl font-bold text-whop-blue">${service.price}</span>
                   </div>
                 </div>
               ))}
@@ -374,26 +374,26 @@ export default function CreatorDashboardPage() {
         {activeTab === 'availability' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-whop-text dark:text-whop-text-dark font-inter">Availability</h2>
+              <h2 className="text-2xl font-bold">Availability</h2>
               <button
                 onClick={() => saveAvailability(availability)}
-                className="px-4 py-2 bg-whop-blue text-white rounded-lg hover:bg-whop-blue/90 transition-colors font-inter"
+                className="px-4 py-2 bg-whop-blue text-white rounded-lg hover:bg-whop-blue/90 transition-colors"
               >
                 Save
               </button>
             </div>
 
-            <div className="bg-white dark:bg-whop-bg-dark rounded-2xl p-6 border border-whop-line dark:border-whop-line shadow-sm">
+            <div className="rounded-2xl p-6 border shadow-sm">
               <div className="grid grid-cols-7 gap-4 mb-6">
                 {weekLabels.map((day, dayIndex) => (
                   <div key={day} className="text-center">
-                    <div className="text-sm font-medium text-whop-text dark:text-whop-text-dark mb-2 font-inter">{day}</div>
+                    <div className="text-sm font-medium text-muted-foreground mb-2">{day}</div>
                     <button
                       onClick={() => toggleDayEnabled(dayIndex as Weekday)}
                       className={`w-full py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
                         availability[dayIndex].length > 0
                           ? 'bg-whop-blue text-white'
-                          : 'bg-gray-100 dark:bg-gray-800 text-whop-text dark:text-whop-text-dark hover:bg-gray-200 dark:hover:bg-gray-700'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
                       }`}
                     >
                       {availability[dayIndex].length > 0 ? 'Available' : 'Unavailable'}
@@ -404,8 +404,8 @@ export default function CreatorDashboardPage() {
 
               {Object.entries(availability).map(([dayIndex, windows], index) => (
                 windows.length > 0 && (
-                  <div key={dayIndex} className="mb-6 p-4 bg-gray-50 dark:bg-whop-line-dark rounded-lg">
-                    <h4 className="font-medium text-whop-text dark:text-whop-text-dark mb-3 font-inter">
+                  <div key={dayIndex} className="mb-6 p-4 bg-muted rounded-lg">
+                    <h4 className="font-medium mb-3">
                       {weekLabels[parseInt(dayIndex)]} - Time Windows
                     </h4>
                     <div className="space-y-3">
@@ -415,14 +415,14 @@ export default function CreatorDashboardPage() {
                             type="time"
                             value={window.start}
                             onChange={(e) => updateWindow(parseInt(dayIndex) as Weekday, windowIndex, 'start', e.target.value)}
-                            className="px-3 py-2 border border-whop-line dark:border-whop-line rounded-lg bg-white dark:bg-whop-bg-dark text-whop-text dark:text-whop-text-dark focus:ring-2 focus:ring-whop-blue focus:border-transparent font-inter"
+                            className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
                           />
-                          <span className="text-whop-text dark:text-whop-text-dark font-inter">to</span>
+                          <span className="text-muted-foreground">to</span>
                           <input
                             type="time"
                             value={window.end}
                             onChange={(e) => updateWindow(parseInt(dayIndex) as Weekday, windowIndex, 'end', e.target.value)}
-                            className="px-3 py-2 border border-whop-line dark:border-whop-line rounded-lg bg-white dark:bg-whop-bg-dark text-whop-text dark:text-whop-text-dark focus:ring-2 focus:ring-whop-blue focus:border-transparent font-inter"
+                            className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
                           />
                           <button
                             onClick={() => removeWindow(parseInt(dayIndex) as Weekday, windowIndex)}
@@ -436,7 +436,7 @@ export default function CreatorDashboardPage() {
                       ))}
                       <button
                         onClick={() => addWindow(parseInt(dayIndex) as Weekday)}
-                        className="w-full text-xs text-whop-blue hover:text-whop-blue/80 py-1 font-inter"
+                        className="w-full text-xs text-whop-blue hover:text-whop-blue/80 py-1"
                       >
                         + Add Time Window
                       </button>
@@ -450,22 +450,22 @@ export default function CreatorDashboardPage() {
 
         {activeTab === 'bookings' && (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-whop-text dark:text-whop-text-dark font-inter">Bookings</h2>
+            <h2 className="text-2xl font-bold">Bookings</h2>
             
-            <div className="bg-white dark:bg-whop-bg-dark rounded-2xl p-6 border border-whop-line dark:border-whop-line shadow-sm">
+            <div className="rounded-2xl p-6 border shadow-sm">
               {bookings.length > 0 ? (
                 <div className="space-y-4">
                   {bookings.map((booking) => (
-                    <div key={booking.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-whop-line-dark rounded-lg">
+                    <div key={booking.id} className="flex items-center justify-between p-4 bg-muted rounded-lg">
                       <div>
-                        <p className="font-medium text-whop-text dark:text-whop-text-dark font-inter">{booking.customer_name}</p>
-                        <p className="text-sm text-whop-text dark:text-whop-text-dark font-inter">{booking.customer_email}</p>
-                        <p className="text-sm text-whop-text dark:text-whop-text-dark font-inter">
+                        <p className="font-medium">{booking.customer_name}</p>
+                        <p className="text-sm text-muted-foreground">{booking.customer_email}</p>
+                        <p className="text-sm text-muted-foreground">
                           {new Date(booking.booking_date).toLocaleDateString()} at {booking.start_time}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium text-whop-text dark:text-whop-text-dark font-inter">${booking.total_price}</p>
+                        <p className="font-medium">${booking.total_price}</p>
                         <span className={`px-2 py-1 text-xs rounded-full font-medium ${
                           booking.status === 'confirmed' 
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
@@ -478,7 +478,7 @@ export default function CreatorDashboardPage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-whop-text dark:text-whop-text-dark font-inter">No bookings yet</p>
+                <p className="text-muted-foreground">No bookings yet</p>
               )}
             </div>
           </div>
@@ -486,13 +486,13 @@ export default function CreatorDashboardPage() {
 
         {activeTab === 'settings' && (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-whop-text dark:text-whop-text-dark font-inter">Settings</h2>
+            <h2 className="text-2xl font-bold">Settings</h2>
             
-            <div className="bg-white dark:bg-whop-bg-dark rounded-2xl p-6 border border-whop-line dark:border-whop-line shadow-sm">
+            <div className="rounded-2xl p-6 border shadow-sm">
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-whop-text dark:text-whop-text-dark mb-2 font-inter">Account Information</h3>
-                  <div className="text-sm text-whop-text dark:text-whop-text-dark font-inter">
+                  <h3 className="text-lg font-semibold mb-2">Account Information</h3>
+                  <div className="text-sm text-muted-foreground">
                     <p>Connected to Whop account: {user?.email}</p>
                     <p>Company: {user?.company_id || 'Personal Account'}</p>
                   </div>
@@ -506,33 +506,33 @@ export default function CreatorDashboardPage() {
       {/* Add/Edit Service Modal */}
       {showAddService && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-whop-bg-dark rounded-2xl p-6 w-full max-w-md border border-whop-line dark:border-whop-line">
-            <h3 className="text-lg font-semibold text-whop-text dark:text-whop-text-dark mb-4 font-inter">
+          <div className="rounded-2xl p-6 w-full max-w-md border bg-background">
+            <h3 className="text-lg font-semibold mb-4">
               {editingService ? 'Edit Service' : 'Add New Service'}
             </h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-whop-text dark:text-whop-text-dark mb-1 font-inter">
+                <label className="block text-sm font-medium mb-1">
                   Service Name
                 </label>
                 <input
                   type="text"
                   value={editingService?.name || ''}
                   onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, name: e.target.value } : null)}
-                  className="w-full px-3 py-2 border border-whop-line dark:border-whop-line rounded-lg bg-white dark:bg-whop-bg-dark text-whop-text dark:text-whop-text-dark focus:ring-2 focus:ring-whop-blue focus:border-transparent font-inter"
+                  className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
                   placeholder="e.g., Consultation"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-whop-text dark:text-whop-text-dark mb-1 font-inter">
+                <label className="block text-sm font-medium mb-1">
                   Description
                 </label>
                 <textarea
                   value={editingService?.description || ''}
                   onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, description: e.target.value } : null)}
-                  className="w-full px-3 py-2 border border-whop-line dark:border-whop-line rounded-lg bg-white dark:bg-whop-bg-dark text-whop-text dark:text-whop-text-dark focus:ring-2 focus:ring-whop-blue focus:border-transparent font-inter"
+                  className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
                   rows={3}
                   placeholder="Describe your service..."
                 />
@@ -540,28 +540,28 @@ export default function CreatorDashboardPage() {
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-whop-text dark:text-whop-text-dark mb-1 font-inter">
+                  <label className="block text-sm font-medium mb-1">
                     Price ($)
                   </label>
                   <input
                     type="number"
                     value={editingService?.price || ''}
                     onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, price: Number(e.target.value) } : null)}
-                    className="w-full px-3 py-2 border border-whop-line dark:border-whop-line rounded-lg bg-white dark:bg-whop-bg-dark text-whop-text dark:text-whop-text-dark focus:ring-2 focus:ring-whop-blue focus:border-transparent font-inter"
+                    className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
                     min="0"
                     step="0.01"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-whop-text dark:text-whop-text-dark mb-1 font-inter">
+                  <label className="block text-sm font-medium mb-1">
                     Duration (min)
                   </label>
                   <input
                     type="number"
                     value={editingService?.duration_minutes || ''}
                     onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, duration_minutes: Number(e.target.value) } : null)}
-                    className="w-full px-3 py-2 border border-whop-line dark:border-whop-line rounded-lg bg-white dark:bg-whop-bg-dark text-whop-text dark:text-whop-text-dark focus:ring-2 focus:ring-whop-blue focus:border-transparent font-inter"
+                    className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
                     min="15"
                     step="15"
                   />
@@ -575,13 +575,13 @@ export default function CreatorDashboardPage() {
                   setEditingService(null);
                   setShowAddService(false);
                 }}
-                className="flex-1 px-4 py-2 border border-whop-line dark:border-whop-line text-whop-text dark:text-whop-text-dark rounded-lg hover:bg-gray-50 dark:hover:bg-whop-line-dark transition-colors font-inter"
+                className="flex-1 px-4 py-2 border text-foreground rounded-lg hover:bg-muted transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={saveService}
-                className="flex-1 px-4 py-2 bg-whop-blue text-white rounded-lg hover:bg-whop-blue/90 transition-colors font-inter"
+                className="flex-1 px-4 py-2 bg-whop-blue text-white rounded-lg hover:bg-whop-blue/90 transition-colors"
               >
                 {editingService ? 'Update Service' : 'Add Service'}
               </button>
