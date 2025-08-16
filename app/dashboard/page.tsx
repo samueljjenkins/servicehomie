@@ -197,30 +197,31 @@ export default function CreatorDashboardPage() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="border-b">
-        <div className="px-6">
-          <nav className="flex space-x-8">
-            {[
-              { id: 'overview', label: 'Overview', icon: '📊' },
-              { id: 'services', label: 'Services', icon: '⚙️' },
-              { id: 'availability', label: 'Availability', icon: '📅' },
-              { id: 'bookings', label: 'Bookings', icon: '📋' },
-              { id: 'settings', label: 'Settings', icon: '⚙️' }
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === tab.id
-                    ? 'border-whop-blue text-whop-blue'
-                    : 'border-transparent text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </nav>
-        </div>
+      <div className="px-6">
+        <nav className="flex space-x-8">
+          {[
+            { id: 'overview', label: 'Overview', icon: '📊' },
+            { id: 'services', label: 'Services', icon: '⚙️' },
+            { id: 'availability', label: 'Availability', icon: '📅' },
+            { id: 'bookings', label: 'Bookings', icon: '📋' },
+            { id: 'settings', label: 'Settings', icon: '⚙️' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`py-4 px-3 font-medium text-sm transition-all duration-200 relative ${
+                activeTab === tab.id
+                  ? 'text-whop-blue'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {tab.label}
+              {activeTab === tab.id && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-whop-blue rounded-full transform scale-x-100 transition-transform duration-200" />
+              )}
+            </button>
+          ))}
+        </nav>
       </div>
 
       {/* Main Content */}
