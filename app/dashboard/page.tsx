@@ -384,17 +384,19 @@ export default function CreatorDashboardPage() {
               </button>
             </div>
 
+            {/* Days of the Week Selector */}
             <div className="rounded-2xl p-6 border shadow-sm">
-              <div className="grid grid-cols-7 gap-4 mb-6">
+              <h3 className="text-lg font-semibold mb-4">Select Available Days</h3>
+              <div className="grid grid-cols-7 gap-3">
                 {weekLabels.map((day, dayIndex) => (
                   <div key={day} className="text-center">
                     <div className="text-sm font-medium text-muted-foreground mb-2">{day}</div>
                     <button
                       onClick={() => toggleDayEnabled(dayIndex as Weekday)}
-                      className={`w-full py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                      className={`w-full py-3 px-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                         availability[dayIndex].length > 0
-                          ? 'bg-whop-blue text-white'
-                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                          ? 'bg-whop-blue text-white shadow-md'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/80 border border-transparent hover:border-whop-blue/20'
                       }`}
                     >
                       {availability[dayIndex].length > 0 ? 'Available' : 'Unavailable'}
@@ -402,49 +404,86 @@ export default function CreatorDashboardPage() {
                   </div>
                 ))}
               </div>
+            </div>
 
-              {Object.entries(availability).map(([dayIndex, windows], index) => (
-                windows.length > 0 && (
-                  <div key={dayIndex} className="mb-6 p-4 bg-muted rounded-lg">
-                    <h4 className="font-medium mb-3">
-                      {weekLabels[parseInt(dayIndex)]} - Time Windows
-                    </h4>
-                    <div className="space-y-3">
-                      {windows.map((window, windowIndex) => (
-                        <div key={windowIndex} className="flex items-center space-x-3">
-                          <input
-                            type="time"
-                            value={window.start}
-                            onChange={(e) => updateWindow(parseInt(dayIndex) as Weekday, windowIndex, 'start', e.target.value)}
-                            className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
-                          />
-                          <span className="text-muted-foreground">to</span>
-                          <input
-                            type="time"
-                            value={window.end}
-                            onChange={(e) => updateWindow(parseInt(dayIndex) as Weekday, windowIndex, 'end', e.target.value)}
-                            className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
-                          />
-                          <button
-                            onClick={() => removeWindow(parseInt(dayIndex) as Weekday, windowIndex)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                        </div>
-                      ))}
-                      <button
-                        onClick={() => addWindow(parseInt(dayIndex) as Weekday)}
-                        className="w-full text-xs text-whop-blue hover:text-whop-blue/80 py-1"
-                      >
-                        + Add Time Window
-                      </button>
+            {/* Working Hours Configuration */}
+            <div className="rounded-2xl p-6 border shadow-sm">
+              <h3 className="text-lg font-semibold mb-4">Working Hours</h3>
+              <div className="space-y-4">
+                {Object.entries(availability).map(([dayIndex, windows], index) => (
+                  windows.length > 0 && (
+                    <div key={dayIndex} className="p-4 bg-muted rounded-lg">
+                      <h4 className="font-medium mb-3 text-foreground">
+                        {weekLabels[parseInt(dayIndex)]} - Working Hours
+                      </h4>
+                      <div className="space-y-3">
+                        {windows.map((window, windowIndex) => (
+                          <div key={windowIndex} className="flex items-center space-x-3">
+                            <input
+                              type="time"
+                              value={window.start}
+                              onChange={(e) => updateWindow(parseInt(dayIndex) as Weekday, windowIndex, 'start', e.target.value)}
+                              className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
+                            />
+                            <span className="text-muted-foreground">to</span>
+                            <input
+                              type="time"
+                              value={window.end}
+                              onChange={(e) => updateWindow(parseInt(dayIndex) as Weekday, windowIndex, 'end', e.target.value)}
+                              className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
+                            />
+                            <button
+                              onClick={() => removeWindow(parseInt(dayIndex) as Weekday, windowIndex)}
+                              className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => addWindow(parseInt(dayIndex) as Weekday)}
+                          className="w-full text-sm text-whop-blue hover:text-whop-blue/80 py-2 px-3 border border-whop-blue/20 rounded-lg hover:bg-whop-blue/5 transition-colors"
+                        >
+                          + Add Time Window
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )
-              ))}
+                  )
+                ))}
+              </div>
+            </div>
+
+            {/* Monthly Calendar Preview */}
+            <div className="rounded-2xl p-6 border shadow-sm">
+              <h3 className="text-lg font-semibold mb-4">Monthly Calendar Preview</h3>
+              <div className="bg-muted rounded-lg p-4">
+                <div className="grid grid-cols-7 gap-1">
+                  {weekLabels.map(day => (
+                    <div key={day} className="text-center text-sm font-medium text-muted-foreground py-2">
+                      {day}
+                    </div>
+                  ))}
+                  {Array.from({ length: 35 }, (_, i) => {
+                    const dayOfWeek = (i + 1) % 7;
+                    const isAvailable = availability[dayOfWeek] && availability[dayOfWeek].length > 0;
+                    return (
+                      <div key={i} className={`text-center py-2 text-sm ${
+                        isAvailable 
+                          ? 'bg-whop-blue/10 text-whop-blue font-medium' 
+                          : 'text-muted-foreground'
+                      }`}>
+                        {i + 1}
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="mt-4 text-center text-sm text-muted-foreground">
+                  <span className="inline-block w-3 h-3 bg-whop-blue/10 rounded mr-2"></span>
+                  Available days are highlighted in blue
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -506,8 +545,8 @@ export default function CreatorDashboardPage() {
 
       {/* Add/Edit Service Modal */}
       {showAddService && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="rounded-2xl p-6 w-full max-w-md border bg-background">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="rounded-2xl p-6 w-full max-w-md border bg-background shadow-xl">
             <h3 className="text-lg font-semibold mb-4">
               {editingService ? 'Edit Service' : 'Add New Service'}
             </h3>
