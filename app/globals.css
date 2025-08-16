@@ -16,25 +16,38 @@ body {
 	font-family: 'Inter', system-ui, sans-serif;
 }
 
-/* Custom line colors for light mode */
-.border {
+/* Custom line colors for light mode - Target ALL possible border elements */
+.border,
+.border-b,
+.border-t,
+.border-l,
+.border-r,
+.border-x,
+.border-y,
+.border-solid,
+.border-dashed,
+.border-dotted,
+.border-0,
+.border-2,
+.border-4,
+.border-8,
+[class*="border"] {
   border-color: #E1E1E1 !important;
 }
 
-.border-b {
-  border-bottom-color: #E1E1E1 !important;
+/* Target card backgrounds and any other elements with borders */
+.bg-white,
+.bg-muted,
+.card,
+[class*="bg-"] {
+  border-color: #E1E1E1 !important;
 }
 
-.border-t {
-  border-top-color: #E1E1E1 !important;
-}
-
-.border-l {
-  border-left-color: #E1E1E1 !important;
-}
-
-.border-r {
-  border-right-color: #E1E1E1 !important;
+/* Ensure all dividers and lines use the custom color */
+.divider,
+hr,
+[class*="divide-"] {
+  border-color: #E1E1E1 !important;
 }
 
 /* Custom text colors for light mode */
@@ -47,24 +60,35 @@ body {
 }
 
 /* Override dark mode borders */
-.dark .border {
+.dark .border,
+.dark .border-b,
+.dark .border-t,
+.dark .border-l,
+.dark .border-r,
+.dark .border-x,
+.dark .border-y,
+.dark .border-solid,
+.dark .border-dashed,
+.dark .border-dotted,
+.dark .border-0,
+.dark .border-2,
+.dark .border-4,
+.dark .border-8,
+.dark [class*="border"] {
   border-color: var(--border) !important;
 }
 
-.dark .border-b {
-  border-bottom-color: var(--border) !important;
+.dark .bg-white,
+.dark .bg-muted,
+.dark .card,
+.dark [class*="bg-"] {
+  border-color: var(--border) !important;
 }
 
-.dark .border-t {
-  border-top-color: var(--border) !important;
-}
-
-.dark .border-l {
-  border-left-color: var(--border) !important;
-}
-
-.dark .border-r {
-  border-right-color: var(--border) !important;
+.dark .divider,
+.dark hr,
+.dark [class*="divide-"] {
+  border-color: var(--border) !important;
 }
 
 /* Override dark mode text */
