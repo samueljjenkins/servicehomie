@@ -30,7 +30,17 @@ const createMockClient = () => ({
   })
 });
 
-export const supabase = supabaseUrl && supabaseAnonKey 
+// Check if the URL is valid before creating the client
+const isValidUrl = (url: string) => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export const supabase = supabaseUrl && supabaseAnonKey && isValidUrl(supabaseUrl)
   ? createClient(supabaseUrl, supabaseAnonKey)
   : createMockClient() as any;
 
