@@ -59,7 +59,7 @@ hr,
   color: #626262 !important;
 }
 
-/* Override dark mode borders */
+/* Override dark mode borders - Use custom #2A2A2A color */
 .dark .border,
 .dark .border-b,
 .dark .border-t,
@@ -75,29 +75,29 @@ hr,
 .dark .border-4,
 .dark .border-8,
 .dark [class*="border"] {
-  border-color: var(--border) !important;
+  border-color: #2A2A2A !important;
 }
 
 .dark .bg-white,
 .dark .bg-muted,
 .dark .card,
 .dark [class*="bg-"] {
-  border-color: var(--border) !important;
+  border-color: #2A2A2A !important;
 }
 
 .dark .divider,
 .dark hr,
 .dark [class*="divide-"] {
-  border-color: var(--border) !important;
+  border-color: #2A2A2A !important;
 }
 
-/* Override dark mode text */
+/* Override dark mode text - Use custom #B5B5B5 color */
 .dark .text-foreground {
-  color: var(--foreground) !important;
+  color: #B5B5B5 !important;
 }
 
 .dark .text-muted-foreground {
-  color: var(--muted-foreground) !important;
+  color: #B5B5B5 !important;
 }
 
 /* Design utilities */
