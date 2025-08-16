@@ -110,15 +110,7 @@ export default function CreatorDashboardPage() {
     );
   }
 
-  async function persistAvailability(next: WeeklyAvailability) {
-    console.log('persistAvailability called with:', next);
-    try {
-      await saveAvailability(next);
-      console.log('Availability saved successfully');
-    } catch (error) {
-      console.error('Failed to save availability:', error);
-    }
-  }
+
 
   function toggleDayEnabled(dayIndex: Weekday) {
     console.log('toggleDayEnabled called with dayIndex:', dayIndex);
@@ -144,7 +136,8 @@ export default function CreatorDashboardPage() {
     }
     
     console.log('New availability:', next);
-    persistAvailability(next);
+    // Save to Supabase - this will update the hook's state
+    saveAvailability(next);
   }
 
   // Helper function to check if a specific calendar day is available

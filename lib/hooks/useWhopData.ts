@@ -74,9 +74,9 @@ export function useWhopData() {
       try {
         console.log('useWhopData: Starting to load data...');
         
-        // For now, use a mock user ID since getCurrentUser doesn't exist
+        // For now, use a consistent mock user ID since getCurrentUser doesn't exist
         // In production, this would come from Whop's user context
-        const mockUserId = 'mock-user-' + Date.now();
+        const mockUserId = 'mock-user-consistent';
         console.log('useWhopData: Using mock user ID:', mockUserId);
         
         // Check if Supabase is available
@@ -203,7 +203,7 @@ export function useWhopData() {
   // Add a new service
   const addService = async (serviceData: Omit<Service, 'id'>) => {
     try {
-      const mockUserId = 'mock-user-' + Date.now();
+      const mockUserId = 'mock-user-consistent';
 
       const newService: Inserts<'services'> = {
         whop_user_id: mockUserId,
@@ -284,7 +284,7 @@ export function useWhopData() {
   // Update availability for a specific day
   const updateAvailability = async (newAvailability: WeeklyAvailability) => {
     try {
-      const mockUserId = 'mock-user-' + Date.now();
+      const mockUserId = 'mock-user-consistent';
 
       // Delete existing availability for this user
       await supabase
@@ -345,7 +345,7 @@ export function useWhopData() {
   // Add a new booking
   const addBooking = async (bookingData: Omit<Booking, 'id'>) => {
     try {
-      const mockUserId = 'mock-user-' + Date.now();
+      const mockUserId = 'mock-user-consistent';
 
       const newBooking: Inserts<'bookings'> = {
         whop_user_id: mockUserId,
