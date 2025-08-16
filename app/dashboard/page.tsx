@@ -157,16 +157,22 @@ export default function CreatorDashboardPage() {
   // Function to toggle a specific calendar day
   function toggleSpecificDay(day: Date) {
     const dateString = day.toDateString();
+    console.log('toggleSpecificDay called for date:', dateString);
+    console.log('Current specificDatesAvailability:', Array.from(specificDatesAvailability));
+    
     const newSpecificDates = new Set(specificDatesAvailability);
     
     if (newSpecificDates.has(dateString)) {
       // Remove this specific date
       newSpecificDates.delete(dateString);
+      console.log('Removed date:', dateString);
     } else {
       // Add this specific date with global working hours
       newSpecificDates.add(dateString);
+      console.log('Added date:', dateString);
     }
     
+    console.log('New specificDatesAvailability:', Array.from(newSpecificDates));
     setSpecificDatesAvailability(newSpecificDates);
   }
 
@@ -643,8 +649,7 @@ export default function CreatorDashboardPage() {
                       return <div key={index} className="h-14" />;
                     }
                     
-                    const dayOfWeek = day.getDay();
-                    const isAvailable = availability[dayOfWeek] && availability[dayOfWeek].length > 0;
+                    const isSpecificDaySelected = isSpecificDayAvailable(day);
                     const isToday = day.toDateString() === new Date().toDateString();
                     const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
                     
@@ -653,7 +658,7 @@ export default function CreatorDashboardPage() {
                         <button
                           onClick={() => toggleSpecificDay(day)}
                           className={`w-full h-14 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center ${
-                            isSpecificDayAvailable(day)
+                            isSpecificDaySelected
                               ? 'bg-whop-blue text-white shadow-md hover:bg-whop-blue/90'
                               : isCurrentMonth
                               ? 'bg-background text-foreground hover:bg-muted border border-transparent hover:border-whop-blue/30'
