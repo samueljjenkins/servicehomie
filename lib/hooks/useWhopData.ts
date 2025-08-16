@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useIframeSdk } from '@whop/react/iframe';
 
-// Simple in-memory storage for development
-// In production, you could use localStorage or minimal backend
-const memoryStorage = new Map();
+// Use localStorage for persistence instead of in-memory storage
+const STORAGE_KEYS = {
+  SERVICES: 'whop_services',
+  AVAILABILITY: 'whop_availability', 
+  BOOKINGS: 'whop_bookings'
+};
 
 export interface Service {
   id: string;
@@ -47,33 +50,60 @@ export function useWhopData() {
     []  // Saturday
   ]);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Load data from memory storage
+  // Load data from localStorage
   useEffect(() => {
-    const loadData = () => {
-      const storedServices = memoryStorage.get('services') || [];
-      const storedAvailability = memoryStorage.get('availability') || [
-        [], // Sunday
-        [], // Monday
-        [], // Tuesday
-        [], // Wednesday
-        [], // Thursday
-        [], // Friday
-        []  // Saturday
-      ];
-      const storedBookings = memoryStorage.get('bookings') || [];
+    try {
+      const loadData = () => {
+        // Load services
+        const storedServices = localStorage.getItem(STORAGE_KEYS.SERVICES);
+        if (storedServices) {
+          setServices(JSON.parse(storedServices));
+        }
 
-      setServices(storedServices);
-      setAvailability(storedAvailability);
-      setBookings(storedBookings);
-    };
+        // Load availability
+        const storedAvailability = localStorage.getItem(STORAGE_KEYS.AVAILABILITY);
+        if (storedAvailability) {
+          setAvailability(JSON.parse(storedAvailability));
+        } else {
+          // Set default availability (9 AM - 5 PM weekdays)
+          const defaultAvailability: WeeklyAvailability = [
+            [], // Sunday
+            [{ start: "09:00", end: "17:00" }], // Monday
+            [{ start: "09:00", end: "17:00" }], // Tuesday
+            [{ start: "09:00", end: "17:00" }], // Wednesday
+            [{ start: "09:00", end: "17:00" }], // Thursday
+            [{ start: "09:00", end: "17:00" }], // Friday
+            []  // Saturday
+          ];
+          setAvailability(defaultAvailability);
+          localStorage.setItem(STORAGE_KEYS.AVAILABILITY, JSON.stringify(defaultAvailability));
+        }
 
-    loadData();
+        // Load bookings
+        const storedBookings = localStorage.getItem(STORAGE_KEYS.BOOKINGS);
+        if (storedBookings) {
+          setBookings(JSON.parse(storedBookings));
+        }
+      };
+
+      loadData();
+    } catch (error) {
+      console.error('Error loading data from localStorage:', error);
+      // Fallback to default data if localStorage fails
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  // Save data to memory storage
+  // Save data to localStorage
   const saveData = (key: string, data: any) => {
-    memoryStorage.set(key, data);
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+      console.error(`Error saving ${key} to localStorage:`, error);
+    }
   };
 
   // Service management
@@ -81,7 +111,7 @@ export function useWhopData() {
     const newService = { ...service, id: Date.now().toString() };
     const updatedServices = [...services, newService];
     setServices(updatedServices);
-    saveData('services', updatedServices);
+    saveData(STORAGE_KEYS.SERVICES, updatedServices);
   };
 
   const updateService = (id: string, updates: Partial<Service>) => {
@@ -89,13 +119,13 @@ export function useWhopData() {
       service.id === id ? { ...service, ...updates } : service
     );
     setServices(updatedServices);
-    saveData('services', updatedServices);
+    saveData(STORAGE_KEYS.SERVICES, updatedServices);
   };
 
   const deleteService = (id: string) => {
     const updatedServices = services.filter(service => service.id !== id);
     setServices(updatedServices);
-    saveData('services', updatedServices);
+    saveData(STORAGE_KEYS.SERVICES, updatedServices);
   };
 
   const toggleServiceStatus = (id: string) => {
@@ -105,34 +135,34 @@ export function useWhopData() {
         : service
     );
     setServices(updatedServices);
-    saveData('services', updatedServices);
+    saveData(STORAGE_KEYS.SERVICES, updatedServices);
   };
 
   // Availability management
   const updateAvailability = (newAvailability: WeeklyAvailability) => {
     setAvailability(newAvailability);
-    saveData('availability', newAvailability);
+    saveData(STORAGE_KEYS.AVAILABILITY, newAvailability);
   };
 
   const updateTimeWindow = (dayIndex: number, windowIndex: number, field: keyof TimeWindow, value: string) => {
     const next = structuredClone(availability);
     next[dayIndex as keyof WeeklyAvailability][windowIndex][field] = value;
     setAvailability(next);
-    saveData('availability', next);
+    saveData(STORAGE_KEYS.AVAILABILITY, next);
   };
 
   const addTimeWindow = (dayIndex: number) => {
     const next = structuredClone(availability);
     next[dayIndex as keyof WeeklyAvailability].push({ start: "09:00", end: "17:00" });
     setAvailability(next);
-    saveData('availability', next);
+    saveData(STORAGE_KEYS.AVAILABILITY, next);
   };
 
   const removeTimeWindow = (dayIndex: number, windowIndex: number) => {
     const next = structuredClone(availability);
     next[dayIndex as keyof WeeklyAvailability].splice(windowIndex, 1);
     setAvailability(next);
-    saveData('availability', next);
+    saveData(STORAGE_KEYS.AVAILABILITY, next);
   };
 
   // Booking management
@@ -140,7 +170,7 @@ export function useWhopData() {
     const newBooking = { ...booking, id: Date.now().toString() };
     const updatedBookings = [...bookings, newBooking];
     setBookings(updatedBookings);
-    saveData('bookings', updatedBookings);
+    saveData(STORAGE_KEYS.BOOKINGS, updatedBookings);
   };
 
   const updateBooking = (id: string, updates: Partial<Booking>) => {
@@ -148,7 +178,7 @@ export function useWhopData() {
       booking.id === id ? { ...booking, ...updates } : booking
     );
     setBookings(updatedBookings);
-    saveData('bookings', updatedBookings);
+    saveData(STORAGE_KEYS.BOOKINGS, updatedBookings);
   };
 
   return {
@@ -156,6 +186,7 @@ export function useWhopData() {
     services,
     availability,
     bookings,
+    loading,
     
     // Service actions
     addService,
@@ -182,6 +213,16 @@ export function useWhopData() {
       });
     },
     
-    getActiveServices: () => services.filter(service => service.status === 'active')
+    getActiveServices: () => services.filter(service => service.status === 'active'),
+    
+    // Data persistence
+    clearAllData: () => {
+      localStorage.removeItem(STORAGE_KEYS.SERVICES);
+      localStorage.removeItem(STORAGE_KEYS.AVAILABILITY);
+      localStorage.removeItem(STORAGE_KEYS.BOOKINGS);
+      setServices([]);
+      setAvailability([[], [], [], [], [], [], []]);
+      setBookings([]);
+    }
   };
 }

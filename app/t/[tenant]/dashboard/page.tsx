@@ -125,20 +125,27 @@ export default function CreatorDashboardPage() {
   async function saveService() {
     if (!editingService?.name || !editingService?.price || !editingService?.duration_minutes) return;
     
+    // Validate service data
+    const validation = validateService(editingService);
+    if (!validation.isValid) {
+      alert(`Please fix the following errors:\n${validation.errors.join('\n')}`);
+      return;
+    }
+    
     try {
       if (editingService.id) {
         // Update existing service
         await updateService(editingService.id, {
-          name: editingService.name,
-          description: editingService.description || '',
+          name: editingService.name.trim(),
+          description: editingService.description?.trim() || '',
           price: editingService.price,
           duration_minutes: editingService.duration_minutes
         });
       } else {
         // Add new service
         await addServiceToDB({
-          name: editingService.name,
-          description: editingService.description || '',
+          name: editingService.name.trim(),
+          description: editingService.description?.trim() || '',
           price: editingService.price,
           duration_minutes: editingService.duration_minutes,
           status: 'active'
@@ -149,7 +156,30 @@ export default function CreatorDashboardPage() {
       setShowAddService(false);
     } catch (error) {
       console.error('Failed to save service:', error);
+      alert('Failed to save service. Please try again.');
     }
+  }
+
+  function validateService(service: any): { isValid: boolean; errors: string[] } {
+    const errors: string[] = [];
+    
+    if (!service.name || service.name.trim().length < 2) {
+      errors.push('Service name must be at least 2 characters');
+    }
+    
+    if (!service.description || service.description.trim().length < 10) {
+      errors.push('Description must be at least 10 characters');
+    }
+    
+    if (service.price <= 0) {
+      errors.push('Price must be greater than $0');
+    }
+    
+    if (service.duration_minutes < 15 || service.duration_minutes > 480) {
+      errors.push('Duration must be between 15 minutes and 8 hours');
+    }
+    
+    return { isValid: errors.length === 0, errors };
   }
 
   async function deleteService(serviceId: string) {
