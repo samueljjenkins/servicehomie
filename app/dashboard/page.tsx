@@ -224,23 +224,7 @@ export default function CreatorDashboardPage() {
     }
   }
 
-  function updateWindow(dayIndex: Weekday, windowIndex: number, field: keyof TimeWindow, value: string) {
-    const next = structuredClone(availability);
-    next[dayIndex][windowIndex][field] = value;
-    persistAvailability(next);
-  }
 
-  function addWindow(dayIndex: Weekday) {
-    const next = structuredClone(availability);
-    next[dayIndex].push({ start: "09:00", end: "17:00" });
-    persistAvailability(next);
-  }
-
-  function removeWindow(dayIndex: Weekday, windowIndex: number) {
-    const next = structuredClone(availability);
-    next[dayIndex].splice(windowIndex, 1);
-    persistAvailability(next);
-  }
 
   function addService() {
     const newService = {
@@ -537,9 +521,9 @@ export default function CreatorDashboardPage() {
               </button>
             </div>
 
-            {/* Global Days & Working Hours */}
+            {/* Availability Settings */}
             <div className="rounded-2xl p-6 border shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">Global Availability Settings</h3>
+              <h3 className="text-lg font-semibold mb-4">Availability Settings</h3>
               
               {/* Days of the Week Selector */}
               <div className="mb-6">
@@ -563,7 +547,7 @@ export default function CreatorDashboardPage() {
                 </div>
               </div>
               
-              {/* Global Working Hours */}
+              {/* Working Hours */}
               <div>
                 <h4 className="text-sm font-medium mb-3 text-foreground">Working Hours (applies to all selected days)</h4>
                 <div className="flex items-center space-x-3">
@@ -584,54 +568,7 @@ export default function CreatorDashboardPage() {
               </div>
             </div>
 
-            {/* Working Hours Configuration */}
-            <div className="rounded-2xl p-6 border shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">Working Hours</h3>
-              <div className="space-y-4">
-                {Object.entries(availability).map(([dayIndex, windows], index) => (
-                  windows.length > 0 && (
-                    <div key={dayIndex} className="p-4 bg-muted rounded-lg">
-                      <h4 className="font-medium mb-3 text-foreground">
-                        {weekLabels[parseInt(dayIndex)]} - Working Hours
-                      </h4>
-                      <div className="space-y-3">
-                        {windows.map((window, windowIndex) => (
-                          <div key={windowIndex} className="flex items-center space-x-3">
-                            <input
-                              type="time"
-                              value={window.start}
-                              onChange={(e) => updateWindow(parseInt(dayIndex) as Weekday, windowIndex, 'start', e.target.value)}
-                              className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
-                            />
-                            <span className="text-muted-foreground">to</span>
-                            <input
-                              type="time"
-                              value={window.end}
-                              onChange={(e) => updateWindow(parseInt(dayIndex) as Weekday, windowIndex, 'end', e.target.value)}
-                              className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
-                            />
-                            <button
-                              onClick={() => removeWindow(parseInt(dayIndex) as Weekday, windowIndex)}
-                              className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          </div>
-                        ))}
-                        <button
-                          onClick={() => addWindow(parseInt(dayIndex) as Weekday)}
-                          className="w-full text-sm text-whop-blue hover:text-whop-blue/80 py-2 px-3 border border-whop-blue/20 rounded-lg hover:bg-whop-blue/5 transition-colors"
-                        >
-                          + Add Time Window
-                        </button>
-                      </div>
-                    </div>
-                  )
-                ))}
-              </div>
-            </div>
+
 
             {/* Clean Interactive Calendar */}
             <div className="rounded-2xl p-6 border shadow-sm">
