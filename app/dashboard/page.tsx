@@ -11,6 +11,7 @@ export default function CreatorDashboardPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'services' | 'availability' | 'bookings' | 'settings'>('overview');
   const [showAddService, setShowAddService] = useState(false);
   const [editingService, setEditingService] = useState<any>(null);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   // Whop data hooks
   const { user, loading: userLoading } = useWhopUser();
@@ -35,6 +36,27 @@ export default function CreatorDashboardPage() {
 
   const upcomingBookings = getUpcomingBookings();
   const activeServices = getActiveServices();
+
+  // Helper function to get calendar days for current month
+  const getCalendarDays = () => {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
+    
+    const days = [];
+    const currentDate = new Date(startDate);
+    
+    // Generate 42 days (6 weeks) to ensure we cover the month
+    for (let i = 0; i < 42; i++) {
+      days.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    return days;
+  };
 
   // Show loading state while data is being fetched
   if (userLoading || dataLoading) {
@@ -455,33 +477,100 @@ export default function CreatorDashboardPage() {
               </div>
             </div>
 
-            {/* Monthly Calendar Preview */}
+            {/* Interactive Monthly Calendar */}
             <div className="rounded-2xl p-6 border shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">Monthly Calendar Preview</h3>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold">Interactive Calendar</h3>
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={() => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}
+                    className="p-2 rounded-lg hover:bg-muted transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <span className="text-lg font-medium">
+                    {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  </span>
+                  <button
+                    onClick={() => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))}
+                    className="p-2 rounded-lg hover:bg-muted transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              
               <div className="bg-muted rounded-lg p-4">
-                <div className="grid grid-cols-7 gap-1">
+                {/* Calendar Header */}
+                <div className="grid grid-cols-7 gap-1 mb-2">
                   {weekLabels.map(day => (
                     <div key={day} className="text-center text-sm font-medium text-muted-foreground py-2">
                       {day}
                     </div>
                   ))}
-                  {Array.from({ length: 35 }, (_, i) => {
-                    const dayOfWeek = (i + 1) % 7;
+                </div>
+                
+                {/* Calendar Grid */}
+                <div className="grid grid-cols-7 gap-1">
+                  {getCalendarDays().map((day, index) => {
+                    if (!day) {
+                      return <div key={index} className="h-12" />;
+                    }
+                    
+                    const dayOfWeek = day.getDay();
                     const isAvailable = availability[dayOfWeek] && availability[dayOfWeek].length > 0;
+                    const isToday = day.toDateString() === new Date().toDateString();
+                    const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
+                    
                     return (
-                      <div key={i} className={`text-center py-2 text-sm ${
-                        isAvailable 
-                          ? 'bg-whop-blue/10 text-whop-blue font-medium' 
-                          : 'text-muted-foreground'
-                      }`}>
-                        {i + 1}
+                      <div key={index} className="relative">
+                        <button
+                          onClick={() => toggleDayEnabled(dayOfWeek as Weekday)}
+                          className={`w-full h-12 rounded-lg text-sm font-medium transition-all duration-200 relative group ${
+                            isAvailable
+                              ? 'bg-whop-blue text-white shadow-md hover:bg-whop-blue/90'
+                              : isCurrentMonth
+                              ? 'bg-background text-foreground hover:bg-muted border border-transparent hover:border-whop-blue/30'
+                              : 'bg-muted/50 text-muted-foreground'
+                          } ${isToday ? 'ring-2 ring-whop-blue ring-offset-2' : ''}`}
+                        >
+                          <span className="absolute top-1 left-1 text-xs text-muted-foreground">
+                            {day.getDate()}
+                          </span>
+                          {isAvailable && (
+                            <div className="absolute bottom-1 left-1 right-1 h-1 bg-white/20 rounded-full" />
+                          )}
+                        </button>
+                        
+                        {/* Working Hours Display */}
+                        {isAvailable && availability[dayOfWeek] && (
+                          <div className="absolute -bottom-1 left-0 right-0 bg-whop-blue text-white text-xs px-1 py-0.5 rounded-b-lg text-center">
+                            {availability[dayOfWeek].length} time{availability[dayOfWeek].length > 1 ? 's' : ''}
+                          </div>
+                        )}
                       </div>
                     );
                   })}
                 </div>
-                <div className="mt-4 text-center text-sm text-muted-foreground">
-                  <span className="inline-block w-3 h-3 bg-whop-blue/10 rounded mr-2"></span>
-                  Available days are highlighted in blue
+                
+                {/* Calendar Legend */}
+                <div className="mt-4 flex items-center justify-center space-x-6 text-sm text-muted-foreground">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-whop-blue rounded"></div>
+                    <span>Available</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-background border rounded"></div>
+                    <span>Unavailable</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-whop-blue ring-2 ring-whop-blue ring-offset-2 rounded"></div>
+                    <span>Today</span>
+                  </div>
                 </div>
               </div>
             </div>
