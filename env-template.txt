@@ -1,22 +1,13 @@
-# Whop App Environment Variables
-# Copy this content to a new file called .env.local and replace the placeholder values with your actual values from the Whop dashboard
+# Whop Configuration
+NEXT_PUBLIC_WHOP_APP_ID=your_whop_app_id_here
+WHOP_API_KEY=your_whop_api_key_here
+NEXT_PUBLIC_WHOP_AGENT_USER_ID=your_whop_agent_user_id_here
+NEXT_PUBLIC_WHOP_COMPANY_ID=your_whop_company_id_here
 
-# Your Whop API Key (get this from the Whop dashboard under apps)
-WHOP_API_KEY="your_whop_api_key_here"
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
 
-# Webhook secret (get this after creating a webhook in the app settings screen)
-WHOP_WEBHOOK_SECRET="your_webhook_secret_here"
-
-# Agent User ID (use any Whop user ID your app can control)
-NEXT_PUBLIC_WHOP_AGENT_USER_ID="your_agent_user_id_here"
-
-# App ID (use the corresponding app ID to the secret API key)
-NEXT_PUBLIC_WHOP_APP_ID="your_app_id_here"
-
-# Company ID (use the corresponding company ID to the secret API key)
-NEXT_PUBLIC_WHOP_COMPANY_ID="your_company_id_here"
-
-# Optional: If you want the booking flow to redirect customers to a specific
-# Whop product checkout page after selecting a time, set this to your product
-# URL (e.g. https://whop.com/your-company/your-product/checkout).
-NEXT_PUBLIC_WHOP_CHECKOUT_URL="https://whop.com/your-product/checkout"
+# Example Supabase URL format: https://your-project-id.supabase.co
+# Example Supabase anon key format: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
