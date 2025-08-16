@@ -179,21 +179,21 @@ export default function CustomerBookingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black">
+    <div className="min-h-screen bg-white dark:bg-whop-bg-dark">
       {/* Header */}
-      <div className="bg-white dark:bg-black border-b border-whop-line dark:border-whop-line px-6 py-4">
+      <div className="bg-white dark:bg-whop-bg-dark border-b border-whop-line dark:border-whop-line px-6 py-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-whop-text dark:text-whop-text-dark font-inter">
             Book Your Session
           </h1>
-          <div className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-lg">
+          <div className="text-sm text-whop-text dark:text-whop-text-dark bg-gray-100 dark:bg-whop-line-dark px-3 py-1 rounded-lg font-inter">
             Welcome, {user?.first_name || 'Customer'}!
           </div>
         </div>
       </div>
 
-      {/* Progress Steps */}
-      <div className="bg-white dark:bg-black border-b border-whop-line dark:border-whop-line">
+              {/* Progress Steps */}
+        <div className="bg-white dark:bg-whop-bg-dark border-b border-whop-line dark:border-whop-line">
         <div className="px-6">
           <div className="flex items-center justify-center space-x-8 py-4">
             {[
@@ -233,10 +233,10 @@ export default function CustomerBookingPage() {
         {currentStep === 'service' && (
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-3xl font-bold text-whop-text dark:text-whop-text-dark mb-4 font-inter">
                 Choose Your Service
               </h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400">
+              <p className="text-lg text-whop-text dark:text-whop-text-dark font-inter">
                 Select from our available services below
               </p>
             </div>
@@ -245,7 +245,7 @@ export default function CustomerBookingPage() {
               {activeServices.map((service) => (
                 <div 
                   key={service.id} 
-                  className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800 cursor-pointer hover:border-whop-blue transition-colors"
+                  className="bg-white dark:bg-whop-bg-dark rounded-2xl p-6 border border-whop-line dark:border-whop-line cursor-pointer hover:border-whop-blue transition-colors"
                   onClick={() => handleServiceSelect(service)}
                 >
                   <div className="text-center">
@@ -254,15 +254,15 @@ export default function CustomerBookingPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-xl font-semibold text-whop-text dark:text-whop-text-dark mb-2 font-inter">
                       {service.name}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    <p className="text-whop-text dark:text-whop-text-dark mb-4 font-inter">
                       {service.description}
                     </p>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500 dark:text-gray-400">{service.duration_minutes} min</span>
-                      <span className="text-2xl font-bold text-whop-blue">${service.price}</span>
+                      <span className="text-whop-text dark:text-whop-text-dark font-inter">{service.duration_minutes} min</span>
+                      <span className="text-2xl font-bold text-whop-blue font-inter">${service.price}</span>
                     </div>
                   </div>
                 </div>
