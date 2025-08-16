@@ -3,30 +3,27 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import type { WeeklyAvailability, Weekday, TimeWindow } from "@/lib/availability";
-import { getDefaultWeeklyAvailability } from "@/lib/availability";
 import { isValidTenant } from "@/lib/tenant-utils";
+import { useWhopUser } from "@/lib/hooks/useWhopUser";
+import { useServices } from "@/lib/hooks/useServices";
+import { useAvailability } from "@/lib/hooks/useAvailability";
+import { useBookings } from "@/lib/hooks/useBookings";
 
 const weekLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  duration: number; // in minutes
-  isActive: boolean;
-}
-
 export default function CreatorDashboardPage() {
   const params = useParams();
-  const [availability, setAvailability] = useState<WeeklyAvailability>(getDefaultWeeklyAvailability());
-  const [upcoming, setUpcoming] = useState<{ date: string; time: string; customer: string; service: string; price: number }[]>([]);
-  const [services, setServices] = useState<Service[]>([]);
-  const [activeTab, setActiveTab] = useState<'overview' | 'services' | 'availability' | 'bookings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'services' | 'availability' | 'bookings' | 'settings'>('overview');
   const [showAddService, setShowAddService] = useState(false);
-  const [editingService, setEditingService] = useState<Service | null>(null);
+  const [editingService, setEditingService] = useState<any>(null);
   const [tenantValid, setTenantValid] = useState(false);
   const [tenant, setTenant] = useState<string | null>(null);
+
+  // Supabase hooks
+  const { user, loading: userLoading, isAuthenticated } = useWhopUser(tenant || '');
+  const { services, loading: servicesLoading, addService: addServiceToDB, updateService, deleteService: deleteServiceFromDB, toggleServiceStatus } = useServices(tenant || '');
+  const { availability, loading: availabilityLoading, saveAvailability, updateTimeWindow, addTimeWindow, removeTimeWindow, toggleDayEnabled: toggleDayEnabledDB } = useAvailability(tenant || '');
+  const { upcomingBookings, loading: bookingsLoading } = useBookings(tenant || '');
 
   useEffect(() => {
     // Validate tenant before proceeding
@@ -65,16 +62,12 @@ export default function CreatorDashboardPage() {
     );
   }
 
-  function persistAvailability(next: WeeklyAvailability) {
-    setAvailability(next);
-    // TODO: Save to Supabase instead of localStorage
-    console.log('Saving availability to Supabase:', next);
-  }
-
-  function persistServices(next: Service[]) {
-    setServices(next);
-    // TODO: Save to Supabase instead of localStorage
-    console.log('Saving services to Supabase:', next);
+  async function persistAvailability(next: WeeklyAvailability) {
+    try {
+      await saveAvailability(next);
+    } catch (error) {
+      console.error('Failed to save availability:', error);
+    }
   }
 
   function toggleDayEnabled(dayIndex: Weekday) {
@@ -102,45 +95,66 @@ export default function CreatorDashboardPage() {
   }
 
   function addService() {
-    const newService: Service = {
-      id: Date.now().toString(),
+    const newService = {
+      id: '',
       name: '',
       description: '',
       price: 50,
-      duration: 60,
-      isActive: true
+      duration_minutes: 60,
+      status: 'active' as const
     };
     setEditingService(newService);
     setShowAddService(true);
   }
 
-  function saveService(service: Service) {
-    if (editingService) {
-      // Update existing service
-      const updated = services.map(s => s.id === service.id ? service : s);
-      persistServices(updated);
-    } else {
-      // Add new service
-      persistServices([...services, service]);
+  async function saveService() {
+    if (!editingService?.name || !editingService?.price || !editingService?.duration_minutes) return;
+    
+    try {
+      if (editingService.id) {
+        // Update existing service
+        await updateService(editingService.id, {
+          name: editingService.name,
+          description: editingService.description || '',
+          price: editingService.price,
+          duration_minutes: editingService.duration_minutes
+        });
+      } else {
+        // Add new service
+        await addServiceToDB({
+          name: editingService.name,
+          description: editingService.description || '',
+          price: editingService.price,
+          duration_minutes: editingService.duration_minutes,
+          status: 'active'
+        });
+      }
+
+      setEditingService(null);
+      setShowAddService(false);
+    } catch (error) {
+      console.error('Failed to save service:', error);
     }
-    setEditingService(null);
-    setShowAddService(false);
   }
 
-  function deleteService(serviceId: string) {
-    const updated = services.filter(s => s.id !== serviceId);
-    persistServices(updated);
+  async function deleteService(serviceId: string) {
+    try {
+      await deleteServiceFromDB(serviceId);
+    } catch (error) {
+      console.error('Failed to delete service:', error);
+    }
   }
 
-  function toggleServiceActive(serviceId: string) {
-    const updated = services.map(s => 
-      s.id === serviceId ? { ...s, isActive: !s.isActive } : s
-    );
-    persistServices(updated);
+  async function toggleServiceActive(serviceId: string) {
+    try {
+      await toggleServiceStatus(serviceId);
+    } catch (error) {
+      console.error('Failed to toggle service:', error);
+    }
   }
 
-  const totalRevenue = upcoming.reduce((sum, booking) => sum + booking.price, 0);
-  const activeServicesCount = services.filter(s => s.isActive).length;
+  const totalRevenue = upcomingBookings.reduce((sum, booking) => sum + booking.total_price, 0);
+  const activeServicesCount = services.filter(s => s.status === 'active').length;
   const availableDaysCount = Object.values(availability).filter(day => day.length > 0).length;
 
   return (
@@ -165,7 +179,8 @@ export default function CreatorDashboardPage() {
               { id: 'overview', label: 'Overview', icon: '📊' },
               { id: 'services', label: 'Services', icon: '⚙️' },
               { id: 'availability', label: 'Availability', icon: '📅' },
-              { id: 'bookings', label: 'Bookings', icon: '📋' }
+              { id: 'bookings', label: 'Bookings', icon: '📋' },
+              { id: 'settings', label: 'Settings', icon: '⚙️' }
             ].map(tab => (
               <button
                 key={tab.id}
@@ -224,7 +239,7 @@ export default function CreatorDashboardPage() {
                   </div>
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Upcoming Bookings</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{upcoming.length}</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{upcomingBookings.length}</p>
                   </div>
                 </div>
               </div>
@@ -325,7 +340,7 @@ export default function CreatorDashboardPage() {
                           <p className="text-sm text-gray-500 dark:text-gray-400">{service.description}</p>
                           <div className="flex items-center space-x-4 mt-1">
                             <span className="text-sm text-gray-600 dark:text-gray-300">${service.price}</span>
-                            <span className="text-sm text-gray-600 dark:text-gray-300">{service.duration} min</span>
+                            <span className="text-sm text-gray-600 dark:text-gray-300">{service.duration_minutes} min</span>
                           </div>
                         </div>
                       </div>
@@ -333,12 +348,12 @@ export default function CreatorDashboardPage() {
                         <button
                           onClick={() => toggleServiceActive(service.id)}
                           className={`px-3 py-1 rounded-lg text-sm font-medium ${
-                            service.isActive
+                            service.status === 'active'
                               ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'
                               : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
                           }`}
                         >
-                          {service.isActive ? 'Active' : 'Inactive'}
+                          {service.status === 'active' ? 'Active' : 'Inactive'}
                         </button>
                         <button
                           onClick={() => setEditingService(service)}
@@ -453,7 +468,7 @@ export default function CreatorDashboardPage() {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Bookings</h2>
             </div>
 
-            {upcoming.length === 0 ? (
+            {upcomingBookings.length === 0 ? (
               <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 text-center border border-gray-200 dark:border-gray-800">
                 <svg className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -467,16 +482,20 @@ export default function CreatorDashboardPage() {
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Upcoming Bookings</h3>
                 </div>
                 <div className="divide-y divide-gray-200 dark:divide-gray-800">
-                  {upcoming.map((booking, index) => (
+                  {upcomingBookings.map((booking, index) => (
                     <div key={index} className="px-6 py-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium text-gray-900 dark:text-white">{booking.customer}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{booking.service}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{booking.date} at {booking.time}</p>
+                          <p className="font-medium text-gray-900 dark:text-white">
+                            {booking.customer.first_name} {booking.customer.last_name}
+                          </p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{booking.service.name}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            {new Date(booking.booking_date).toLocaleDateString()} at {booking.start_time}
+                          </p>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-gray-900 dark:text-white">${booking.price}</p>
+                          <p className="font-semibold text-gray-900 dark:text-white">${booking.total_price}</p>
                         </div>
                       </div>
                     </div>
@@ -484,6 +503,35 @@ export default function CreatorDashboardPage() {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {activeTab === 'settings' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Settings</h2>
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 text-center border border-gray-200 dark:border-gray-800">
+              <svg className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Business Settings</h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
+                Manage your business information, branding, and preferences.
+              </p>
+              <a
+                href={`/t/${tenant}/settings`}
+                className="inline-flex items-center px-4 py-2 bg-[#1754d8] text-white rounded-lg hover:bg-[#1347b8] transition-colors"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Go to Settings
+              </a>
+            </div>
           </div>
         )}
       </div>
@@ -504,7 +552,7 @@ export default function CreatorDashboardPage() {
                 <input
                   type="text"
                   value={editingService?.name || ''}
-                  onChange={(e) => setEditingService(prev => prev ? { ...prev, name: e.target.value } : null)}
+                  onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, name: e.target.value } : null)}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                   placeholder="e.g., Consultation"
                 />
@@ -516,7 +564,7 @@ export default function CreatorDashboardPage() {
                 </label>
                 <textarea
                   value={editingService?.description || ''}
-                  onChange={(e) => setEditingService(prev => prev ? { ...prev, description: e.target.value } : null)}
+                  onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, description: e.target.value } : null)}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                   rows={3}
                   placeholder="Describe your service..."
@@ -531,7 +579,7 @@ export default function CreatorDashboardPage() {
                   <input
                     type="number"
                     value={editingService?.price || ''}
-                    onChange={(e) => setEditingService(prev => prev ? { ...prev, price: Number(e.target.value) } : null)}
+                    onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, price: Number(e.target.value) } : null)}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                     min="0"
                     step="0.01"
@@ -544,8 +592,8 @@ export default function CreatorDashboardPage() {
                   </label>
                   <input
                     type="number"
-                    value={editingService?.duration || ''}
-                    onChange={(e) => setEditingService(prev => prev ? { ...prev, duration: Number(e.target.value) } : null)}
+                    value={editingService?.duration_minutes || ''}
+                    onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, duration_minutes: Number(e.target.value) } : null)}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
                     min="15"
                     step="15"
@@ -565,7 +613,7 @@ export default function CreatorDashboardPage() {
                 Cancel
               </button>
               <button
-                onClick={() => editingService && saveService(editingService)}
+                onClick={() => editingService && saveService()}
                 disabled={!editingService?.name}
                 className="flex-1 px-4 py-2 bg-whop-pomegranate text-white rounded-lg hover:bg-whop-pomegranate/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
