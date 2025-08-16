@@ -1,0 +1,31 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="white"/>
+  
+  <!-- Blue header with binder rings -->
+  <rect x="0" y="0" width="512" height="120" fill="#1754d8"/>
+  
+  <!-- Binder rings (3 U-shaped elements) -->
+  <circle cx="128" cy="60" r="25" fill="none" stroke="#2A2A2A" stroke-width="8"/>
+  <circle cx="256" cy="60" r="25" fill="none" stroke="#2A2A2A" stroke-width="8"/>
+  <circle cx="384" cy="60" r="25" fill="none" stroke="#2A2A2A" stroke-width="8"/>
+  
+  <!-- Grid of circles (3 rows, 4 columns) -->
+  <!-- Row 1: All dark grey -->
+  <circle cx="96" cy="200" r="40" fill="#2A2A2A"/>
+  <circle cx="224" cy="200" r="40" fill="#2A2A2A"/>
+  <circle cx="352" cy="200" r="40" fill="#2A2A2A"/>
+  <circle cx="480" cy="200" r="40" fill="#2A2A2A"/>
+  
+  <!-- Row 2: 2 dark grey, 2 blue outline -->
+  <circle cx="96" cy="320" r="40" fill="#2A2A2A"/>
+  <circle cx="224" cy="320" r="40" fill="#2A2A2A"/>
+  <circle cx="352" cy="320" r="40" fill="white" stroke="#1754d8" stroke-width="8"/>
+  <circle cx="480" cy="320" r="40" fill="white" stroke="#1754d8" stroke-width="8"/>
+  
+  <!-- Row 3: All blue outline -->
+  <circle cx="96" cy="440" r="40" fill="white" stroke="#1754d8" stroke-width="8"/>
+  <circle cx="224" cy="440" r="40" fill="white" stroke="#1754d8" stroke-width="8"/>
+  <circle cx="352" cy="440" r="40" fill="white" stroke="#1754d8" stroke-width="8"/>
+  <circle cx="480" cy="440" r="40" fill="white" stroke="#1754d8" stroke-width="8"/>
+</svg>

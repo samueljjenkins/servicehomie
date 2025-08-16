@@ -14,8 +14,9 @@ export default function CreatorDashboardPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [quickAddDay, setQuickAddDay] = useState<Weekday | null>(null);
   const [globalWorkingHours, setGlobalWorkingHours] = useState({ start: "09:00", end: "17:00" });
+  const [specificDatesAvailability, setSpecificDatesAvailability] = useState<Set<string>>(new Set());
 
-  // Load global working hours from localStorage on component mount
+  // Load global working hours and specific dates from localStorage on component mount
   useEffect(() => {
     const savedHours = localStorage.getItem('globalWorkingHours');
     if (savedHours) {
@@ -24,6 +25,16 @@ export default function CreatorDashboardPage() {
         setGlobalWorkingHours(parsed);
       } catch (error) {
         console.error('Failed to parse saved working hours:', error);
+      }
+    }
+
+    const savedSpecificDates = localStorage.getItem('specificDatesAvailability');
+    if (savedSpecificDates) {
+      try {
+        const parsed = JSON.parse(savedSpecificDates);
+        setSpecificDatesAvailability(new Set(parsed));
+      } catch (error) {
+        console.error('Failed to parse saved specific dates:', error);
       }
     }
   }, []);
@@ -138,27 +149,38 @@ export default function CreatorDashboardPage() {
 
   // Helper function to check if a specific calendar day is available
   function isSpecificDayAvailable(day: Date): boolean {
-    // For now, we'll use the day of week availability
-    // In the future, this could be expanded to handle specific date exceptions
-    const dayOfWeek = day.getDay() as Weekday;
-    return availability[dayOfWeek] && availability[dayOfWeek].length > 0;
+    // Check if this specific date is in the specificDatesAvailability
+    const dateString = day.toDateString();
+    return specificDatesAvailability.has(dateString);
   }
 
   // Function to toggle a specific calendar day
   function toggleSpecificDay(day: Date) {
-    const dayOfWeek = day.getDay() as Weekday;
-    toggleDayEnabled(dayOfWeek);
+    const dateString = day.toDateString();
+    const newSpecificDates = new Set(specificDatesAvailability);
+    
+    if (newSpecificDates.has(dateString)) {
+      // Remove this specific date
+      newSpecificDates.delete(dateString);
+    } else {
+      // Add this specific date with global working hours
+      newSpecificDates.add(dateString);
+    }
+    
+    setSpecificDatesAvailability(newSpecificDates);
   }
 
   // Function to save all availability data including global working hours
   async function saveAllAvailability() {
     try {
-      // Save the availability array
+      // Save the availability array (weekly pattern)
       await saveAvailability(availability);
       
-      // Save global working hours to localStorage for now
-      // In the future, this could be saved to Supabase as well
+      // Save global working hours to localStorage
       localStorage.setItem('globalWorkingHours', JSON.stringify(globalWorkingHours));
+      
+      // Save specific dates availability to localStorage
+      localStorage.setItem('specificDatesAvailability', JSON.stringify(Array.from(specificDatesAvailability)));
       
       console.log('All availability data saved successfully');
     } catch (error) {
