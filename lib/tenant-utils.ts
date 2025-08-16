@@ -50,12 +50,23 @@ export function detectTenant(
  */
 export function isValidTenant(tenant: string): boolean {
   if (!tenant || typeof tenant !== 'string') {
+    console.log('Tenant validation failed: tenant is empty or not a string', { tenant });
     return false;
   }
   
-  // Basic validation: alphanumeric, hyphens, underscores, 3-50 chars
-  const tenantRegex = /^[a-zA-Z0-9_-]{3,50}$/;
-  return tenantRegex.test(tenant);
+  // More flexible validation: alphanumeric, hyphens, underscores, 2-50 chars
+  const tenantRegex = /^[a-zA-Z0-9_-]{2,50}$/;
+  const isValid = tenantRegex.test(tenant);
+  
+  if (!isValid) {
+    console.log('Tenant validation failed: does not match regex pattern', { 
+      tenant, 
+      length: tenant.length,
+      pattern: tenantRegex.source 
+    });
+  }
+  
+  return isValid;
 }
 
 /**
