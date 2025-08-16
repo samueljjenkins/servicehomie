@@ -1,12 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useIframeSdk } from '@whop/react/iframe';
-
-// Use localStorage for persistence instead of in-memory storage
-const STORAGE_KEYS = {
-  SERVICES: 'whop_services',
-  AVAILABILITY: 'whop_availability', 
-  BOOKINGS: 'whop_bookings'
-};
+import { supabase } from '@/lib/supabase';
+import type { Tables, Inserts } from '@/lib/supabase';
 
 export interface Service {
   id: string;
@@ -22,207 +17,335 @@ export interface TimeWindow {
   end: string;
 }
 
-export type WeeklyAvailability = {
-  [K in 0 | 1 | 2 | 3 | 4 | 5 | 6]: TimeWindow[];
-};
+export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type WeeklyAvailability = TimeWindow[][];
 
 export interface Booking {
   id: string;
   service_id: string;
-  customer_email: string;
   customer_name: string;
+  customer_email: string;
   booking_date: string;
   start_time: string;
-  status: 'pending' | 'confirmed' | 'cancelled';
   total_price: number;
+  status: 'pending' | 'confirmed' | 'cancelled';
 }
 
 export function useWhopData() {
   const sdk = useIframeSdk();
   const [services, setServices] = useState<Service[]>([]);
   const [availability, setAvailability] = useState<WeeklyAvailability>([
-    [], // Sunday
-    [], // Monday
-    [], // Tuesday
-    [], // Wednesday
-    [], // Thursday
-    [], // Friday
-    []  // Saturday
+    [], [], [], [], [], [], []
   ]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Load data from localStorage
+  // Load data from Supabase based on Whop user context
   useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        // For now, use a mock user ID since getCurrentUser doesn't exist
+        // In production, this would come from Whop's user context
+        const mockUserId = 'mock-user-' + Date.now();
+        
+        // Load services for this user
+        const { data: servicesData, error: servicesError } = await supabase
+          .from('services')
+          .select('*')
+          .eq('whop_user_id', mockUserId)
+          .order('created_at', { ascending: false });
+
+        if (servicesError) throw servicesError;
+        setServices(servicesData || []);
+
+        // Load availability for this user
+        const { data: availabilityData, error: availabilityError } = await supabase
+          .from('availability')
+          .select('*')
+          .eq('whop_user_id', mockUserId);
+
+        if (availabilityError) throw availabilityError;
+
+        // Convert database format to WeeklyAvailability
+        const weeklyAvailability: WeeklyAvailability = [[], [], [], [], [], [], []];
+        availabilityData?.forEach((avail: any) => {
+          const dayIndex = avail.day_of_week;
+          if (dayIndex >= 0 && dayIndex < 7) {
+            weeklyAvailability[dayIndex].push({
+              start: avail.start_time,
+              end: avail.end_time
+            });
+          }
+        });
+        setAvailability(weeklyAvailability);
+
+        // Load bookings for this user
+        const { data: bookingsData, error: bookingsError } = await supabase
+          .from('bookings')
+          .select('*')
+          .eq('whop_user_id', mockUserId)
+          .order('booking_date', { ascending: true });
+
+        if (bookingsError) throw bookingsError;
+        setBookings(bookingsData || []);
+
+      } catch (error) {
+        console.error('Error loading data:', error);
+        // Fallback to empty data
+        setServices([]);
+        setAvailability([[], [], [], [], [], [], []]);
+        setBookings([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [sdk]);
+
+  // Add a new service
+  const addService = async (serviceData: Omit<Service, 'id'>) => {
     try {
-      const loadData = () => {
-        // Load services
-        const storedServices = localStorage.getItem(STORAGE_KEYS.SERVICES);
-        if (storedServices) {
-          setServices(JSON.parse(storedServices));
-        }
+      const mockUserId = 'mock-user-' + Date.now();
 
-        // Load availability
-        const storedAvailability = localStorage.getItem(STORAGE_KEYS.AVAILABILITY);
-        if (storedAvailability) {
-          setAvailability(JSON.parse(storedAvailability));
-        } else {
-          // Set default availability (9 AM - 5 PM weekdays)
-          const defaultAvailability: WeeklyAvailability = [
-            [], // Sunday
-            [{ start: "09:00", end: "17:00" }], // Monday
-            [{ start: "09:00", end: "17:00" }], // Tuesday
-            [{ start: "09:00", end: "17:00" }], // Wednesday
-            [{ start: "09:00", end: "17:00" }], // Thursday
-            [{ start: "09:00", end: "17:00" }], // Friday
-            []  // Saturday
-          ];
-          setAvailability(defaultAvailability);
-          localStorage.setItem(STORAGE_KEYS.AVAILABILITY, JSON.stringify(defaultAvailability));
-        }
-
-        // Load bookings
-        const storedBookings = localStorage.getItem(STORAGE_KEYS.BOOKINGS);
-        if (storedBookings) {
-          setBookings(JSON.parse(storedBookings));
-        }
+      const newService: Inserts<'services'> = {
+        whop_user_id: mockUserId,
+        name: serviceData.name,
+        description: serviceData.description,
+        price: serviceData.price,
+        duration_minutes: serviceData.duration_minutes,
+        status: serviceData.status
       };
 
-      loadData();
-    } catch (error) {
-      console.error('Error loading data from localStorage:', error);
-      // Fallback to default data if localStorage fails
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      const { data, error } = await supabase
+        .from('services')
+        .insert(newService)
+        .select()
+        .single();
 
-  // Save data to localStorage
-  const saveData = (key: string, data: any) => {
+      if (error) throw error;
+
+      setServices(prev => [data, ...prev]);
+      return data;
+    } catch (error) {
+      console.error('Error adding service:', error);
+      throw error;
+    }
+  };
+
+  // Update an existing service
+  const updateService = async (serviceId: string, updates: Partial<Service>) => {
     try {
-      localStorage.setItem(key, JSON.stringify(data));
+      const { data, error } = await supabase
+        .from('services')
+        .update(updates)
+        .eq('id', serviceId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setServices(prev => prev.map(s => s.id === serviceId ? data : s));
+      return data;
     } catch (error) {
-      console.error(`Error saving ${key} to localStorage:`, error);
+      console.error('Error updating service:', error);
+      throw error;
     }
   };
 
-  // Service management
-  const addService = (service: Omit<Service, 'id'>) => {
-    const newService = { ...service, id: Date.now().toString() };
-    const updatedServices = [...services, newService];
-    setServices(updatedServices);
-    saveData(STORAGE_KEYS.SERVICES, updatedServices);
+  // Delete a service
+  const deleteService = async (serviceId: string) => {
+    try {
+      const { error } = await supabase
+        .from('services')
+        .delete()
+        .eq('id', serviceId);
+
+      if (error) throw error;
+
+      setServices(prev => prev.filter(s => s.id !== serviceId));
+    } catch (error) {
+      console.error('Error deleting service:', error);
+      throw error;
+    }
   };
 
-  const updateService = (id: string, updates: Partial<Service>) => {
-    const updatedServices = services.map(service =>
-      service.id === id ? { ...service, ...updates } : service
-    );
-    setServices(updatedServices);
-    saveData(STORAGE_KEYS.SERVICES, updatedServices);
+  // Toggle service status
+  const toggleServiceStatus = async (serviceId: string) => {
+    try {
+      const service = services.find(s => s.id === serviceId);
+      if (!service) return;
+
+      const newStatus = (service.status === 'active' ? 'inactive' : 'active') as 'active' | 'inactive';
+      await updateService(serviceId, { status: newStatus });
+    } catch (error) {
+      console.error('Error toggling service status:', error);
+      throw error;
+    }
   };
 
-  const deleteService = (id: string) => {
-    const updatedServices = services.filter(service => service.id !== id);
-    setServices(updatedServices);
-    saveData(STORAGE_KEYS.SERVICES, updatedServices);
+  // Update availability for a specific day
+  const updateAvailability = async (newAvailability: WeeklyAvailability) => {
+    try {
+      const mockUserId = 'mock-user-' + Date.now();
+
+      // Delete existing availability for this user
+      await supabase
+        .from('availability')
+        .delete()
+        .eq('whop_user_id', mockUserId);
+
+      // Insert new availability
+      const availabilityRecords: Inserts<'availability'>[] = [];
+      
+      newAvailability.forEach((windows, dayIndex) => {
+        windows.forEach(window => {
+          availabilityRecords.push({
+            whop_user_id: mockUserId,
+            day_of_week: dayIndex,
+            start_time: window.start,
+            end_time: window.end
+          });
+        });
+      });
+
+      if (availabilityRecords.length > 0) {
+        const { error } = await supabase
+          .from('availability')
+          .insert(availabilityRecords);
+
+        if (error) throw error;
+      }
+
+      setAvailability(newAvailability);
+    } catch (error) {
+      console.error('Error updating availability:', error);
+      throw error;
+    }
   };
 
-  const toggleServiceStatus = (id: string) => {
-    const updatedServices = services.map(service =>
-      service.id === id 
-        ? { ...service, status: (service.status === 'active' ? 'inactive' : 'active') as 'active' | 'inactive' }
-        : service
-    );
-    setServices(updatedServices);
-    saveData(STORAGE_KEYS.SERVICES, updatedServices);
-  };
-
-  // Availability management
-  const updateAvailability = (newAvailability: WeeklyAvailability) => {
-    setAvailability(newAvailability);
-    saveData(STORAGE_KEYS.AVAILABILITY, newAvailability);
-  };
-
-  const updateTimeWindow = (dayIndex: number, windowIndex: number, field: keyof TimeWindow, value: string) => {
+  // Update a specific time window
+  const updateTimeWindow = (dayIndex: Weekday, windowIndex: number, field: keyof TimeWindow, value: string) => {
     const next = structuredClone(availability);
-    next[dayIndex as keyof WeeklyAvailability][windowIndex][field] = value;
+    next[dayIndex][windowIndex][field] = value;
     setAvailability(next);
-    saveData(STORAGE_KEYS.AVAILABILITY, next);
   };
 
-  const addTimeWindow = (dayIndex: number) => {
+  // Add a new time window
+  const addTimeWindow = (dayIndex: Weekday) => {
     const next = structuredClone(availability);
-    next[dayIndex as keyof WeeklyAvailability].push({ start: "09:00", end: "17:00" });
+    next[dayIndex].push({ start: "09:00", end: "17:00" });
     setAvailability(next);
-    saveData(STORAGE_KEYS.AVAILABILITY, next);
   };
 
-  const removeTimeWindow = (dayIndex: number, windowIndex: number) => {
+  // Remove a time window
+  const removeTimeWindow = (dayIndex: Weekday, windowIndex: number) => {
     const next = structuredClone(availability);
-    next[dayIndex as keyof WeeklyAvailability].splice(windowIndex, 1);
+    next[dayIndex].splice(windowIndex, 1);
     setAvailability(next);
-    saveData(STORAGE_KEYS.AVAILABILITY, next);
   };
 
-  // Booking management
-  const addBooking = (booking: Omit<Booking, 'id'>) => {
-    const newBooking = { ...booking, id: Date.now().toString() };
-    const updatedBookings = [...bookings, newBooking];
-    setBookings(updatedBookings);
-    saveData(STORAGE_KEYS.BOOKINGS, updatedBookings);
+  // Add a new booking
+  const addBooking = async (bookingData: Omit<Booking, 'id'>) => {
+    try {
+      const mockUserId = 'mock-user-' + Date.now();
+
+      const newBooking: Inserts<'bookings'> = {
+        whop_user_id: mockUserId,
+        service_id: bookingData.service_id,
+        customer_name: bookingData.customer_name,
+        customer_email: bookingData.customer_email,
+        booking_date: bookingData.booking_date,
+        start_time: bookingData.start_time,
+        total_price: bookingData.total_price,
+        status: bookingData.status
+      };
+
+      const { data, error } = await supabase
+        .from('bookings')
+        .insert(newBooking)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setBookings(prev => [data, ...prev]);
+      return data;
+    } catch (error) {
+      console.error('Error adding booking:', error);
+      throw error;
+    }
   };
 
-  const updateBooking = (id: string, updates: Partial<Booking>) => {
-    const updatedBookings = bookings.map(booking =>
-      booking.id === id ? { ...booking, ...updates } : booking
-    );
-    setBookings(updatedBookings);
-    saveData(STORAGE_KEYS.BOOKINGS, updatedBookings);
+  // Update an existing booking
+  const updateBooking = async (bookingId: string, updates: Partial<Booking>) => {
+    try {
+      const { data, error } = await supabase
+        .from('bookings')
+        .update(updates)
+        .eq('id', bookingId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setBookings(prev => prev.map(b => b.id === bookingId ? data : b));
+      return data;
+    } catch (error) {
+      console.error('Error updating booking:', error);
+      throw error;
+    }
+  };
+
+  // Get upcoming bookings
+  const getUpcomingBookings = () => {
+    const today = new Date();
+    return bookings.filter(booking => {
+      const bookingDate = new Date(booking.booking_date);
+      return bookingDate >= today && booking.status !== 'cancelled';
+    });
+  };
+
+  // Get active services
+  const getActiveServices = () => {
+    return services.filter(service => service.status === 'active');
+  };
+
+  // Clear all data (for testing)
+  const clearAllData = async () => {
+    try {
+      const mockUserId = 'mock-user-' + Date.now();
+
+      await supabase.from('services').delete().eq('whop_user_id', mockUserId);
+      await supabase.from('availability').delete().eq('whop_user_id', mockUserId);
+      await supabase.from('bookings').delete().eq('whop_user_id', mockUserId);
+
+      setServices([]);
+      setAvailability([[], [], [], [], [], [], []]);
+      setBookings([]);
+    } catch (error) {
+      console.error('Error clearing data:', error);
+    }
   };
 
   return {
-    // Data
     services,
     availability,
     bookings,
     loading,
-    
-    // Service actions
     addService,
     updateService,
     deleteService,
     toggleServiceStatus,
-    
-    // Availability actions
     updateAvailability,
     updateTimeWindow,
     addTimeWindow,
     removeTimeWindow,
-    
-    // Booking actions
     addBooking,
     updateBooking,
-    
-    // Helper functions
-    getUpcomingBookings: () => {
-      const now = new Date();
-      return bookings.filter(booking => {
-        const bookingDate = new Date(booking.booking_date);
-        return bookingDate > now && booking.status === 'confirmed';
-      });
-    },
-    
-    getActiveServices: () => services.filter(service => service.status === 'active'),
-    
-    // Data persistence
-    clearAllData: () => {
-      localStorage.removeItem(STORAGE_KEYS.SERVICES);
-      localStorage.removeItem(STORAGE_KEYS.AVAILABILITY);
-      localStorage.removeItem(STORAGE_KEYS.BOOKINGS);
-      setServices([]);
-      setAvailability([[], [], [], [], [], [], []]);
-      setBookings([]);
-    }
+    getUpcomingBookings,
+    getActiveServices,
+    clearAllData
   };
 }

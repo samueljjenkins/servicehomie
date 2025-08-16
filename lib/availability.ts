@@ -1,23 +1,22 @@
-export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6; // 0=Sun ... 6=Sat
+export interface TimeWindow {
+  start: string;
+  end: string;
+}
 
-export type TimeWindow = {
-  start: string; // "HH:MM" 24h
-  end: string;   // "HH:MM" 24h
-};
-
-export type WeeklyAvailability = Record<Weekday, TimeWindow[]>;
+export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type WeeklyAvailability = TimeWindow[][];
 
 export function getDefaultWeeklyAvailability(): WeeklyAvailability {
   // Start with no availability - users will set their own
-  return {
-    0: [], // Sunday
-    1: [], // Monday
-    2: [], // Tuesday
-    3: [], // Wednesday
-    4: [], // Thursday
-    5: [], // Friday
-    6: [], // Saturday
-  } as WeeklyAvailability;
+  return [
+    [], // Sunday
+    [], // Monday
+    [], // Tuesday
+    [], // Wednesday
+    [], // Thursday
+    [], // Friday
+    []  // Saturday
+  ];
 }
 
 export function parseHmToMinutes(hm: string): number {

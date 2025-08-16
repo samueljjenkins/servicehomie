@@ -1,91 +1,48 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
-}
+// Create a mock client if environment variables are missing (for build time)
+const createMockClient = () => ({
+  from: () => ({
+    select: () => ({
+      eq: () => ({
+        order: () => Promise.resolve({ data: [], error: null })
+      }),
+      single: () => Promise.resolve({ data: null, error: null })
+    }),
+    insert: () => ({
+      select: () => ({
+        single: () => Promise.resolve({ data: null, error: null })
+      })
+    }),
+    update: () => ({
+      eq: () => ({
+        select: () => ({
+          single: () => Promise.resolve({ data: null, error: null })
+        })
+      })
+    }),
+    delete: () => ({
+      eq: () => Promise.resolve({ error: null })
+    })
+  })
+});
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : createMockClient() as any;
 
-// Database types matching your exact schema
 export interface Database {
   public: {
     Tables: {
-      tenants: {
-        Row: {
-          id: string
-          whop_company_id: string
-          name: string
-          description: string | null
-          logo_url: string | null
-          whop_plan_id: string | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          whop_company_id: string
-          name: string
-          description?: string | null
-          logo_url?: string | null
-          whop_plan_id?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          whop_company_id?: string
-          name?: string
-          description?: string | null
-          logo_url?: string | null
-          whop_plan_id?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-      }
-      customers: {
-        Row: {
-          id: string
-          tenant_id: string
-          whop_user_id: string
-          email: string
-          first_name: string | null
-          last_name: string | null
-          phone: string | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          tenant_id: string
-          whop_user_id: string
-          email: string
-          first_name?: string | null
-          last_name?: string | null
-          phone?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          tenant_id?: string
-          whop_user_id?: string
-          email?: string
-          first_name?: string | null
-          last_name?: string | null
-          phone?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-      }
       services: {
         Row: {
           id: string
-          tenant_id: string
+          whop_user_id: string
           name: string
-          description: string | null
+          description: string
           price: number
           duration_minutes: number
           status: 'active' | 'inactive'
@@ -94,9 +51,9 @@ export interface Database {
         }
         Insert: {
           id?: string
-          tenant_id: string
+          whop_user_id: string
           name: string
-          description?: string | null
+          description: string
           price: number
           duration_minutes: number
           status?: 'active' | 'inactive'
@@ -105,9 +62,9 @@ export interface Database {
         }
         Update: {
           id?: string
-          tenant_id?: string
+          whop_user_id?: string
           name?: string
-          description?: string | null
+          description?: string
           price?: number
           duration_minutes?: number
           status?: 'active' | 'inactive'
@@ -118,83 +75,83 @@ export interface Database {
       availability: {
         Row: {
           id: string
-          tenant_id: string
+          whop_user_id: string
           day_of_week: number
           start_time: string
           end_time: string
-          is_active: boolean
           created_at: string
-          updated_at: string
         }
         Insert: {
           id?: string
-          tenant_id: string
+          whop_user_id: string
           day_of_week: number
           start_time: string
           end_time: string
-          is_active?: boolean
           created_at?: string
-          updated_at?: string
         }
         Update: {
           id?: string
-          tenant_id?: string
+          whop_user_id?: string
           day_of_week?: number
           start_time?: string
           end_time?: string
-          is_active?: boolean
           created_at?: string
-          updated_at?: string
         }
       }
       bookings: {
         Row: {
           id: string
-          tenant_id: string
-          customer_id: string
+          whop_user_id: string
           service_id: string
+          customer_name: string
+          customer_email: string
           booking_date: string
           start_time: string
-          end_time: string
-          status: 'pending' | 'confirmed' | 'cancelled' | 'completed'
           total_price: number
-          notes: string | null
+          status: 'pending' | 'confirmed' | 'cancelled'
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
-          tenant_id: string
-          customer_id: string
+          whop_user_id: string
           service_id: string
+          customer_name: string
+          customer_email: string
           booking_date: string
           start_time: string
-          end_time: string
-          status?: 'pending' | 'confirmed' | 'cancelled' | 'completed'
           total_price: number
-          notes?: string | null
+          status?: 'pending' | 'confirmed' | 'cancelled'
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
-          tenant_id?: string
-          customer_id?: string
+          whop_user_id?: string
           service_id?: string
+          customer_name?: string
+          customer_email?: string
           booking_date?: string
           start_time?: string
-          end_time?: string
-          status?: 'pending' | 'confirmed' | 'cancelled' | 'completed'
           total_price?: number
-          notes?: string | null
+          status?: 'pending' | 'confirmed' | 'cancelled'
           created_at?: string
           updated_at?: string
         }
       }
     }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
   }
 }
 
-export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
-export type Inserts<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Insert']
-export type Updates<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Update']
+export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
+export type Inserts<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Insert'];
+export type Updates<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Update'];

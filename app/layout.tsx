@@ -1,67 +1,38 @@
-import { WhopApp } from "@whop/react/components";
-import { Theme } from 'frosted-ui';
-import Script from "next/script";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
+import { WhopIframeSdkProvider } from "@whop/react/iframe";
 
-const geistSans = Geist({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-	variable: "--font-geist-mono",
-	subsets: ["latin"],
-});
-
-const inter = Inter({
-	variable: "--font-inter",
-	subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "Service Homie - Professional Landing Pages for Service Businesses",
-	description: "Get your professional landing page with custom URL, Calendly booking, and Google Reviews—all for $19/month.",
+  title: "ServiceHomie - Manage Your Service Business",
+  description: "The easiest way to manage your service business and let customers book appointments online",
 };
 
 export default function RootLayout({
-	children,
-}: Readonly<{
-	children: React.ReactNode;
-}>) {
-	return (
-		<html lang="en" suppressHydrationWarning>
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
-			>
-				<Script id="set-dark-mode" strategy="beforeInteractive">
-					{`
-					(function() {
-					  try {
-					    var storedTheme = localStorage.getItem('theme');
-					    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-					    var shouldUseDark = storedTheme ? storedTheme === 'dark' : prefersDark;
-					    var root = document.documentElement;
-					    if (shouldUseDark) {
-					      root.classList.add('dark');
-					    } else {
-					      root.classList.remove('dark');
-					    }
-					  } catch (e) {}
-					})();
-					`}
-				</Script>
-				<Script
-					src="https://js.whop.com/static/checkout/loader.js"
-					async
-					defer
-					strategy="beforeInteractive"
-				/>
-				<Theme>
-					{children}
-				</Theme>
-			</body>
-		</html>
-	);
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <head>
+        <Script
+          src="https://js.whop.com/static/checkout/loader.js"
+          async
+          defer
+          strategy="beforeInteractive"
+        />
+      </head>
+      <body className={inter.className}>
+        <WhopIframeSdkProvider>
+          <div className="min-h-screen bg-white dark:bg-black">
+            {children}
+          </div>
+        </WhopIframeSdkProvider>
+      </body>
+    </html>
+  );
 }
