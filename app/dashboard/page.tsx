@@ -38,6 +38,11 @@ export default function CreatorDashboardPage() {
   const upcomingBookings = getUpcomingBookings();
   const activeServices = getActiveServices();
 
+  // Debug logging
+  console.log('Dashboard render - availability:', availability);
+  console.log('Dashboard render - availability type:', typeof availability);
+  console.log('Dashboard render - availability is array:', Array.isArray(availability));
+
   // Helper function to get calendar days for current month
   const getCalendarDays = () => {
     const year = currentMonth.getFullYear();
@@ -81,16 +86,39 @@ export default function CreatorDashboardPage() {
   }
 
   async function persistAvailability(next: WeeklyAvailability) {
+    console.log('persistAvailability called with:', next);
     try {
       await saveAvailability(next);
+      console.log('Availability saved successfully');
     } catch (error) {
       console.error('Failed to save availability:', error);
     }
   }
 
   function toggleDayEnabled(dayIndex: Weekday) {
-    const windows = availability[dayIndex];
-    const next = { ...availability, [dayIndex]: windows.length ? [] : [{ start: "09:00", end: "17:00" }] } as WeeklyAvailability;
+    console.log('toggleDayEnabled called with dayIndex:', dayIndex);
+    console.log('Current availability:', availability);
+    
+    if (!availability || !Array.isArray(availability)) {
+      console.error('Availability is not properly initialized:', availability);
+      return;
+    }
+    
+    const windows = availability[dayIndex] || [];
+    console.log('Windows for day', dayIndex, ':', windows);
+    
+    const next = [...availability];
+    if (windows.length > 0) {
+      // Remove availability for this day
+      next[dayIndex] = [];
+      console.log('Removing availability for day', dayIndex);
+    } else {
+      // Add availability for this day
+      next[dayIndex] = [{ start: "09:00", end: "17:00" }];
+      console.log('Adding availability for day', dayIndex);
+    }
+    
+    console.log('New availability:', next);
     persistAvailability(next);
   }
 
