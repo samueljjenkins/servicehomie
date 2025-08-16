@@ -41,7 +41,7 @@ export default function CreatorDashboardPage() {
     return (
       <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-whop-pomegranate rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-whop-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
@@ -229,7 +229,7 @@ export default function CreatorDashboardPage() {
           <div className="space-y-8">
             {/* Hero Section */}
             <div className="text-center">
-              <div className="w-20 h-20 bg-whop-pomegranate rounded-2xl flex items-center justify-center mx-auto mb-4">
+                              <div className="w-20 h-20 bg-whop-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
@@ -449,7 +449,7 @@ export default function CreatorDashboardPage() {
                     {availability[dayIndex].length > 0 && (
                       <button
                         onClick={() => addWindow(dayIndex as Weekday)}
-                        className="w-full text-xs text-whop-pomegranate hover:text-whop-pomegranate/80 py-1"
+                        className="w-full text-xs text-whop-blue hover:text-whop-blue/80 py-1"
                       >
                         + Add Time
                       </button>
@@ -559,7 +559,7 @@ export default function CreatorDashboardPage() {
                   type="text"
                   value={editingService?.name || ''}
                   onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, name: e.target.value } : null)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-blue focus:border-transparent"
                   placeholder="e.g., Consultation"
                 />
               </div>
@@ -571,7 +571,7 @@ export default function CreatorDashboardPage() {
                 <textarea
                   value={editingService?.description || ''}
                   onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, description: e.target.value } : null)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-blue focus:border-transparent"
                   rows={3}
                   placeholder="Describe your service..."
                 />
@@ -586,7 +586,7 @@ export default function CreatorDashboardPage() {
                     type="number"
                     value={editingService?.price || ''}
                     onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, price: Number(e.target.value) } : null)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-blue focus:border-transparent"
                     min="0"
                     step="0.01"
                   />
@@ -600,7 +600,7 @@ export default function CreatorDashboardPage() {
                     type="number"
                     value={editingService?.duration_minutes || ''}
                     onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, duration_minutes: Number(e.target.value) } : null)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-blue focus:border-transparent"
                     min="15"
                     step="15"
                   />
@@ -620,7 +620,7 @@ export default function CreatorDashboardPage() {
               </button>
               <button
                 onClick={saveService}
-                className="flex-1 px-4 py-2 bg-whop-pomegranate text-white rounded-lg hover:bg-whop-pomegranate/90 transition-colors"
+                className="flex-1 px-4 py-2 bg-whop-blue text-white rounded-lg hover:bg-whop-blue/90 transition-colors"
               >
                 {editingService ? 'Update Service' : 'Add Service'}
               </button>

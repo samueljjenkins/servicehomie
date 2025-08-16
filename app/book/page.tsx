@@ -33,7 +33,7 @@ export default function CustomerBookingPage() {
     return (
       <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-whop-pomegranate rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-whop-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
@@ -245,11 +245,11 @@ export default function CustomerBookingPage() {
               {activeServices.map((service) => (
                 <div 
                   key={service.id} 
-                  className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800 cursor-pointer hover:border-whop-pomegranate transition-colors"
+                  className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800 cursor-pointer hover:border-whop-blue transition-colors"
                   onClick={() => handleServiceSelect(service)}
                 >
                   <div className="text-center">
-                    <div className="w-16 h-16 bg-whop-pomegranate rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 bg-whop-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
                       <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
@@ -262,7 +262,7 @@ export default function CustomerBookingPage() {
                     </p>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-500 dark:text-gray-400">{service.duration_minutes} min</span>
-                      <span className="text-2xl font-bold text-whop-pomegranate">${service.price}</span>
+                      <span className="text-2xl font-bold text-whop-blue">${service.price}</span>
                     </div>
                   </div>
                 </div>
@@ -334,7 +334,7 @@ export default function CustomerBookingPage() {
                   <p className="text-sm text-gray-500 dark:text-gray-400">{selectedService?.description}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-whop-pomegranate">${selectedService?.price}</p>
+                  <p className="text-2xl font-bold text-whop-blue">${selectedService?.price}</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">{selectedService?.duration_minutes} min</p>
                 </div>
               </div>
@@ -363,7 +363,7 @@ export default function CustomerBookingPage() {
                   <select
                     value={selectedTime}
                     onChange={(e) => handleTimeSelect(e.target.value)}
-                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-blue focus:border-transparent"
                   >
                     <option value="">Select time</option>
                     {availableTimes.map((time, index) => (
@@ -388,7 +388,7 @@ export default function CustomerBookingPage() {
                     type="text"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-blue focus:border-transparent"
                     placeholder="Enter your full name"
                     required
                   />
@@ -402,7 +402,7 @@ export default function CustomerBookingPage() {
                     type="email"
                     value={customerEmail}
                     onChange={(e) => setCustomerEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-pomegranate focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-whop-blue focus:border-transparent"
                     placeholder="Enter your email address"
                     required
                   />
@@ -419,7 +419,7 @@ export default function CustomerBookingPage() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-whop-pomegranate text-white rounded-lg hover:bg-whop-pomegranate/90 transition-colors"
+                  className="flex-1 px-4 py-2 bg-whop-blue text-white rounded-lg hover:bg-whop-blue/90 transition-colors"
                 >
                   Continue to Payment
                 </button>
@@ -463,7 +463,7 @@ export default function CustomerBookingPage() {
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
                   <div className="flex justify-between">
                     <span className="text-lg font-semibold text-gray-900 dark:text-white">Total:</span>
-                    <span className="text-2xl font-bold text-whop-pomegranate">${selectedService?.price}</span>
+                    <span className="text-2xl font-bold text-whop-blue">${selectedService?.price}</span>
                   </div>
                 </div>
               </div>
