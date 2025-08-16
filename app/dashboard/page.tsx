@@ -113,7 +113,7 @@ export default function CreatorDashboardPage() {
       next[dayIndex] = [];
       console.log('Removing availability for day', dayIndex);
     } else {
-      // Add availability for this day
+      // Add availability for this day with global working hours
       next[dayIndex] = [{ start: "09:00", end: "17:00" }];
       console.log('Adding availability for day', dayIndex);
     }
@@ -506,10 +506,10 @@ export default function CreatorDashboardPage() {
               </div>
             </div>
 
-            {/* Interactive Monthly Calendar */}
+            {/* Clean Interactive Calendar */}
             <div className="rounded-2xl p-6 border shadow-sm">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold">Interactive Calendar</h3>
+                <h3 className="text-lg font-semibold">Calendar</h3>
                 <div className="flex items-center space-x-4">
                   <button
                     onClick={() => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}
@@ -533,9 +533,27 @@ export default function CreatorDashboardPage() {
                 </div>
               </div>
               
+              {/* Global Working Hours */}
+              <div className="mb-6 p-4 bg-muted rounded-lg">
+                <h4 className="text-sm font-medium mb-3 text-foreground">Working Hours (applies to all selected days)</h4>
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="time"
+                    value="09:00"
+                    className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
+                  />
+                  <span className="text-muted-foreground">to</span>
+                  <input
+                    type="time"
+                    value="17:00"
+                    className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
+                  />
+                </div>
+              </div>
+              
               <div className="bg-muted rounded-lg p-4">
                 {/* Calendar Header */}
-                <div className="grid grid-cols-7 gap-1 mb-2">
+                <div className="grid grid-cols-7 gap-2 mb-3">
                   {weekLabels.map(day => (
                     <div key={day} className="text-center text-sm font-medium text-muted-foreground py-2">
                       {day}
@@ -544,10 +562,10 @@ export default function CreatorDashboardPage() {
                 </div>
                 
                 {/* Calendar Grid */}
-                <div className="grid grid-cols-7 gap-1">
+                <div className="grid grid-cols-7 gap-2">
                   {getCalendarDays().map((day, index) => {
                     if (!day) {
-                      return <div key={index} className="h-12" />;
+                      return <div key={index} className="h-14" />;
                     }
                     
                     const dayOfWeek = day.getDay();
@@ -559,7 +577,7 @@ export default function CreatorDashboardPage() {
                       <div key={index} className="relative">
                         <button
                           onClick={() => toggleDayEnabled(dayOfWeek as Weekday)}
-                          className={`w-full h-12 rounded-lg text-sm font-medium transition-all duration-200 relative group ${
+                          className={`w-full h-14 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center ${
                             isAvailable
                               ? 'bg-whop-blue text-white shadow-md hover:bg-whop-blue/90'
                               : isCurrentMonth
@@ -567,37 +585,16 @@ export default function CreatorDashboardPage() {
                               : 'bg-muted/50 text-muted-foreground'
                           } ${isToday ? 'ring-2 ring-whop-blue ring-offset-2' : ''}`}
                         >
-                          <span className="absolute top-1 left-1 text-xs text-muted-foreground">
+                          <span className="text-sm font-medium">
                             {day.getDate()}
                           </span>
-                          {isAvailable && (
-                            <div className="absolute bottom-1 left-1 right-1 h-1 bg-white/20 rounded-full" />
-                          )}
                         </button>
-                        
-                        {/* Working Hours Display */}
-                        {isAvailable && availability[dayOfWeek] && (
-                          <div className="absolute -bottom-1 left-0 right-0 bg-whop-blue text-white text-xs px-1 py-0.5 rounded-b-lg text-center">
-                            {availability[dayOfWeek].length} time{availability[dayOfWeek].length > 1 ? 's' : ''}
-                          </div>
-                        )}
-                        
-                        {/* Quick Add Hours Button */}
-                        {isAvailable && (
-                          <button
-                            onClick={() => setQuickAddDay(dayOfWeek as Weekday)}
-                            className="absolute -top-1 -right-1 w-5 h-5 bg-whop-blue text-white rounded-full text-xs flex items-center justify-center hover:bg-whop-blue/90 transition-colors"
-                            title="Add time window"
-                          >
-                            +
-                          </button>
-                        )}
                       </div>
                     );
                   })}
                 </div>
                 
-                {/* Calendar Legend */}
+                {/* Simple Legend */}
                 <div className="mt-4 flex items-center justify-center space-x-6 text-sm text-muted-foreground">
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-whop-blue rounded"></div>
@@ -606,10 +603,6 @@ export default function CreatorDashboardPage() {
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-background border rounded"></div>
                     <span>Unavailable</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 bg-whop-blue ring-2 ring-whop-blue ring-offset-2 rounded"></div>
-                    <span>Today</span>
                   </div>
                 </div>
               </div>
@@ -672,60 +665,7 @@ export default function CreatorDashboardPage() {
         )}
       </div>
 
-      {/* Quick Add Hours Modal */}
-      {quickAddDay !== null && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="rounded-2xl p-6 w-full max-w-md border bg-background shadow-xl">
-            <h3 className="text-lg font-semibold mb-4">
-              Add Working Hours for {weekLabels[quickAddDay]}
-            </h3>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Start Time</label>
-                <input
-                  type="time"
-                  value="09:00"
-                  onChange={(e) => {
-                    // This will be handled by the addWindow function
-                  }}
-                  className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">End Time</label>
-                <input
-                  type="time"
-                  value="17:00"
-                  onChange={(e) => {
-                    // This will be handled by the addWindow function
-                  }}
-                  className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
-                />
-              </div>
-            </div>
-            
-            <div className="flex space-x-3 mt-6">
-              <button
-                onClick={() => setQuickAddDay(null)}
-                className="flex-1 px-4 py-2 border text-foreground rounded-lg hover:bg-muted transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  addWindow(quickAddDay);
-                  setQuickAddDay(null);
-                }}
-                className="flex-1 px-4 py-2 bg-whop-blue text-white rounded-lg hover:bg-whop-blue/90 transition-colors"
-              >
-                Add Hours
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* Add/Edit Service Modal */}
       {showAddService && (
