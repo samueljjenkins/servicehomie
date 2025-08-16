@@ -18,8 +18,8 @@ export default function TenantSettingsPage() {
     whop_plan_id: ''
   });
 
-  // Supabase hooks
-  const { user, loading: userLoading, isAuthenticated } = useWhopUser(tenant || '');
+  // Whop hooks
+  const { user, loading: userLoading } = useWhopUser();
   const { getTenantByWhopCompanyId, updateTenant, loading: tenantLoading } = useTenants();
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export default function TenantSettingsPage() {
   }
 
   // Show error state if user authentication failed
-  if (!user || !isAuthenticated) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-white dark:bg-[#111111] flex items-center justify-center">
         <div className="text-center">

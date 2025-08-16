@@ -20,6 +20,9 @@ importers:
       '@whop/api':
         specifier: ^0.0.29
         version: 0.0.29
+      '@whop/iframe':
+        specifier: ^0.0.3
+        version: 0.0.3
       '@whop/react':
         specifier: 0.2.14
         version: 0.2.14(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(framer@2.4.1(framer-motion@10.18.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)

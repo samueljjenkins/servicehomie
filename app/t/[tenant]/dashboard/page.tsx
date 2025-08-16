@@ -5,9 +5,7 @@ import { useParams } from "next/navigation";
 import type { WeeklyAvailability, Weekday, TimeWindow } from "@/lib/availability";
 import { isValidTenant } from "@/lib/tenant-utils";
 import { useWhopUser } from "@/lib/hooks/useWhopUser";
-import { useServices } from "@/lib/hooks/useServices";
-import { useAvailability } from "@/lib/hooks/useAvailability";
-import { useBookings } from "@/lib/hooks/useBookings";
+import { useWhopData } from "@/lib/hooks/useWhopData";
 
 const weekLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
@@ -19,11 +17,28 @@ export default function CreatorDashboardPage() {
   const [tenantValid, setTenantValid] = useState(false);
   const [tenant, setTenant] = useState<string | null>(null);
 
-  // Supabase hooks
-  const { user, loading: userLoading, isAuthenticated } = useWhopUser(tenant || '');
-  const { services, loading: servicesLoading, addService: addServiceToDB, updateService, deleteService: deleteServiceFromDB, toggleServiceStatus } = useServices(tenant || '');
-  const { availability, loading: availabilityLoading, saveAvailability, updateTimeWindow, addTimeWindow, removeTimeWindow, toggleDayEnabled: toggleDayEnabledDB } = useAvailability(tenant || '');
-  const { upcomingBookings, loading: bookingsLoading } = useBookings(tenant || '');
+  // Whop data hooks
+  const { user, loading: userLoading } = useWhopUser();
+  const { 
+    services, 
+    availability, 
+    bookings,
+    addService: addServiceToDB, 
+    updateService, 
+    deleteService: deleteServiceFromDB,
+    updateAvailability: saveAvailability,
+    addBooking,
+    updateBooking,
+    getUpcomingBookings,
+    getActiveServices,
+    toggleServiceStatus,
+    updateTimeWindow,
+    addTimeWindow,
+    removeTimeWindow
+  } = useWhopData();
+  
+  const upcomingBookings = getUpcomingBookings();
+  const activeServices = getActiveServices();
 
   useEffect(() => {
     // Validate tenant before proceeding
@@ -487,9 +502,11 @@ export default function CreatorDashboardPage() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-medium text-gray-900 dark:text-white">
-                            {booking.customer.first_name} {booking.customer.last_name}
+                            {booking.customer_name}
                           </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{booking.service.name}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            {services.find(s => s.id === booking.service_id)?.name || 'Unknown Service'}
+                          </p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
                             {new Date(booking.booking_date).toLocaleDateString()} at {booking.start_time}
                           </p>
