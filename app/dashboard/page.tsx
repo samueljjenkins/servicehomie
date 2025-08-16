@@ -149,27 +149,40 @@ export default function CreatorDashboardPage() {
 
   // Helper function to check if a specific calendar day is available
   function isSpecificDayAvailable(day: Date): boolean {
-    // Check if this specific date is in the specificDatesAvailability
     const dateString = day.toDateString();
-    return specificDatesAvailability.has(dateString);
+    
+    // First check if this specific date has been manually overridden
+    if (specificDatesAvailability.has(dateString)) {
+      return true; // This specific date is manually selected
+    }
+    
+    // If no manual override, check if the day of the week is generally available
+    const dayOfWeek = day.getDay();
+    const isWeekdayAvailable = availability[dayOfWeek] && availability[dayOfWeek].length > 0;
+    
+    return isWeekdayAvailable;
   }
 
   // Function to toggle a specific calendar day
   function toggleSpecificDay(day: Date) {
     const dateString = day.toDateString();
+    const dayOfWeek = day.getDay();
+    const isWeekdayAvailable = availability[dayOfWeek] && availability[dayOfWeek].length > 0;
+    
     console.log('toggleSpecificDay called for date:', dateString);
+    console.log('Day of week:', dayOfWeek, 'Weekday available:', isWeekdayAvailable);
     console.log('Current specificDatesAvailability:', Array.from(specificDatesAvailability));
     
     const newSpecificDates = new Set(specificDatesAvailability);
     
     if (newSpecificDates.has(dateString)) {
-      // Remove this specific date
+      // Remove this specific date override
       newSpecificDates.delete(dateString);
-      console.log('Removed date:', dateString);
+      console.log('Removed specific date override:', dateString);
     } else {
-      // Add this specific date with global working hours
+      // Add this specific date override
       newSpecificDates.add(dateString);
-      console.log('Added date:', dateString);
+      console.log('Added specific date override:', dateString);
     }
     
     console.log('New specificDatesAvailability:', Array.from(newSpecificDates));
