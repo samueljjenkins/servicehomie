@@ -5,6 +5,15 @@ import { useParams } from "next/navigation";
 import type { WeeklyAvailability, Weekday } from "@/lib/availability";
 import { isValidTenant } from "@/lib/tenant-utils";
 
+// Declare global Whop checkout object
+declare global {
+  interface Window {
+    wco: {
+      embed: () => void;
+    };
+  }
+}
+
 interface Service {
   id: string;
   name: string;
@@ -14,7 +23,7 @@ interface Service {
   isActive: boolean;
 }
 
-type BookingStep = 'services' | 'datetime' | 'details' | 'confirmation';
+type BookingStep = 'services' | 'datetime' | 'details' | 'payment' | 'confirmation';
 
 export default function CustomerBookingPage() {
   const params = useParams();
@@ -28,6 +37,9 @@ export default function CustomerBookingPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [tenantValid, setTenantValid] = useState(false);
   const [tenant, setTenant] = useState<string | null>(null);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [showWhopCheckout, setShowWhopCheckout] = useState(false);
+  const [tenantPlanId, setTenantPlanId] = useState<string | null>(null);
 
   // Mock data - TODO: Replace with Supabase
   const [services] = useState<Service[]>([
@@ -67,6 +79,18 @@ export default function CustomerBookingPage() {
       setTenant(routeTenant);
       setTenantValid(true);
       
+      // Fetch tenant data to get the plan ID
+      fetch(`/api/tenants/${routeTenant}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.whop_plan_id) {
+            setTenantPlanId(data.whop_plan_id);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching tenant data:', error);
+        });
+      
       // TODO: Initialize Supabase connection here only after tenant is confirmed
       console.log('Tenant confirmed, initializing booking for:', routeTenant);
       
@@ -78,6 +102,111 @@ export default function CustomerBookingPage() {
       setTenantValid(false);
     }
   }, [params?.tenant]);
+
+  // Embed Whop checkout when modal is shown
+  useEffect(() => {
+    if (showWhopCheckout && tenantPlanId) {
+      // Clear previous checkout
+      const container = document.getElementById('checkout-container');
+      if (container) {
+        container.innerHTML = '';
+        
+        // Create checkout element with Whop attributes for production
+        const checkoutElement = document.createElement('div');
+        checkoutElement.setAttribute('data-whop-checkout-plan-id', tenantPlanId);
+        checkoutElement.setAttribute('data-whop-checkout-prefill-email', customerEmail);
+        checkoutElement.setAttribute('data-whop-checkout-redirect-url', `${window.location.origin}/t/${tenant}/booking-success`);
+        checkoutElement.className = 'w-full h-full';
+        
+        container.appendChild(checkoutElement);
+        
+        // Trigger Whop checkout embed initialization
+        if (window.wco) {
+          window.wco.embed();
+        }
+      }
+    }
+  }, [showWhopCheckout, tenantPlanId, customerEmail, tenant]);
+
+  // Navigation functions
+  const goBack = () => {
+    switch (currentStep) {
+      case 'datetime':
+        setCurrentStep('services');
+        break;
+      case 'details':
+        setCurrentStep('datetime');
+        break;
+      case 'payment':
+        setCurrentStep('details');
+        break;
+      case 'confirmation':
+        setCurrentStep('details');
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleServiceSelect = (service: Service) => {
+    setSelectedService(service);
+    setCurrentStep('datetime');
+  };
+
+  const handleDateTimeSelect = () => {
+    setCurrentStep('details');
+  };
+
+  const handleDetailsSubmit = () => {
+    setCurrentStep('details');
+  };
+
+  const processPayment = async () => {
+    if (!selectedService || !selectedDate || !selectedTime || !customerName || !customerEmail) {
+      return;
+    }
+
+    setIsProcessingPayment(true);
+
+    try {
+      // Get tenant's Whop plan ID
+      const tenantResponse = await fetch(`/api/tenants/${tenant}`);
+      if (!tenantResponse.ok) {
+        throw new Error('Failed to get tenant configuration');
+      }
+      
+      const tenantData = await tenantResponse.json();
+      if (!tenantData.whop_plan_id) {
+        throw new Error('Tenant has not configured a Whop plan ID. Please contact the business owner.');
+      }
+
+      // Store booking details in session storage for webhook processing
+      const bookingData = {
+        serviceName: selectedService.name,
+        servicePrice: selectedService.price,
+        serviceDuration: selectedService.duration,
+        bookingDate: selectedDate,
+        bookingTime: selectedTime,
+        customerName,
+        customerEmail,
+        customerPhone,
+        tenantId: tenant,
+        serviceId: selectedService.id
+      };
+      
+      sessionStorage.setItem('pending_booking', JSON.stringify(bookingData));
+
+      // Set tenant plan ID and show Whop checkout embed
+      setTenantPlanId(tenantData.whop_plan_id);
+      setShowWhopCheckout(true);
+      
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Payment processing failed. Please try again.');
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
 
   // Don't render anything until tenant is validated
   if (!tenantValid || !tenant) {
@@ -120,33 +249,9 @@ export default function CustomerBookingPage() {
     );
   }
 
-  function handleServiceSelect(service: Service) {
-    setSelectedService(service);
-    setCurrentStep('datetime');
-  }
 
-  function handleDateTimeSelect() {
-    if (selectedDate && selectedTime) {
-      setCurrentStep('details');
-    }
-  }
 
-  function handleDetailsSubmit() {
-    if (customerName && customerEmail) {
-      setCurrentStep('confirmation');
-    }
-  }
 
-  function handleWhopCheckout() {
-    // TODO: Integrate with Whop checkout
-    console.log('Redirecting to Whop checkout...');
-  }
-
-  function goBack() {
-    if (currentStep === 'datetime') setCurrentStep('services');
-    else if (currentStep === 'details') setCurrentStep('datetime');
-    else if (currentStep === 'confirmation') setCurrentStep('details');
-  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-black">
@@ -170,6 +275,7 @@ export default function CustomerBookingPage() {
               { step: 'services', label: 'Choose Service', active: currentStep === 'services' },
               { step: 'datetime', label: 'Pick Date & Time', active: currentStep === 'datetime' },
               { step: 'details', label: 'Your Details', active: currentStep === 'details' },
+              { step: 'payment', label: 'Payment', active: currentStep === 'payment' },
               { step: 'confirmation', label: 'Confirm', active: currentStep === 'confirmation' }
             ].map((stepInfo, index) => (
               <div key={stepInfo.step} className="flex items-center">
@@ -187,7 +293,7 @@ export default function CustomerBookingPage() {
                 }`}>
                   {stepInfo.label}
                 </span>
-                {index < 3 && (
+                {index < 4 && (
                   <div className={`ml-4 w-8 h-0.5 ${
                     stepInfo.active ? 'bg-whop-pomegranate' : 'bg-gray-200 dark:bg-gray-700'
                   }`} />
@@ -442,6 +548,76 @@ export default function CustomerBookingPage() {
           </div>
         )}
 
+        {currentStep === 'payment' && (
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                Secure Payment
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Complete your booking with secure payment processing
+              </p>
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Payment Summary</h3>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Service:</span>
+                  <span className="font-medium text-gray-900 dark:text-white">{selectedService?.name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Date & Time:</span>
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    {new Date(selectedDate).toLocaleDateString()} at {selectedTime}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Customer:</span>
+                  <span className="font-medium text-gray-900 dark:text-white">{customerName}</span>
+                </div>
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-3 mt-3">
+                  <div className="flex justify-between">
+                    <span className="text-lg font-semibold text-gray-900 dark:text-white">Total:</span>
+                    <span className="text-2xl font-bold text-whop-pomegranate">${selectedService?.price}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex space-x-3">
+              <button
+                onClick={goBack}
+                className="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
+                Back
+              </button>
+              <button
+                onClick={processPayment}
+                disabled={isProcessingPayment}
+                className="flex-1 px-6 py-3 bg-[#1754d8] text-white rounded-xl hover:bg-[#1347b8] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
+              >
+                {isProcessingPayment ? (
+                  <span className="flex items-center justify-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Processing...
+                  </span>
+                ) : (
+                  `Pay $${selectedService?.price}`
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
         {currentStep === 'confirmation' && (
           <div className="max-w-2xl mx-auto space-y-6">
             <div className="text-center mb-8">
@@ -451,10 +627,10 @@ export default function CustomerBookingPage() {
                 </svg>
               </div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                Almost Done!
+                Ready to Complete!
               </h2>
               <p className="text-gray-600 dark:text-gray-400">
-                Review your booking details and complete your purchase
+                Review your booking details before proceeding to payment
               </p>
             </div>
 
@@ -508,11 +684,34 @@ export default function CustomerBookingPage() {
                 Back
               </button>
               <button
-                onClick={handleWhopCheckout}
-                className="flex-1 px-6 py-3 bg-whop-pomegranate text-white rounded-xl hover:bg-whop-pomegranate/90 transition-colors font-semibold"
+                onClick={() => setCurrentStep('payment')}
+                className="flex-1 px-6 py-3 bg-[#1754d8] text-white rounded-xl hover:bg-[#1347b8] transition-colors font-semibold"
               >
-                Complete Booking - ${selectedService?.price}
+                Continue to Payment
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Whop Checkout Embed */}
+        {showWhopCheckout && tenantPlanId && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-4xl h-[600px] border border-gray-200 dark:border-gray-800">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Complete Your Payment
+                </h3>
+                <button
+                  onClick={() => setShowWhopCheckout(false)}
+                  className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div id="checkout-container" className="w-full h-full"></div>
             </div>
           </div>
         )}

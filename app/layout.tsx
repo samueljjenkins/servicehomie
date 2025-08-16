@@ -52,6 +52,12 @@ export default function RootLayout({
 					})();
 					`}
 				</Script>
+				<Script
+					src="https://js.whop.com/static/checkout/loader.js"
+					async
+					defer
+					strategy="beforeInteractive"
+				/>
 				<Theme>
 					{children}
 				</Theme>

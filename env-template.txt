@@ -3,6 +3,8 @@ NEXT_PUBLIC_WHOP_APP_ID=your_whop_app_id_here
 WHOP_API_KEY=your_whop_api_key_here
 NEXT_PUBLIC_WHOP_AGENT_USER_ID=your_whop_agent_user_id_here
 NEXT_PUBLIC_WHOP_COMPANY_ID=your_whop_company_id_here
+NEXT_PUBLIC_WHOP_PLAN_ID=your_whop_plan_id_here
+NEXT_PUBLIC_APP_URL=https://your-domain.com
 
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url_here

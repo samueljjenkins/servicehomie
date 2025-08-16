@@ -14,7 +14,8 @@ export default function TenantSettingsPage() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    logo_url: ''
+    logo_url: '',
+    whop_plan_id: ''
   });
 
   // Supabase hooks
@@ -42,7 +43,8 @@ export default function TenantSettingsPage() {
         setFormData({
           name: tenantData.name || '',
           description: tenantData.description || '',
-          logo_url: tenantData.logo_url || ''
+          logo_url: tenantData.logo_url || '',
+          whop_plan_id: tenantData.whop_plan_id || ''
         });
       }
     } catch (error) {
@@ -216,6 +218,29 @@ export default function TenantSettingsPage() {
                   )}
                 </div>
               )}
+            </div>
+
+            {/* Whop Plan ID */}
+            <div>
+              <label className="block text-sm font-medium text-[#626262] dark:text-[#B5B5B5] mb-2">
+                Whop Plan ID
+              </label>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={formData.whop_plan_id || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, whop_plan_id: e.target.value }))}
+                  className="w-full px-3 py-2 border border-[#E1E1E1] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#111111] text-[#626262] dark:text-[#B5B5B5] focus:ring-2 focus:ring-[#1754d8] focus:border-transparent"
+                  placeholder="Enter your Whop plan ID"
+                />
+              ) : (
+                <p className="text-[#626262] dark:text-[#B5B5B5] py-2">
+                  {formData.whop_plan_id || 'No Whop plan ID set'}
+                </p>
+              )}
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                This is the plan ID from your Whop dashboard that customers will purchase when booking services.
+              </p>
             </div>
 
             {/* Action Buttons */}
