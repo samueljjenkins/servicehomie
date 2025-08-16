@@ -44,10 +44,71 @@ export function useWhopData() {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
+      
+      // Add a timeout to prevent infinite loading
+      const timeoutId = setTimeout(() => {
+        console.log('useWhopData: Timeout reached, using fallback data');
+        setServices([
+          {
+            id: 'timeout-1',
+            name: 'Consultation',
+            description: 'Initial consultation to discuss your needs',
+            price: 50,
+            duration_minutes: 60,
+            status: 'active'
+          }
+        ]);
+        setAvailability([
+          [{ start: '09:00', end: '17:00' }], // Sunday
+          [{ start: '09:00', end: '17:00' }], // Monday
+          [{ start: '09:00', end: '17:00' }], // Tuesday
+          [{ start: '09:00', end: '17:00' }], // Wednesday
+          [{ start: '09:00', end: '17:00' }], // Thursday
+          [{ start: '09:00', end: '17:00' }], // Friday
+          [] // Saturday
+        ]);
+        setBookings([]);
+        setLoading(false);
+      }, 5000); // 5 second timeout
+      
       try {
+        console.log('useWhopData: Starting to load data...');
+        
         // For now, use a mock user ID since getCurrentUser doesn't exist
         // In production, this would come from Whop's user context
         const mockUserId = 'mock-user-' + Date.now();
+        console.log('useWhopData: Using mock user ID:', mockUserId);
+        
+        // Check if Supabase is available
+        if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+          console.log('useWhopData: No Supabase URL, using mock data');
+          clearTimeout(timeoutId);
+          // Use mock data if Supabase is not configured
+          setServices([
+            {
+              id: 'mock-1',
+              name: 'Consultation',
+              description: 'Initial consultation to discuss your needs',
+              price: 50,
+              duration_minutes: 60,
+              status: 'active'
+            }
+          ]);
+          setAvailability([
+            [{ start: '09:00', end: '17:00' }], // Sunday
+            [{ start: '09:00', end: '17:00' }], // Monday
+            [{ start: '09:00', end: '17:00' }], // Tuesday
+            [{ start: '09:00', end: '17:00' }], // Wednesday
+            [{ start: '09:00', end: '17:00' }], // Thursday
+            [{ start: '09:00', end: '17:00' }], // Friday
+            [] // Saturday
+          ]);
+          setBookings([]);
+          setLoading(false);
+          return;
+        }
+        
+        console.log('useWhopData: Supabase configured, loading from database...');
         
         // Load services for this user
         const { data: servicesData, error: servicesError } = await supabase
@@ -56,7 +117,11 @@ export function useWhopData() {
           .eq('whop_user_id', mockUserId)
           .order('created_at', { ascending: false });
 
-        if (servicesError) throw servicesError;
+        if (servicesError) {
+          console.error('useWhopData: Services error:', servicesError);
+          throw servicesError;
+        }
+        console.log('useWhopData: Services loaded:', servicesData);
         setServices(servicesData || []);
 
         // Load availability for this user
@@ -65,7 +130,11 @@ export function useWhopData() {
           .select('*')
           .eq('whop_user_id', mockUserId);
 
-        if (availabilityError) throw availabilityError;
+        if (availabilityError) {
+          console.error('useWhopData: Availability error:', availabilityError);
+          throw availabilityError;
+        }
+        console.log('useWhopData: Availability loaded:', availabilityData);
 
         // Convert database format to WeeklyAvailability
         const weeklyAvailability: WeeklyAvailability = [[], [], [], [], [], [], []];
@@ -87,16 +156,43 @@ export function useWhopData() {
           .eq('whop_user_id', mockUserId)
           .order('booking_date', { ascending: true });
 
-        if (bookingsError) throw bookingsError;
+        if (bookingsError) {
+          console.error('useWhopData: Bookings error:', bookingsError);
+          throw bookingsError;
+        }
+        console.log('useWhopData: Bookings loaded:', bookingsData);
         setBookings(bookingsData || []);
 
+        console.log('useWhopData: All data loaded successfully');
+        clearTimeout(timeoutId);
+
       } catch (error) {
-        console.error('Error loading data:', error);
-        // Fallback to empty data
-        setServices([]);
-        setAvailability([[], [], [], [], [], [], []]);
+        console.error('useWhopData: Error loading data:', error);
+        clearTimeout(timeoutId);
+        // Fallback to mock data on error
+        console.log('useWhopData: Using fallback mock data');
+        setServices([
+          {
+            id: 'fallback-1',
+            name: 'Consultation',
+            description: 'Initial consultation to discuss your needs',
+            price: 50,
+            duration_minutes: 60,
+            status: 'active'
+          }
+        ]);
+        setAvailability([
+          [{ start: '09:00', end: '17:00' }], // Sunday
+          [{ start: '09:00', end: '17:00' }], // Monday
+          [{ start: '09:00', end: '17:00' }], // Tuesday
+          [{ start: '09:00', end: '17:00' }], // Wednesday
+          [{ start: '09:00', end: '17:00' }], // Thursday
+          [{ start: '09:00', end: '17:00' }], // Friday
+          [] // Saturday
+        ]);
         setBookings([]);
       } finally {
+        console.log('useWhopData: Setting loading to false');
         setLoading(false);
       }
     };

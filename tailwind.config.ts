@@ -1,28 +1,28 @@
-import { frostedThemePlugin as whopFrostedPlugin } from "@whop/react/tailwind";
-import { frostedThemePlugin } from 'frosted-ui';
+import type { Config } from "tailwindcss";
 
-export default {
-  darkMode: ['class'],
+const config: Config = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
-      fontFamily: {
-        'inter': ['Inter', 'system-ui', 'sans-serif'],
-      },
       colors: {
-        whop: {
-          blue: '#1754D8',
-          pomegranate: '#FA4616',
-          chartreuse: '#DBF505',
-          cod: '#141212',
-          fantasy: '#FCF6F5',
-        },
+        'whop-pomegranate': '#FF6B35',
+        'whop-blue': '#1754d8',
+        'whop-line-light': '#E1E1E1',
+        'whop-line-dark': '#2A2A2A',
+        'whop-bg-dark': '#111111',
+        'whop-text-dark': '#B5B5B5',
+        'whop-text-light': '#626262',
+      },
+      fontFamily: {
+        'inter': ['Inter', 'sans-serif'],
       },
     },
   },
-  plugins: [whopFrostedPlugin(), frostedThemePlugin()],
+  plugins: [],
 };
+
+export default config;

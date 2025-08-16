@@ -185,7 +185,7 @@ export default function CreatorDashboardPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
-      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 px-6 py-4">
+      <div className="bg-white dark:bg-black border-b border-whop-line dark:border-whop-line px-6 py-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Manage your booking business
@@ -197,7 +197,7 @@ export default function CreatorDashboardPage() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
+      <div className="bg-white dark:bg-black border-b border-whop-line dark:border-whop-line">
         <div className="px-6">
           <nav className="flex space-x-8">
             {[
@@ -212,8 +212,8 @@ export default function CreatorDashboardPage() {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === tab.id
-                    ? 'border-whop-pomegranate text-whop-pomegranate'
-                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                    ? 'border-whop-blue text-whop-blue'
+                    : 'border-transparent text-whop-text dark:text-whop-text hover:text-gray-700 dark:hover:text-gray-300'
                 }`}
               >
                 {tab.label}
@@ -285,11 +285,11 @@ export default function CreatorDashboardPage() {
 
               <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
+                                  <div className="w-12 h-12 bg-whop-blue/10 dark:bg-whop-blue/20 rounded-xl flex items-center justify-center">
+                  <svg className="w-6 h-6 text-whop-blue dark:text-whop-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Available Days</p>
                     <p className="text-2xl font-bold text-gray-900 dark:text-white">{availableDaysCount}</p>
@@ -337,7 +337,7 @@ export default function CreatorDashboardPage() {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Services</h2>
               <button
                 onClick={addService}
-                className="px-4 py-2 bg-whop-pomegranate text-white rounded-lg hover:bg-whop-pomegranate/90 transition-colors"
+                className="px-4 py-2 bg-whop-blue text-white rounded-lg hover:bg-whop-blue/90 transition-colors"
               >
                 Add Service
               </button>
@@ -406,7 +406,7 @@ export default function CreatorDashboardPage() {
                         onClick={() => toggleDayEnabled(dayIndex as Weekday)}
                         className={`w-full py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
                           availability[dayIndex].length > 0
-                            ? 'bg-whop-pomegranate text-white'
+                            ? 'bg-whop-blue text-white'
                             : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
                         }`}
                       >

@@ -181,7 +181,7 @@ export default function CustomerBookingPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
-      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 px-6 py-4">
+      <div className="bg-white dark:bg-black border-b border-whop-line dark:border-whop-line px-6 py-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Book Your Session
@@ -193,7 +193,7 @@ export default function CustomerBookingPage() {
       </div>
 
       {/* Progress Steps */}
-      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
+      <div className="bg-white dark:bg-black border-b border-whop-line dark:border-whop-line">
         <div className="px-6">
           <div className="flex items-center justify-center space-x-8 py-4">
             {[
@@ -205,21 +205,21 @@ export default function CustomerBookingPage() {
               <div key={stepInfo.step} className="flex items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                   stepInfo.active 
-                    ? 'bg-whop-pomegranate text-white' 
+                    ? 'bg-whop-blue text-white' 
                     : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                 }`}>
                   {index + 1}
                 </div>
                 <span className={`ml-2 text-sm font-medium ${
                   stepInfo.active 
-                    ? 'text-whop-pomegranate' 
+                    ? 'text-whop-blue' 
                     : 'text-gray-500 dark:text-gray-400'
                 }`}>
                   {stepInfo.label}
                 </span>
                 {index < 3 && (
                   <div className={`ml-4 w-12 h-0.5 ${
-                    stepInfo.active ? 'bg-whop-pomegranate' : 'bg-gray-200 dark:bg-gray-700'
+                    stepInfo.active ? 'bg-whop-blue' : 'bg-gray-200 dark:bg-gray-700'
                   }`} />
                 )}
               </div>
@@ -295,7 +295,7 @@ export default function CustomerBookingPage() {
                 <div key={dateInfo.date} className="text-center">
                   <button
                     onClick={() => handleDateSelect(dateInfo.date)}
-                    className="w-full py-3 px-2 rounded-lg bg-whop-pomegranate text-white hover:bg-whop-pomegranate/90 transition-colors"
+                    className="w-full py-3 px-2 rounded-lg bg-whop-blue text-white hover:bg-whop-blue/90 transition-colors"
                   >
                     <div className="text-sm font-medium">{dateInfo.day}</div>
                     <div className="text-xs">{new Date(dateInfo.date).getDate()}</div>
@@ -473,7 +473,7 @@ export default function CustomerBookingPage() {
               <button
                 onClick={processPayment}
                 disabled={isProcessingPayment}
-                className="w-full px-6 py-3 bg-whop-pomegranate text-white rounded-lg hover:bg-whop-pomegranate/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-6 py-3 bg-whop-blue text-white rounded-lg hover:bg-whop-blue/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isProcessingPayment ? 'Processing Payment...' : 'Pay Now'}
               </button>

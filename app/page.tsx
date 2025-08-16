@@ -70,7 +70,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-whop-pomegranate via-whop-pomegranate/90 to-whop-pomegranate/80 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-whop-blue via-whop-blue/90 to-whop-blue/80 overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <div className="text-center">
@@ -81,10 +81,10 @@ export default function HomePage() {
               The easiest way to manage your service business and let customers book appointments online
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 bg-white text-whop-pomegranate font-semibold rounded-lg hover:bg-gray-100 transition-colors">
+              <button className="px-8 py-4 bg-white text-whop-blue font-semibold rounded-lg hover:bg-gray-100 transition-colors">
                 Get Started
               </button>
-              <button className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-whop-pomegranate transition-colors">
+              <button className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-whop-blue transition-colors">
                 Learn More
               </button>
             </div>
@@ -106,7 +106,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-whop-pomegranate rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-whop-blue rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -120,7 +120,7 @@ export default function HomePage() {
             </div>
 
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-whop-pomegranate rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-whop-blue rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -134,7 +134,7 @@ export default function HomePage() {
             </div>
 
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-whop-pomegranate rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-whop-blue rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                 </svg>
@@ -151,7 +151,7 @@ export default function HomePage() {
       </div>
 
       {/* CTA Section */}
-      <div className="py-24 bg-whop-pomegranate">
+      <div className="py-24 bg-whop-blue">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             Ready to streamline your service business?
@@ -159,7 +159,7 @@ export default function HomePage() {
           <p className="text-xl text-white/90 mb-8">
             Join thousands of service providers who trust ServiceHomie to manage their bookings
           </p>
-          <button className="px-8 py-4 bg-white text-whop-pomegranate font-semibold rounded-lg hover:bg-gray-100 transition-colors">
+                        <button className="px-8 py-4 bg-white text-whop-blue font-semibold rounded-lg hover:bg-gray-100 transition-colors">
             Start Free Trial
           </button>
         </div>
