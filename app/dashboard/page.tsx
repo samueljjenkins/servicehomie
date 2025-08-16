@@ -13,6 +13,20 @@ export default function CreatorDashboardPage() {
   const [editingService, setEditingService] = useState<any>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [quickAddDay, setQuickAddDay] = useState<Weekday | null>(null);
+  const [globalWorkingHours, setGlobalWorkingHours] = useState({ start: "09:00", end: "17:00" });
+
+  // Load global working hours from localStorage on component mount
+  useEffect(() => {
+    const savedHours = localStorage.getItem('globalWorkingHours');
+    if (savedHours) {
+      try {
+        const parsed = JSON.parse(savedHours);
+        setGlobalWorkingHours(parsed);
+      } catch (error) {
+        console.error('Failed to parse saved working hours:', error);
+      }
+    }
+  }, []);
 
   // Whop data hooks
   const { user, loading: userLoading } = useWhopUser();
@@ -114,12 +128,42 @@ export default function CreatorDashboardPage() {
       console.log('Removing availability for day', dayIndex);
     } else {
       // Add availability for this day with global working hours
-      next[dayIndex] = [{ start: "09:00", end: "17:00" }];
+      next[dayIndex] = [{ start: globalWorkingHours.start, end: globalWorkingHours.end }];
       console.log('Adding availability for day', dayIndex);
     }
     
     console.log('New availability:', next);
     persistAvailability(next);
+  }
+
+  // Helper function to check if a specific calendar day is available
+  function isSpecificDayAvailable(day: Date): boolean {
+    // For now, we'll use the day of week availability
+    // In the future, this could be expanded to handle specific date exceptions
+    const dayOfWeek = day.getDay() as Weekday;
+    return availability[dayOfWeek] && availability[dayOfWeek].length > 0;
+  }
+
+  // Function to toggle a specific calendar day
+  function toggleSpecificDay(day: Date) {
+    const dayOfWeek = day.getDay() as Weekday;
+    toggleDayEnabled(dayOfWeek);
+  }
+
+  // Function to save all availability data including global working hours
+  async function saveAllAvailability() {
+    try {
+      // Save the availability array
+      await saveAvailability(availability);
+      
+      // Save global working hours to localStorage for now
+      // In the future, this could be saved to Supabase as well
+      localStorage.setItem('globalWorkingHours', JSON.stringify(globalWorkingHours));
+      
+      console.log('All availability data saved successfully');
+    } catch (error) {
+      console.error('Failed to save availability data:', error);
+    }
   }
 
   function updateWindow(dayIndex: Weekday, windowIndex: number, field: keyof TimeWindow, value: string) {
@@ -428,32 +472,57 @@ export default function CreatorDashboardPage() {
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold">Availability</h2>
               <button
-                onClick={() => saveAvailability(availability)}
+                onClick={() => saveAllAvailability()}
                 className="px-4 py-2 bg-whop-blue text-white rounded-lg hover:bg-whop-blue/90 transition-colors"
               >
                 Save
               </button>
             </div>
 
-            {/* Days of the Week Selector */}
+            {/* Global Days & Working Hours */}
             <div className="rounded-2xl p-6 border shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">Select Available Days</h3>
-              <div className="grid grid-cols-7 gap-3">
-                {weekLabels.map((day, dayIndex) => (
-                  <div key={day} className="text-center">
-                    <div className="text-sm font-medium text-muted-foreground mb-2">{day}</div>
-                    <button
-                      onClick={() => toggleDayEnabled(dayIndex as Weekday)}
-                      className={`w-full py-3 px-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        availability[dayIndex] && availability[dayIndex].length > 0
-                          ? 'bg-whop-blue text-white shadow-md'
-                          : 'bg-muted text-muted-foreground hover:bg-muted/80 border border-transparent hover:border-whop-blue/20'
-                      }`}
-                    >
-                      {availability[dayIndex] && availability[dayIndex].length > 0 ? 'Available' : 'Unavailable'}
-                    </button>
-                  </div>
-                ))}
+              <h3 className="text-lg font-semibold mb-4">Global Availability Settings</h3>
+              
+              {/* Days of the Week Selector */}
+              <div className="mb-6">
+                <h4 className="text-sm font-medium mb-3 text-foreground">Select which days you're available each week</h4>
+                <div className="grid grid-cols-7 gap-3">
+                  {weekLabels.map((day, dayIndex) => (
+                    <div key={day} className="text-center">
+                      <div className="text-sm font-medium text-muted-foreground mb-2">{day}</div>
+                      <button
+                        onClick={() => toggleDayEnabled(dayIndex as Weekday)}
+                        className={`w-full py-3 px-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                          availability[dayIndex] && availability[dayIndex].length > 0
+                            ? 'bg-whop-blue text-white shadow-md'
+                            : 'bg-muted text-muted-foreground hover:bg-muted/80 border border-transparent hover:border-whop-blue/20'
+                        }`}
+                      >
+                        {availability[dayIndex] && availability[dayIndex].length > 0 ? 'Available' : 'Unavailable'}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Global Working Hours */}
+              <div>
+                <h4 className="text-sm font-medium mb-3 text-foreground">Working Hours (applies to all selected days)</h4>
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="time"
+                    value={globalWorkingHours.start}
+                    onChange={(e) => setGlobalWorkingHours(prev => ({ ...prev, start: e.target.value }))}
+                    className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
+                  />
+                  <span className="text-muted-foreground">to</span>
+                  <input
+                    type="time"
+                    value={globalWorkingHours.end}
+                    onChange={(e) => setGlobalWorkingHours(prev => ({ ...prev, end: e.target.value }))}
+                    className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
+                  />
+                </div>
               </div>
             </div>
 
@@ -533,23 +602,7 @@ export default function CreatorDashboardPage() {
                 </div>
               </div>
               
-              {/* Global Working Hours */}
-              <div className="mb-6 p-4 bg-muted rounded-lg">
-                <h4 className="text-sm font-medium mb-3 text-foreground">Working Hours (applies to all selected days)</h4>
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="time"
-                    value="09:00"
-                    className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
-                  />
-                  <span className="text-muted-foreground">to</span>
-                  <input
-                    type="time"
-                    value="17:00"
-                    className="px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
-                  />
-                </div>
-              </div>
+
               
               <div className="bg-muted rounded-lg p-4">
                 {/* Calendar Header */}
@@ -576,9 +629,9 @@ export default function CreatorDashboardPage() {
                     return (
                       <div key={index} className="relative">
                         <button
-                          onClick={() => toggleDayEnabled(dayOfWeek as Weekday)}
+                          onClick={() => toggleSpecificDay(day)}
                           className={`w-full h-14 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center ${
-                            isAvailable
+                            isSpecificDayAvailable(day)
                               ? 'bg-whop-blue text-white shadow-md hover:bg-whop-blue/90'
                               : isCurrentMonth
                               ? 'bg-background text-foreground hover:bg-muted border border-transparent hover:border-whop-blue/30'
