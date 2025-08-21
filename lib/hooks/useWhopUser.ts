@@ -16,20 +16,48 @@ export function useWhopUser() {
   const sdk = useIframeSdk();
 
   useEffect(() => {
-    // For now, use mock user since Whop user auth needs different approach
-    // In production, you'd integrate with Whop's user management
-    const mockUser = {
-      id: 'mock-user-id',
-      email: 'user@example.com',
-      first_name: 'Demo',
-      last_name: 'User',
-      company_id: 'demo-company',
-      plan_id: 'demo-plan'
+    const loadUser = async () => {
+      try {
+        setLoading(true);
+        
+        if (!sdk) {
+          console.log('No SDK available');
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
+        // Get company and experience data from Whop iframe
+        const urlData = await sdk.getTopLevelUrlData({});
+        
+        if (urlData) {
+          // For now, create a user based on company/experience data
+          // In production, you'd integrate with Whop's user management
+          const whopUser: WhopUser = {
+            id: urlData.experienceId, // Use experience ID as user ID for now
+            email: 'user@whop.com', // Placeholder
+            first_name: 'Whop',
+            last_name: 'User',
+            company_id: urlData.companyRoute,
+            plan_id: urlData.experienceId
+          };
+          
+          console.log('Whop user loaded from URL data:', whopUser);
+          setUser(whopUser);
+        } else {
+          console.log('No URL data available');
+          setUser(null);
+        }
+      } catch (error) {
+        console.error('Error loading Whop user:', error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     };
-    
-    setUser(mockUser);
-    setLoading(false);
-  }, []);
+
+    loadUser();
+  }, [sdk]);
 
   return { user, loading };
 }

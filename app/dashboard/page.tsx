@@ -99,17 +99,33 @@ export default function CreatorDashboardPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold mb-3">
-            Loading Services...
-          </h1>
-          <p className="text-muted-foreground">
-            Getting everything ready for you
-          </p>
+          <p className="text-lg font-medium">Loading...</p>
         </div>
       </div>
     );
   }
 
+  // Show message when no user is authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-6">
+          <div className="w-16 h-16 bg-whop-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-semibold mb-2">Authentication Required</h2>
+          <p className="text-muted-foreground mb-4">
+            Please sign in to access your dashboard. This app requires Whop authentication to function properly.
+          </p>
+          <div className="bg-muted rounded-lg p-4 text-sm text-muted-foreground">
+            <p>This is a Whop app that needs to be accessed through the Whop platform.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
 
   function toggleDayEnabled(dayIndex: Weekday) {
@@ -226,7 +242,9 @@ export default function CreatorDashboardPage() {
       description: '',
       price: 50,
       duration_minutes: 60,
-      status: 'active' as const
+      status: 'active' as const,
+      category: 'General',
+      service_area: 'Local'
     };
     setEditingService(newService);
     setShowAddService(true);
@@ -258,7 +276,9 @@ export default function CreatorDashboardPage() {
           description: editingService.description?.trim() || '',
           price: editingService.price,
           duration_minutes: editingService.duration_minutes,
-          status: 'active'
+          status: 'active',
+          category: editingService.category || 'General',
+          service_area: editingService.service_area || 'Local'
         });
       }
 
@@ -492,9 +512,17 @@ export default function CreatorDashboardPage() {
                     </div>
                   </div>
                   <p className="text-muted-foreground mb-4">{service.description}</p>
-                  <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center justify-between text-sm mb-2">
                     <span className="text-muted-foreground">{service.duration_minutes} min</span>
                     <span className="text-xl font-bold text-whop-blue">${service.price}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span className="bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400 px-2 py-1 rounded-full">
+                      {service.category}
+                    </span>
+                    <span className="bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 px-2 py-1 rounded-full">
+                      {service.service_area}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -769,6 +797,46 @@ export default function CreatorDashboardPage() {
                     min="15"
                     step="15"
                   />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Category
+                  </label>
+                  <select
+                    value={editingService?.category || 'General'}
+                    onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, category: e.target.value } : null)}
+                    className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
+                  >
+                    <option value="General">General</option>
+                    <option value="Plumbing">Plumbing</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="HVAC">HVAC</option>
+                    <option value="Cleaning">Cleaning</option>
+                    <option value="Landscaping">Landscaping</option>
+                    <option value="Maintenance">Maintenance</option>
+                    <option value="Repair">Repair</option>
+                    <option value="Installation">Installation</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Service Area
+                  </label>
+                  <select
+                    value={editingService?.service_area || 'Local'}
+                    onChange={(e) => setEditingService((prev: any) => prev ? { ...prev, service_area: e.target.value } : null)}
+                    className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-whop-blue focus:border-transparent"
+                  >
+                    <option value="Local">Local (Same City)</option>
+                    <option value="Regional">Regional (Same State)</option>
+                    <option value="National">National</option>
+                    <option value="Remote">Remote/Online</option>
+                  </select>
                 </div>
               </div>
             </div>

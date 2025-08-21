@@ -56,6 +56,8 @@ export interface Database {
           price: number
           duration_minutes: number
           status: 'active' | 'inactive'
+          category: string
+          service_area: string
           created_at: string
           updated_at: string
         }
@@ -67,6 +69,8 @@ export interface Database {
           price: number
           duration_minutes: number
           status?: 'active' | 'inactive'
+          category: string
+          service_area: string
           created_at?: string
           updated_at?: string
         }
@@ -78,6 +82,8 @@ export interface Database {
           price?: number
           duration_minutes?: number
           status?: 'active' | 'inactive'
+          category?: string
+          service_area?: string
           created_at?: string
           updated_at?: string
         }
@@ -115,10 +121,13 @@ export interface Database {
           service_id: string
           customer_name: string
           customer_email: string
+          customer_phone: string
+          customer_address: string
           booking_date: string
           start_time: string
           total_price: number
-          status: 'pending' | 'confirmed' | 'cancelled'
+          status: 'pending' | 'confirmed' | 'cancelled' | 'completed'
+          notes: string
           created_at: string
           updated_at: string
         }
@@ -128,10 +137,13 @@ export interface Database {
           service_id: string
           customer_name: string
           customer_email: string
+          customer_phone: string
+          customer_address: string
           booking_date: string
           start_time: string
           total_price: number
-          status?: 'pending' | 'confirmed' | 'cancelled'
+          status?: 'pending' | 'confirmed' | 'cancelled' | 'completed'
+          notes: string
           created_at?: string
           updated_at?: string
         }
@@ -141,10 +153,13 @@ export interface Database {
           service_id?: string
           customer_name?: string
           customer_email?: string
+          customer_phone?: string
+          customer_address?: string
           booking_date?: string
           start_time?: string
           total_price?: number
-          status?: 'pending' | 'confirmed' | 'cancelled'
+          status?: 'pending' | 'confirmed' | 'cancelled' | 'completed'
+          notes?: string
           created_at?: string
           updated_at?: string
         }

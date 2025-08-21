@@ -30,17 +30,11 @@ export async function GET(
 
     // Check if Supabase environment variables are configured
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      console.warn('Supabase environment variables not configured, returning mock data');
-      return NextResponse.json({
-        id: 'mock-tenant-id',
-        whop_company_id: tenant,
-        name: 'Demo Business',
-        description: 'Demo business for testing',
-        logo_url: null,
-        whop_plan_id: process.env.NEXT_PUBLIC_WHOP_PLAN_ID || 'plan_demo123',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      });
+      console.warn('Supabase environment variables not configured');
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      );
     }
 
     // Get tenant data by whop_company_id

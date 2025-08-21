@@ -10,6 +10,8 @@ export interface Service {
   price: number;
   duration_minutes: number;
   status: 'active' | 'inactive';
+  category: string;
+  service_area: string;
 }
 
 export interface TimeWindow {
@@ -25,10 +27,13 @@ export interface Booking {
   service_id: string;
   customer_name: string;
   customer_email: string;
+  customer_phone: string;
+  customer_address: string;
   booking_date: string;
   start_time: string;
   total_price: number;
-  status: 'pending' | 'confirmed' | 'cancelled';
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  notes: string;
 }
 
 export function useWhopData() {
@@ -45,76 +50,39 @@ export function useWhopData() {
     const loadData = async () => {
       setLoading(true);
       
-      // Add a timeout to prevent infinite loading
-      const timeoutId = setTimeout(() => {
-        console.log('useWhopData: Timeout reached, using fallback data');
-        setServices([
-          {
-            id: 'timeout-1',
-            name: 'Consultation',
-            description: 'Initial consultation to discuss your needs',
-            price: 50,
-            duration_minutes: 60,
-            status: 'active'
-          }
-        ]);
-        setAvailability([
-          [{ start: '09:00', end: '17:00' }], // Sunday
-          [{ start: '09:00', end: '17:00' }], // Monday
-          [{ start: '09:00', end: '17:00' }], // Tuesday
-          [{ start: '09:00', end: '17:00' }], // Wednesday
-          [{ start: '09:00', end: '17:00' }], // Thursday
-          [{ start: '09:00', end: '17:00' }], // Friday
-          [] // Saturday
-        ]);
-        setBookings([]);
-        setLoading(false);
-      }, 5000); // 5 second timeout
-      
       try {
         console.log('useWhopData: Starting to load data...');
         
-        // For now, use a consistent mock user ID since getCurrentUser doesn't exist
-        // In production, this would come from Whop's user context
-        const mockUserId = 'mock-user-consistent';
-        console.log('useWhopData: Using mock user ID:', mockUserId);
-        
-        // Check if Supabase is available
-        if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-          console.log('useWhopData: No Supabase URL, using mock data');
-          clearTimeout(timeoutId);
-          // Use mock data if Supabase is not configured
-          setServices([
-            {
-              id: 'mock-1',
-              name: 'Consultation',
-              description: 'Initial consultation to discuss your needs',
-              price: 50,
-              duration_minutes: 60,
-              status: 'active'
-            }
-          ]);
-          setAvailability([
-            [{ start: '09:00', end: '17:00' }], // Sunday
-            [{ start: '09:00', end: '17:00' }], // Monday
-            [{ start: '09:00', end: '17:00' }], // Tuesday
-            [{ start: '09:00', end: '17:00' }], // Wednesday
-            [{ start: '09:00', end: '17:00' }], // Thursday
-            [{ start: '09:00', end: '17:00' }], // Friday
-            [] // Saturday
-          ]);
+        if (!sdk) {
+          console.log('useWhopData: No SDK available');
+          setServices([]);
+          setAvailability([[], [], [], [], [], [], []]);
           setBookings([]);
           setLoading(false);
           return;
         }
+
+        // Get company and experience data from Whop iframe
+        const urlData = await sdk.getTopLevelUrlData({});
         
-        console.log('useWhopData: Supabase configured, loading from database...');
+        if (!urlData) {
+          console.log('useWhopData: No URL data available');
+          setServices([]);
+          setAvailability([[], [], [], [], [], [], []]);
+          setBookings([]);
+          setLoading(false);
+          return;
+        }
+
+        // Use experience ID as user ID for now
+        const whopUserId = urlData.experienceId;
+        console.log('useWhopData: Loading data for experience:', whopUserId);
         
         // Load services for this user
         const { data: servicesData, error: servicesError } = await supabase
           .from('services')
           .select('*')
-          .eq('whop_user_id', mockUserId)
+          .eq('whop_user_id', whopUserId)
           .order('created_at', { ascending: false });
 
         if (servicesError) {
@@ -128,7 +96,7 @@ export function useWhopData() {
         const { data: availabilityData, error: availabilityError } = await supabase
           .from('availability')
           .select('*')
-          .eq('whop_user_id', mockUserId);
+          .eq('whop_user_id', whopUserId);
 
         if (availabilityError) {
           console.error('useWhopData: Availability error:', availabilityError);
@@ -153,7 +121,7 @@ export function useWhopData() {
         const { data: bookingsData, error: bookingsError } = await supabase
           .from('bookings')
           .select('*')
-          .eq('whop_user_id', mockUserId)
+          .eq('whop_user_id', whopUserId)
           .order('booking_date', { ascending: true });
 
         if (bookingsError) {
@@ -164,35 +132,13 @@ export function useWhopData() {
         setBookings(bookingsData || []);
 
         console.log('useWhopData: All data loaded successfully');
-        clearTimeout(timeoutId);
 
       } catch (error) {
         console.error('useWhopData: Error loading data:', error);
-        clearTimeout(timeoutId);
-        // Fallback to mock data on error
-        console.log('useWhopData: Using fallback mock data');
-        setServices([
-          {
-            id: 'fallback-1',
-            name: 'Consultation',
-            description: 'Initial consultation to discuss your needs',
-            price: 50,
-            duration_minutes: 60,
-            status: 'active'
-          }
-        ]);
-        setAvailability([
-          [{ start: '09:00', end: '17:00' }], // Sunday
-          [{ start: '09:00', end: '17:00' }], // Monday
-          [{ start: '09:00', end: '17:00' }], // Tuesday
-          [{ start: '09:00', end: '17:00' }], // Wednesday
-          [{ start: '09:00', end: '17:00' }], // Thursday
-          [{ start: '09:00', end: '17:00' }], // Friday
-          [] // Saturday
-        ]);
+        setServices([]);
+        setAvailability([[], [], [], [], [], [], []]);
         setBookings([]);
       } finally {
-        console.log('useWhopData: Setting loading to false');
         setLoading(false);
       }
     };
@@ -203,29 +149,32 @@ export function useWhopData() {
   // Add a new service
   const addService = async (serviceData: Omit<Service, 'id'>) => {
     try {
-      const mockUserId = 'mock-user-consistent';
+      if (!sdk) {
+        console.log('addService: No SDK available, cannot add service');
+        return;
+      }
 
-      const newService: Inserts<'services'> = {
-        whop_user_id: mockUserId,
-        name: serviceData.name,
-        description: serviceData.description,
-        price: serviceData.price,
-        duration_minutes: serviceData.duration_minutes,
-        status: serviceData.status
-      };
+      // Get company and experience data from Whop iframe
+      const urlData = await sdk.getTopLevelUrlData({});
+      if (!urlData) {
+        console.log('addService: No URL data available, cannot add service');
+        return;
+      }
 
+      const whopUserId = urlData.experienceId;
       const { data, error } = await supabase
         .from('services')
-        .insert(newService)
+        .insert({ ...serviceData, whop_user_id: whopUserId })
         .select()
         .single();
 
-      if (error) throw error;
-
-      setServices(prev => [data, ...prev]);
-      return data;
+      if (error) {
+        console.error('Failed to add service:', error);
+        throw error;
+      }
+      setServices(prev => [...prev, data]);
     } catch (error) {
-      console.error('Error adding service:', error);
+      console.error('Failed to add service:', error);
       throw error;
     }
   };
@@ -233,19 +182,32 @@ export function useWhopData() {
   // Update an existing service
   const updateService = async (serviceId: string, updates: Partial<Service>) => {
     try {
-      const { data, error } = await supabase
+      if (!sdk) {
+        console.log('updateService: No SDK available, cannot update service');
+        return;
+      }
+
+      // Get company and experience data from Whop iframe
+      const urlData = await sdk.getTopLevelUrlData({});
+      if (!urlData) {
+        console.log('updateService: No URL data available, cannot update service');
+        return;
+      }
+
+      const whopUserId = urlData.experienceId;
+      const { error } = await supabase
         .from('services')
         .update(updates)
         .eq('id', serviceId)
-        .select()
-        .single();
+        .eq('whop_user_id', whopUserId);
 
-      if (error) throw error;
-
-      setServices(prev => prev.map(s => s.id === serviceId ? data : s));
-      return data;
+      if (error) {
+        console.error('Failed to update service:', error);
+        throw error;
+      }
+      setServices(prev => prev.map(service => service.id === serviceId ? { ...service, ...updates } : service));
     } catch (error) {
-      console.error('Error updating service:', error);
+      console.error('Failed to update service:', error);
       throw error;
     }
   };
@@ -253,16 +215,32 @@ export function useWhopData() {
   // Delete a service
   const deleteService = async (serviceId: string) => {
     try {
+      if (!sdk) {
+        console.log('deleteService: No SDK available, cannot delete service');
+        return;
+      }
+
+      // Get company and experience data from Whop iframe
+      const urlData = await sdk.getTopLevelUrlData({});
+      if (!urlData) {
+        console.log('deleteService: No URL data available, cannot delete service');
+        return;
+      }
+
+      const whopUserId = urlData.experienceId;
       const { error } = await supabase
         .from('services')
         .delete()
-        .eq('id', serviceId);
+        .eq('id', serviceId)
+        .eq('whop_user_id', whopUserId);
 
-      if (error) throw error;
-
-      setServices(prev => prev.filter(s => s.id !== serviceId));
+      if (error) {
+        console.error('Failed to delete service:', error);
+        throw error;
+      }
+      setServices(prev => prev.filter(service => service.id !== serviceId));
     } catch (error) {
-      console.error('Error deleting service:', error);
+      console.error('Failed to delete service:', error);
       throw error;
     }
   };
@@ -270,35 +248,82 @@ export function useWhopData() {
   // Toggle service status
   const toggleServiceStatus = async (serviceId: string) => {
     try {
-      const service = services.find(s => s.id === serviceId);
-      if (!service) return;
+      if (!sdk) {
+        console.log('toggleServiceStatus: No SDK available, cannot toggle service');
+        return;
+      }
 
-      const newStatus = (service.status === 'active' ? 'inactive' : 'active') as 'active' | 'inactive';
-      await updateService(serviceId, { status: newStatus });
+      // Get company and experience data from Whop iframe
+      const urlData = await sdk.getTopLevelUrlData({});
+      if (!urlData) {
+        console.log('toggleServiceStatus: No URL data available, cannot toggle service');
+        return;
+      }
+
+      const whopUserId = urlData.experienceId;
+      const { data, error } = await supabase
+        .from('services')
+        .select('status')
+        .eq('id', serviceId)
+        .eq('whop_user_id', whopUserId)
+        .single();
+
+      if (error) {
+        console.error('Failed to get service status:', error);
+        throw error;
+      }
+
+      const currentStatus = data?.status;
+      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+
+      const { error: updateError } = await supabase
+        .from('services')
+        .update({ status: newStatus })
+        .eq('id', serviceId)
+        .eq('whop_user_id', whopUserId);
+
+      if (updateError) {
+        console.error('Failed to toggle service status:', updateError);
+        throw updateError;
+      }
+      setServices(prev => prev.map(service => service.id === serviceId ? { ...service, status: newStatus } : service));
     } catch (error) {
-      console.error('Error toggling service status:', error);
+      console.error('Failed to toggle service status:', error);
       throw error;
     }
   };
 
-  // Update availability for a specific day
+  // Update availability
   const updateAvailability = async (newAvailability: WeeklyAvailability) => {
     try {
-      const mockUserId = 'mock-user-consistent';
+      if (!sdk) {
+        console.log('updateAvailability: No SDK available, cannot update availability');
+        return;
+      }
 
-      // Delete existing availability for this user
-      await supabase
+      // Get company and experience data from Whop iframe
+      const urlData = await sdk.getTopLevelUrlData({});
+      if (!urlData) {
+        console.log('updateAvailability: No URL data available, cannot update availability');
+        return;
+      }
+
+      const whopUserId = urlData.experienceId;
+      const { error } = await supabase
         .from('availability')
         .delete()
-        .eq('whop_user_id', mockUserId);
+        .eq('whop_user_id', whopUserId);
 
-      // Insert new availability
-      const availabilityRecords: Inserts<'availability'>[] = [];
-      
-      newAvailability.forEach((windows, dayIndex) => {
-        windows.forEach(window => {
-          availabilityRecords.push({
-            whop_user_id: mockUserId,
+      if (error) {
+        console.error('Failed to clear existing availability:', error);
+        throw error;
+      }
+
+      const availabilityInserts: Inserts<'availability'>[] = [];
+      newAvailability.forEach((day, dayIndex) => {
+        day.forEach(window => {
+          availabilityInserts.push({
+            whop_user_id: whopUserId,
             day_of_week: dayIndex,
             start_time: window.start,
             end_time: window.end
@@ -306,17 +331,17 @@ export function useWhopData() {
         });
       });
 
-      if (availabilityRecords.length > 0) {
-        const { error } = await supabase
-          .from('availability')
-          .insert(availabilityRecords);
+      const { error: insertError } = await supabase
+        .from('availability')
+        .insert(availabilityInserts);
 
-        if (error) throw error;
+      if (insertError) {
+        console.error('Failed to update availability:', insertError);
+        throw insertError;
       }
-
       setAvailability(newAvailability);
     } catch (error) {
-      console.error('Error updating availability:', error);
+      console.error('Failed to update availability:', error);
       throw error;
     }
   };
@@ -345,51 +370,65 @@ export function useWhopData() {
   // Add a new booking
   const addBooking = async (bookingData: Omit<Booking, 'id'>) => {
     try {
-      const mockUserId = 'mock-user-consistent';
+      if (!sdk) {
+        console.log('addBooking: No SDK available, cannot add booking');
+        return;
+      }
 
-      const newBooking: Inserts<'bookings'> = {
-        whop_user_id: mockUserId,
-        service_id: bookingData.service_id,
-        customer_name: bookingData.customer_name,
-        customer_email: bookingData.customer_email,
-        booking_date: bookingData.booking_date,
-        start_time: bookingData.start_time,
-        total_price: bookingData.total_price,
-        status: bookingData.status
-      };
+      // Get company and experience data from Whop iframe
+      const urlData = await sdk.getTopLevelUrlData({});
+      if (!urlData) {
+        console.log('addBooking: No URL data available, cannot add booking');
+        return;
+      }
 
+      const whopUserId = urlData.experienceId;
       const { data, error } = await supabase
         .from('bookings')
-        .insert(newBooking)
+        .insert({ ...bookingData, whop_user_id: whopUserId })
         .select()
         .single();
 
-      if (error) throw error;
-
-      setBookings(prev => [data, ...prev]);
-      return data;
+      if (error) {
+        console.error('Failed to add booking:', error);
+        throw error;
+      }
+      setBookings(prev => [...prev, data]);
     } catch (error) {
-      console.error('Error adding booking:', error);
+      console.error('Failed to add booking:', error);
       throw error;
     }
   };
 
-  // Update an existing booking
+  // Update a booking
   const updateBooking = async (bookingId: string, updates: Partial<Booking>) => {
     try {
-      const { data, error } = await supabase
+      if (!sdk) {
+        console.log('updateBooking: No SDK available, cannot update booking');
+        return;
+      }
+
+      // Get company and experience data from Whop iframe
+      const urlData = await sdk.getTopLevelUrlData({});
+      if (!urlData) {
+        console.log('updateBooking: No URL data available, cannot update booking');
+        return;
+      }
+
+      const whopUserId = urlData.experienceId;
+      const { error } = await supabase
         .from('bookings')
         .update(updates)
         .eq('id', bookingId)
-        .select()
-        .single();
+        .eq('whop_user_id', whopUserId);
 
-      if (error) throw error;
-
-      setBookings(prev => prev.map(b => b.id === bookingId ? data : b));
-      return data;
+      if (error) {
+        console.error('Failed to update booking:', error);
+        throw error;
+      }
+      setBookings(prev => prev.map(booking => booking.id === bookingId ? { ...booking, ...updates } : booking));
     } catch (error) {
-      console.error('Error updating booking:', error);
+      console.error('Failed to update booking:', error);
       throw error;
     }
   };
@@ -408,20 +447,58 @@ export function useWhopData() {
     return services.filter(service => service.status === 'active');
   };
 
-  // Clear all data (for testing)
+  // Clear all data for a user
   const clearAllData = async () => {
     try {
-      const mockUserId = 'mock-user-' + Date.now();
+      if (!sdk) {
+        console.log('clearAllData: No SDK available, cannot clear data');
+        return;
+      }
 
-      await supabase.from('services').delete().eq('whop_user_id', mockUserId);
-      await supabase.from('availability').delete().eq('whop_user_id', mockUserId);
-      await supabase.from('bookings').delete().eq('whop_user_id', mockUserId);
+      // Get company and experience data from Whop iframe
+      const urlData = await sdk.getTopLevelUrlData({});
+      if (!urlData) {
+        console.log('clearAllData: No URL data available, cannot clear data');
+        return;
+      }
+
+      const whopUserId = urlData.experienceId;
+      const { error: deleteServicesError } = await supabase
+        .from('services')
+        .delete()
+        .eq('whop_user_id', whopUserId);
+
+      if (deleteServicesError) {
+        console.error('Failed to clear services:', deleteServicesError);
+        throw deleteServicesError;
+      }
+
+      const { error: deleteAvailabilityError } = await supabase
+        .from('availability')
+        .delete()
+        .eq('whop_user_id', whopUserId);
+
+      if (deleteAvailabilityError) {
+        console.error('Failed to clear availability:', deleteAvailabilityError);
+        throw deleteAvailabilityError;
+      }
+
+      const { error: deleteBookingsError } = await supabase
+        .from('bookings')
+        .delete()
+        .eq('whop_user_id', whopUserId);
+
+      if (deleteBookingsError) {
+        console.error('Failed to clear bookings:', deleteBookingsError);
+        throw deleteBookingsError;
+      }
 
       setServices([]);
       setAvailability([[], [], [], [], [], [], []]);
       setBookings([]);
     } catch (error) {
-      console.error('Error clearing data:', error);
+      console.error('Failed to clear data:', error);
+      throw error;
     }
   };
 
