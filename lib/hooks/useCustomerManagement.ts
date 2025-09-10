@@ -63,7 +63,7 @@ export function useCustomerManagement() {
         }
 
         // Transform the data to include aggregated information
-        const customersWithStats = customersData?.map(customer => ({
+        const customersWithStats = customersData?.map((customer: any) => ({
           ...customer,
           total_jobs: customer.jobs?.[0]?.count || 0,
           total_bookings: customer.bookings?.[0]?.count || 0,

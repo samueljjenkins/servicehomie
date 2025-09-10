@@ -24,6 +24,7 @@ export type WeeklyAvailability = TimeWindow[][];
 
 export interface Booking {
   id: string;
+  whop_user_id: string;
   service_id: string;
   customer_name: string;
   customer_email: string;
@@ -34,6 +35,10 @@ export interface Booking {
   total_price: number;
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   notes: string;
+  job_id: string | null;
+  technician_id: string | null;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  special_instructions: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -370,7 +375,7 @@ export function useWhopData() {
   };
 
   // Add a new booking
-  const addBooking = async (bookingData: Omit<Booking, 'id'>) => {
+  const addBooking = async (bookingData: Omit<Booking, 'id' | 'whop_user_id' | 'created_at' | 'updated_at'>) => {
     try {
       if (!sdk) {
         console.log('addBooking: No SDK available, cannot add booking');

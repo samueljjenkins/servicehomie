@@ -164,8 +164,12 @@ export default function CustomerBookingPage() {
         booking_date: selectedDate,
         start_time: selectedTime,
         total_price: selectedService.price,
-        status: 'pending',
-        notes: customerNotes
+        status: 'pending' as const,
+        notes: customerNotes,
+        job_id: null,
+        technician_id: null,
+        priority: 'medium' as const,
+        special_instructions: null
       });
       
       setCurrentStep('payment');

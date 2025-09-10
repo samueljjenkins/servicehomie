@@ -62,7 +62,7 @@ export function useTechnicianManagement() {
         }
 
         // Transform the data to include aggregated information
-        const techniciansWithStats = techniciansData?.map(technician => ({
+        const techniciansWithStats = techniciansData?.map((technician: any) => ({
           ...technician,
           total_jobs: technician.jobs?.[0]?.count || 0,
           completed_jobs: technician.completed_jobs?.[0]?.count || 0,

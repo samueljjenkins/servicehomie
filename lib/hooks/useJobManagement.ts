@@ -5,8 +5,8 @@ import type { Tables, Inserts } from '@/lib/supabase';
 
 export interface Job extends Tables<'jobs'> {
   customer?: Tables<'customers'>;
-  service?: Tables<'services'>;
-  technician?: Tables<'technicians'>;
+  service?: Tables<'services'> | null;
+  technician?: Tables<'technicians'> | null;
   materials?: Tables<'job_materials'>[];
   expenses?: Tables<'expenses'>[];
 }
