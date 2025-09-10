@@ -34,6 +34,8 @@ export interface Booking {
   total_price: number;
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   notes: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export function useWhopData() {
